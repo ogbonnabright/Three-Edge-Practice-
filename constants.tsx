@@ -1,4 +1,3 @@
-
 import { NavItem, PracticeArea, TeamMember, Insight, BigWin } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
@@ -20,7 +19,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
     subPractices: [
       {
         title: 'AML/CFT Compliance and Advisory',
-        details: 'We provide comprehensive Anti-Money Laundering and Counter-Financing of Terrorism strategies. Our services include institutional risk assessments, KYC/CDD framework design, and representation during regulatory audits by the CBN or SEC.',
+        details: 'We provide comprehensive Anti-Money Laundering and Counter-Financing of Terrorism strategies in line with the Money Laundering (Prevention and Prohibition) Act, 2022. Our services include institutional risk assessments, KYC/CDD framework design, and representation during regulatory audits by the EFCC, CBN, or SEC. We offer specialized support including the outsourcing of qualified Compliance Officers, ongoing institutional AML/CFT training for employees, and the management of mandatory disclosures and regulatory reporting requirements.',
         staff: [
           { name: 'Oluwaseun Adeyemi', role: 'Managing Partner', email: 's.adeyemi@tep.com.ng' },
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
@@ -35,7 +34,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
       },
       {
         title: 'Data Protection and General Compliance',
-        details: 'In the age of NDPR and GDPR, we protect your data integrity. We conduct privacy impact assessments, draft data processing agreements, and manage breach notification protocols to safeguard corporate reputation.',
+        details: 'In the era of the Nigeria Data Protection Act (NDPA) 2023, the General Application and Implementation Directive (GAID) 2025, and the global standards set by the General Data Protection Regulation (GDPR), we protect your data integrity. We conduct privacy impact assessments, draft data processing agreements, and manage breach notification protocols to safeguard corporate reputation and ensure rigorous adherence to evolving local and international regulatory standards.',
         staff: [
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
           { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
