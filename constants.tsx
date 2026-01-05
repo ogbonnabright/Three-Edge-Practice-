@@ -33,7 +33,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         ]
       },
       {
-        title: 'Data Protection and General Compliance',
+        title: 'Data Protection',
         details: 'In the era of the Nigeria Data Protection Act (NDPA) 2023, the General Application and Implementation Directive (GAID) 2025, and the global standards set by the General Data Protection Regulation (GDPR), we protect your data integrity. We conduct privacy impact assessments, draft data processing agreements, and manage breach notification protocols to safeguard corporate reputation and ensure rigorous adherence to evolving local and international regulatory standards.',
         staff: [
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
@@ -99,6 +99,42 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Protecting corporate assets during litigation. We challenge interim forfeiture orders and assist in the legal recovery of assets targeted by regulatory enforcement actions.',
         staff: [
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'corporate-commercial',
+    title: 'General Corporate/Commercial Legal Support',
+    description: 'Comprehensive legal frameworks for core industry operations.',
+    fullDescription: 'TEP provides end-to-end legal support for foundational business operations. From fiscal planning to sector-specific regulatory adherence, we ensure that our clients\' corporate structures are resilient and commercially optimized.',
+    subPractices: [
+      {
+        title: 'Tax Advisory',
+        details: 'Strategic fiscal planning and compliance. We advise on corporate income tax, VAT, withholding tax, and transfer pricing, ensuring that our clients maintain optimal tax efficiency while adhering to FIRS regulations.',
+        staff: [
+          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
+        ]
+      },
+      {
+        title: 'Startup Advisory',
+        details: 'From incorporation to Series A and beyond. We guide entrepreneurs through the complexities of venture capital, intellectual property protection, and corporate governance in the tech ecosystem.',
+        staff: [
+          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
+        ]
+      },
+      {
+        title: 'Construction and Real Estate',
+        details: 'Facilitating complex physical development. We handle land acquisitions, title perfection, joint venture agreements, and regulatory approvals for major infrastructure and residential projects.',
+        staff: [
+          { name: 'Oluwaseun Adeyemi', role: 'Managing Partner', email: 's.adeyemi@tep.com.ng' }
+        ]
+      },
+      {
+        title: 'Energy and Natural Resources',
+        details: 'Navigating the extractive industries. We provide counsel on licensing, PSCs, JVs, and local content compliance in the oil, gas, and solid minerals sectors.',
+        staff: [
+          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
         ]
       }
     ]
