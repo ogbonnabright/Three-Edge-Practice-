@@ -37,6 +37,8 @@ export type Insight = {
   date: string;
   excerpt: string;
   image: string;
+  content: string;
+  author?: string;
 };
 
 export type BigWin = {

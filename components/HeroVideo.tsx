@@ -1,15 +1,34 @@
-
-import React from 'react';
+import React, { useRef } from 'react';
 
 const HeroVideo: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /**
+   * Adjusts the playback rate of the video to ensure the loop duration
+   * is exactly 30 seconds, providing a more cinematic and slow-motion effect.
+   */
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      const duration = videoRef.current.duration;
+      if (duration > 0) {
+        const targetLoopTime = 30; // Target loop duration in seconds
+        // Calculate the rate required to make the video last exactly the target loop time.
+        // playbackRate = actual duration / target duration
+        videoRef.current.playbackRate = duration / targetLoopTime;
+      }
+    }
+  };
+
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
       {/* Cinematic Video Loop - Architectural/Industrial theme */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        onLoadedMetadata={handleLoadedMetadata}
         className="absolute top-0 left-0 w-full h-full object-cover grayscale opacity-30 mix-blend-multiply"
         poster="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop"
       >
