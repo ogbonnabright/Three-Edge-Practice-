@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { NAV_ITEMS } from '../constants';
@@ -35,7 +34,7 @@ const Sidebar: React.FC = () => {
 
       <div className="p-10">
         <div className="text-[10px] text-gray-300 font-medium tracking-widest uppercase">
-          &copy; 2024 TEP. <br /> All Rights Reserved.
+          &copy; 2026 TEP. <br /> All Rights Reserved.
         </div>
       </div>
     </aside>

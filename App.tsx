@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
@@ -12,6 +11,16 @@ import Insights from './pages/Insights';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import { AnimatePresence, motion } from 'framer-motion';
+
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -33,6 +42,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const App: React.FC = () => {
   return (
     <Router>
+      <ScrollToTop />
       <div className="flex bg-white min-h-screen">
         <Sidebar />
         

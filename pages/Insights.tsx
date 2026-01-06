@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { INSIGHTS } from '../constants';
@@ -8,6 +8,11 @@ const Insights: React.FC = () => {
   const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const navigate = useNavigate();
+
+  // Scroll to top when switching between grid view and article view
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedInsight]);
 
   const handleShareOption = (option: 'email' | 'twitter' | 'linkedin' | 'download') => {
     if (!selectedInsight) return;

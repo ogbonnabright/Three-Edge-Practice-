@@ -1,12 +1,18 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { PRACTICE_AREAS } from '../constants';
 import { SubPractice, PracticeArea } from '../types';
 
 const Practice: React.FC = () => {
   const [selectedPractice, setSelectedPractice] = useState<PracticeArea | null>(null);
   const [selectedSub, setSelectedSub] = useState<SubPractice | null>(null);
+  const navigate = useNavigate();
+
+  // Scroll to top when switching between main practice view and detail view
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedPractice]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -108,6 +114,24 @@ const Practice: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Engage Our Experts CTA Section */}
+      <section className="py-24 px-8 text-center bg-white border-t border-gray-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h3 className="text-4xl md:text-5xl font-bold text-black mb-12 font-serif">Ready for Strategic Advocacy?</h3>
+          <button 
+            onClick={() => navigate('/contact')}
+            className="bg-black text-white px-12 py-5 font-bold tracking-widest uppercase text-xs hover:bg-[#990000] transition-colors duration-500 shadow-xl"
+          >
+            Engage Our Experts
+          </button>
+        </motion.div>
+      </section>
 
       {/* Focus Area Detail Modal */}
       <AnimatePresence>

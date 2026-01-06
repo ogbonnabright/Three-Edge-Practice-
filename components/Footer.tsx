@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -42,7 +41,7 @@ const Footer: React.FC = () => {
         
         <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">
-            &copy; {new Date().getFullYear()} THREE EDGE PRACTICE. ALL RIGHTS RESERVED.
+            &copy; 2026 THREE EDGE PRACTICE. ALL RIGHTS RESERVED.
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">LinkedIn</a>
