@@ -39,6 +39,14 @@ export const PRACTICE_AREAS: PracticeArea[] = [
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
           { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
         ]
+      },
+      {
+        title: 'Intellectual Property',
+        details: 'Protecting innovation and creative assets. We offer comprehensive IP services including trademark registration, patent filings, and copyright protection under the Trademarks Act, Patents and Designs Act, and the Copyright Act 2022. We advise on IP commercialization, licensing agreements, and enforcement strategies to safeguard the intangible assets of technology startups, creative industries, and manufacturing firms.',
+        staff: [
+          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
+          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
+        ]
       }
     ]
   },
