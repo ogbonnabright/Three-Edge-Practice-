@@ -623,7 +623,7 @@ export const TEAM: TeamMember[] = [
       'Secured favorable court judgments in multiple contentious commercial contract enforcement suits.',
       'Advised developers on drafting turnkey FIDIC construction agreements and subcontractor indemnity clauses.'
     ],
-    image: '/images/nwinee_williams.jpg'
+    image: '/images/Nwinee Williams.jpeg'
   },
   {
     id: 'iniekebiama-ofoda',
