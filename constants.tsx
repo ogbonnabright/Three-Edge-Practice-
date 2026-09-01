@@ -596,7 +596,7 @@ export const TEAM: TeamMember[] = [
       'Advised a global marine logistics operator on Nigerian flag registration, cabotage waivers, and joint venture crew compliance.',
       'Defended an oilfield engineering contractor in contentious regulatory proceedings regarding environmental oil discharge containment.'
     ],
-    image: 'https://images.unsplash.com/photo-1580894732444-8ecded7900cd?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Tamunoibi Aprekuma.jpeg'
   },
   {
     id: 'nwinee-williams',
