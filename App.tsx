@@ -47,7 +47,7 @@ const App: React.FC = () => {
         <Sidebar />
         
         {/* Main Content Area */}
-        <main className="flex-1 md:ml-64 w-full overflow-x-hidden flex flex-col min-h-screen">
+        <main className="flex-1 md:ml-64 w-full overflow-x-hidden flex flex-col min-h-screen pt-16 md:pt-0">
           <div className="flex-grow">
             <PageTransition>
               <Routes>
@@ -64,16 +64,6 @@ const App: React.FC = () => {
           </div>
           <Footer />
         </main>
-
-        {/* Mobile Nav Overlay */}
-        <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-[60]">
-           <span className="text-xl font-bold tracking-tight text-black flex items-center">
-            TEP<span className="w-1.5 h-1.5 rounded-full bg-[#990000] ml-1"></span>
-          </span>
-          <div className="text-[10px] font-bold text-[#990000] tracking-widest uppercase">
-            Menu
-          </div>
-        </div>
       </div>
     </Router>
   );

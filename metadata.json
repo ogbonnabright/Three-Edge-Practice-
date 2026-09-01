@@ -1,5 +1,8 @@
 {
-  "name": "Copy of Three Edge Practice - Strategic Advocacy",
+  "name": "Three Edge Practice - Strategic Advocacy",
   "description": "A professional, modern, and authoritative law firm website for Three Edge Practice (TEP), featuring strategic advocacy and decisive results.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -113,12 +113,14 @@ const Home: React.FC = () => {
             {/* AML/CFT */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="bg-white p-12 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000]"
+              className="bg-white p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between"
             >
-              <h4 className="text-2xl font-bold mb-6 text-black font-serif">AML/CFT Compliance Advisory</h4>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                In an era of heightened scrutiny, we provide sophisticated anti-money laundering and counter-terrorism financing strategies that ensure institutional resilience.
-              </p>
+              <div>
+                <h4 className="text-xl md:text-2xl font-bold mb-6 text-black font-serif leading-snug break-words">AML/CFT Compliance Advisory</h4>
+                <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                  In an era of heightened scrutiny, we provide sophisticated anti-money laundering and counter-terrorism financing strategies that ensure institutional resilience.
+                </p>
+              </div>
               <ul className="space-y-3">
                 <li className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-black/40">
                   <div className="w-1 h-1 bg-[#990000]"></div>
@@ -134,12 +136,14 @@ const Home: React.FC = () => {
             {/* Data Protection */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="bg-white p-12 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000]"
+              className="bg-white p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between"
             >
-              <h4 className="text-2xl font-bold mb-6 text-black font-serif">Data Protection</h4>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                Safeguarding digital assets and ensuring compliance with the Nigeria Data Protection Act (NDPA) 2023, GAID 2025, and GDPR. We architect legal frameworks that protect both consumer privacy and corporate data integrity.
-              </p>
+              <div>
+                <h4 className="text-xl md:text-2xl font-bold mb-6 text-black font-serif leading-snug break-words">Data Protection</h4>
+                <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                  Safeguarding digital assets and ensuring compliance with the Nigeria Data Protection Act (NDPA) 2023, GAID 2025, and GDPR. We architect legal frameworks that protect both consumer privacy and corporate data integrity.
+                </p>
+              </div>
               <ul className="space-y-3">
                 <li className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-black/40">
                   <div className="w-1 h-1 bg-[#990000]"></div>
@@ -155,12 +159,14 @@ const Home: React.FC = () => {
             {/* General Corporate/Commercial */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="bg-white p-12 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000]"
+              className="bg-white p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between"
             >
-              <h4 className="text-2xl font-bold mb-6 text-black font-serif">General Corporate/Commercial Legal Support</h4>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                End-to-end legal support for foundational business operations, from Tax and Startup advisory to sector-specific requirements in Real Estate and Energy.
-              </p>
+              <div>
+                <h4 className="text-xl md:text-2xl font-bold mb-6 text-black font-serif leading-snug break-words">General Corporate / Commercial Legal Support</h4>
+                <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                  End-to-end legal support for foundational business operations, from Tax and Startup advisory to sector-specific requirements in Real Estate and Energy.
+                </p>
+              </div>
               <ul className="space-y-3">
                 <li className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-black/40">
                   <div className="w-1 h-1 bg-[#990000]"></div>

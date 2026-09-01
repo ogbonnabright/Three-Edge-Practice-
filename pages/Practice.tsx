@@ -45,7 +45,7 @@ const Practice: React.FC = () => {
                     </div>
                     
                     <span className="text-4xl font-serif italic text-[#990000]/20 mb-8 block">0{idx + 1}</span>
-                    <h3 className="text-2xl font-bold mb-6 text-black group-hover:text-[#990000] transition-colors duration-300">
+                    <h3 className="text-2xl font-bold mb-6 text-black group-hover:text-[#990000] transition-colors duration-300 leading-snug break-words">
                       {area.title}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed mb-6">

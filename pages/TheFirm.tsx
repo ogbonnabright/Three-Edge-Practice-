@@ -125,18 +125,22 @@ const TheFirm: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="border-l-4 border-[#990000] p-10 bg-white shadow-sm hover:shadow-md transition-shadow">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
               <h4 className="text-4xl font-bold mb-2 text-black">15+</h4>
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Years of Practice</p>
             </div>
-            <div className="border-l-4 border-[#990000] p-10 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
               <h4 className="text-4xl font-bold mb-2 text-black">500+</h4>
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Strategic Wins</p>
             </div>
-            <div className="border-l-4 border-[#990000] p-10 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
               <h4 className="text-4xl font-bold mb-2 text-black">30+</h4>
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Expert Attorneys</p>
+            </div>
+            <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <h4 className="text-4xl font-bold mb-2 text-[#990000]">4</h4>
+              <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Regional Offices</p>
             </div>
           </div>
         </motion.div>

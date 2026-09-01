@@ -25,9 +25,20 @@ export type PracticeArea = {
 };
 
 export type TeamMember = {
+  id?: string;
   name: string;
   role: string;
+  category?: 'Partners' | 'Managing Counsel' | 'Senior Associates' | 'Associates';
+  location?: string;
+  email?: string;
+  phone?: string;
+  linkedin?: string;
+  practiceAreas?: string[];
   bio: string;
+  fullBio?: string;
+  education?: string[];
+  admissions?: string[];
+  keyMatters?: string[];
   image: string;
 };
 
@@ -46,4 +57,18 @@ export type BigWin = {
   year: string;
   description: string;
   result: string;
+};
+
+export type RegionalOffice = {
+  id: string;
+  city: string;
+  state: string;
+  tagline: string;
+  address: string;
+  phone: string;
+  email: string;
+  hours: string;
+  partnerInCharge?: string;
+  mapQuery: string;
+  practiceFocus: string[];
 };
