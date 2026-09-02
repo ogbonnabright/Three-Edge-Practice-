@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
               </div>
               <div>
                 <span className="font-bold text-black block">Port Harcourt Office</span>
-                <span className="text-gray-500">Trans-Amadi Industrial Layout, Rivers State</span>
+                <span className="text-gray-500">32 Mbonu Street, D/Line, Port Harcourt</span>
               </div>
             </div>
           </div>
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
             <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Direct Channels</h4>
             <p className="text-black font-semibold text-sm leading-relaxed mb-3">
               E: info@tep.com.ng<br />
-              E: clientservices@tep.com.ng
+              E: cservices@tep.com.ng
             </p>
             <div className="text-xs text-gray-500">
               <span className="font-bold text-black block mb-0.5">Operating Hours</span>
