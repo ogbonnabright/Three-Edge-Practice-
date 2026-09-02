@@ -124,7 +124,8 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Protecting innovation and creative assets. We offer comprehensive IP services including trademark registration, patent filings, and copyright protection under the Trademarks Act, Patents and Designs Act, and the Copyright Act 2022. We advise on IP commercialization, licensing agreements, and enforcement strategies to safeguard the intangible assets of technology startups, creative industries, and manufacturing firms.',
         staff: [
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
-          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
+          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' },
+          { name: 'Nwinee Williams', role: 'Associate (CIArb)', email: 'nwineewilliams@tep.com.ng' }
         ]
       }
     ]
@@ -208,9 +209,10 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         ]
       },
       {
-        title: 'Startup Advisory',
-        details: 'From incorporation to Series A and beyond. We guide entrepreneurs through the complexities of venture capital, intellectual property protection, and corporate governance in the tech ecosystem.',
+        title: 'IT Law, Tech Regulatory & Startup Advisory',
+        details: 'From technical code audits and software licensing to regulatory sandbox approvals and Series A structuring. We guide founders and multinational tech companies through venture capital, IP protection, NDPA compliance, and corporate governance.',
         staff: [
+          { name: 'Tamunoibi Aprekuma', role: 'Head, IT Law & Tech Regulatory / Startups', email: 'taprekuma@tep.com.ng' },
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
         ]
       },
@@ -578,56 +580,59 @@ export const TEAM: TeamMember[] = [
   {
     id: 'tamunoibi-aprekuma',
     name: 'Tamunoibi Aprekuma',
-    role: 'Senior Associate, Energy & Environmental Governance',
+    role: 'Head, IT Law & Tech Regulatory / Startups',
     category: 'Senior Associates',
-    location: 'Port Harcourt',
+    location: 'Lagos',
     email: 'taprekuma@tep.com.ng',
-    phone: '+234 (0) 84 301 228',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Energy & Natural Resources', 'Environmental Law', 'Maritime & Shipping', 'Host Community Trusts'],
-    bio: 'Advising upstream and midstream energy players on PIA governance, environmental ESG obligations, maritime cabotage, and Niger Delta stakeholder relations.',
-    fullBio: 'Tamunoibi Aprekuma is a Senior Associate in the Energy and Natural Resources practice based in Port Harcourt. Her expertise spans Host Community Development Trusts (HCDTs), upstream farm-ins, offshore service contracts, environmental impact assessments (EIA), and maritime cabotage compliance under NIMASA regulations.',
+    phone: '+234 (0) 708 706 0351',
+    linkedin: 'https://www.linkedin.com/in/tamunoibiaprekuma/',
+    practiceAreas: ['IT Law & Tech Regulatory', 'Startups & Venture Capital', 'Full-Stack Software Advisory', 'Data Privacy & IP Governance', 'Energy & Natural Resources'],
+    bio: 'Dual-qualified legal counsel and experienced full-stack software engineer with global software engineering experience, heading the firm’s IT Law and Tech Regulatory Startups practice.',
+    fullBio: 'Tamunoibi Aprekuma heads the firm’s IT Law and Tech Regulatory Startups Practice Group, based in Lagos. Uniquely combining high-level legal advocacy with hands-on experience as an accomplished full-stack developer who has engineered software solutions for technology companies across several international jurisdictions, Tamunoibi provides rare, code-level insight into technology law. Her practice covers IT contracts, startup scaling and venture capital structuring, regulatory sandbox approvals (NITDA, SEC, CBN), cross-border data governance, open-source compliance, and software IP protection.',
     education: [
-      'LL.M. (Energy & Environmental Law), University of Aberdeen',
-      'LL.B., University of Port Harcourt',
+      'LL.M., Rivers State University',
+      'LL.B., Rivers State University',
       'B.L., Nigerian Law School'
     ],
     admissions: [
       'Supreme Court of Nigeria (2015)',
-      'Women in Energy Network (WIEN)',
+      'Nigerian Bar Association (Section on Business Law - IT & Media Committee)',
+      'Women in Tech International (WITI)',
       'Nigerian Maritime Law Association'
     ],
     keyMatters: [
-      'Facilitated the incorporation and funding governance of multiple Host Community Development Trusts across offshore asset clusters in Rivers and Bayelsa States.',
-      'Advised a global marine logistics operator on Nigerian flag registration, cabotage waivers, and joint venture crew compliance.',
-      'Defended an oilfield engineering contractor in contentious regulatory proceedings regarding environmental oil discharge containment.'
+      'Heads the firm’s IT Law and Tech Regulatory Startups practice, advising high-growth tech startups from pre-seed through Series A on regulatory clearance, software licensing, and venture structuring.',
+      'Advised multi-jurisdictional SaaS and fintech enterprises across Europe, North America, and Africa on API integration agreements, data privacy architecture, and IP commercialization.',
+      'Conducted technical legal audits of software repositories, proprietary algorithms, and smart-contract protocols to ensure statutory compliance with digital asset regulations.'
     ],
     image: '/images/Tamunoibi Aprekuma.jpeg'
   },
   {
     id: 'nwinee-williams',
     name: 'Nwinee Williams',
-    role: 'Associate, Commercial Litigation & Real Estate',
+    role: 'Associate, Intellectual Property, Arbitration & Dispute Resolution',
     category: 'Associates',
     location: 'Port Harcourt',
     email: 'nwineewilliams@tep.com.ng',
     phone: '+234 (0) 84 301 230',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Commercial Litigation', 'Real Estate & Construction', 'Dispute Resolution', 'Corporate Commercial'],
-    bio: 'Focuses on civil litigation, commercial real estate titling, industrial land acquisitions, and construction contract disputes.',
-    fullBio: 'Nwinee Williams is an Associate in the Litigation and Real Estate practices in Port Harcourt. He represents corporate clients in property title regularizations, commercial tenancy disputes, construction delay claims, and debt recovery proceedings before state and federal high courts.',
+    linkedin: 'https://www.linkedin.com/in/nwineewilliams/',
+    practiceAreas: ['Intellectual Property', 'Arbitration & ADR', 'Commercial Litigation', 'Public Sector & Regulatory Governance'],
+    bio: 'Former legal officer with HM Ministry of Justice (UK) and CIArb member, specializing in intellectual property rights, commercial arbitration, and regulatory dispute resolution.',
+    fullBio: 'Nwinee Williams is an Associate in the firm’s Intellectual Property, Arbitration, and Commercial Dispute Resolution practice groups. Bringing international experience from his work with HM Ministry of Justice (UK), Nwinee advises corporate innovators, creative enterprises, and multinational entities on trademark and patent portfolio prosecution, IP commercialization, copyright enforcement under the Copyright Act 2022, and licensing agreements. As a Member of the Chartered Institute of Arbitrators (CIArb), he also represents clients in domestic and cross-border commercial arbitrations and high-stakes litigation.',
     education: [
+      'LL.M., United Kingdom',
       'LL.B., Rivers State University',
       'B.L., Nigerian Law School'
     ],
     admissions: [
       'Supreme Court of Nigeria (2019)',
+      'Member, Chartered Institute of Arbitrators (CIArb)',
       'Nigerian Bar Association'
     ],
     keyMatters: [
-      'Handled extensive land acquisition and community title verification for a 100-hectare industrial logistics park in the Greater Port Harcourt area.',
-      'Secured favorable court judgments in multiple contentious commercial contract enforcement suits.',
-      'Advised developers on drafting turnkey FIDIC construction agreements and subcontractor indemnity clauses.'
+      'Advised creative enterprises and technology ventures on trademark filings, patent licensing structures, and copyright protection frameworks.',
+      'Represented corporate entities in domestic and cross-border commercial arbitrations under CIArb and UNCITRAL procedural rules.',
+      'Managed public sector legal compliance and judicial review casework during his tenure with HM Ministry of Justice (UK).'
     ],
     image: '/images/Nwinee Williams.jpeg'
   },
