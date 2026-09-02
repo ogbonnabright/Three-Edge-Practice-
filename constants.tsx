@@ -20,7 +20,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 907 914 0069',
     email: 'abuja@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 19:00',
-    partnerInCharge: 'Chinyere Okafor (Senior Partner)',
+    partnerInCharge: "Al'qasim Jafar (Managing Partner) & Chinyere Okafor (Senior Partner)",
     mapQuery: 'Plot 483 Ajose Adeogun Street, Utako, Abuja',
     practiceFocus: [
       'Government & Stakeholder Relations',
@@ -39,7 +39,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 1 270 3980',
     email: 'lagos@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 19:00',
-    partnerInCharge: "Al'qasim Jafar (Managing Partner)",
+    partnerInCharge: 'Ibrahim Musa (Partner, Dispute Resolution & White Collar)',
     mapQuery: 'Walter Carrington Crescent, Victoria Island, Lagos',
     practiceFocus: [
       'Mergers, Acquisitions & Private Equity',
@@ -139,6 +139,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Government & Stakeholder Engagement',
         details: 'We manage relationships with key regulators, legislative bodies, and local communities. Our approach is built on transparency, respect, and strategic alignment of interests to ensure project continuity.',
         staff: [
+          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' },
           { name: 'Musa Bello', role: 'Public Affairs Director', email: 'm.bello@tep.com.ng' }
         ]
@@ -155,6 +156,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Crisis and Reputational Management',
         details: 'When institutional challenges arise, we provide decisive leadership. We work with PR teams to handle legal communication and strategy during industrial actions, environmental incidents, host community crises, or regulatory disputes.',
         staff: [
+          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
         ]
       }
@@ -170,6 +172,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Regulatory Investigations',
         details: 'Defense against EFCC, ICPC, and other specialized enforcement agencies. We manage document production, witness preparation, and negotiation during the pre-charge phase of investigations.',
         staff: [
+          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' }
         ]
       },
@@ -177,6 +180,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'White Collar & Corporate Crime',
         details: 'Comprehensive defense strategy for allegations of fraud, embezzlement, insider trading, or tax evasion. We combine technical accounting knowledge with courtroom advocacy to deliver decisive results.',
         staff: [
+          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' },
           { name: 'Umar Farouk', role: 'Senior Litigation Counsel', email: 'u.farouk@tep.com.ng' }
         ]
@@ -234,13 +238,13 @@ export const TEAM: TeamMember[] = [
     name: "Al'qasim Jafar",
     role: 'Managing Partner',
     category: 'Partners',
-    location: 'Lagos',
+    location: 'Abuja',
     email: 'a.jafar@tep.com.ng',
-    phone: '+234 (0) 1 270 3980',
+    phone: '+234 (0) 907 914 0069',
     linkedin: 'https://linkedin.com',
-    practiceAreas: ['AML/CFT Compliance', 'Corporate & Commercial', 'Tax Advisory', 'ESG Strategy'],
-    bio: "With over two decades of experience in corporate law, taxation, and regulatory affairs, Al'qasim leads the firm with a vision of strategic excellence and decisive results.",
-    fullBio: "Al'qasim Jafar is the Managing Partner of Three Edge Practice (TEP). He has over 22 years of experience advising Fortune 500 multinationals, domestic conglomerates, and governmental agencies on complex corporate restructuring, tax optimization, and regulatory strategy. Recognized as a market-leading commercial lawyer in Sub-Saharan Africa, he routinely leads multijurisdictional M&A transactions and high-stakes administrative proceedings before statutory regulators.",
+    practiceAreas: ['AML/CFT Compliance', 'Government & Stakeholder Engagement', 'Crisis and Reputational Management', 'Corporate Criminal Defense'],
+    bio: "Former Head of Legal and Prosecution across various zonal commands of the EFCC with decades of enforcement experience, Al'qasim is a leading authority in AML/CFT compliance, corporate criminal defense, and liaison with law enforcement and regulatory agencies.",
+    fullBio: "Al'qasim Jafar is the Managing Partner of Three Edge Practice (TEP). A veteran prosecutor and strategic advisor, he served for decades with the Economic and Financial Crimes Commission (EFCC), where he held pivotal leadership roles as the Head of the Legal and Prosecution Department across various zonal commands of the Commission. Drawing on decades of institutional and trial experience at the highest levels of financial crimes enforcement, Al'qasim is a distinguished expert in liaising with law enforcement, intelligence, and regulatory agencies. His practice encompasses AML/CFT compliance architecture, high-stakes corporate criminal defense, white-collar investigations, government and stakeholder engagement, and crisis and reputational management for multinational corporations, financial institutions, and executive leadership.",
     education: [
       'LL.M. (Corporate & Commercial Law), King’s College London',
       'LL.B. (First Class Honours), University of Lagos',
@@ -248,15 +252,17 @@ export const TEAM: TeamMember[] = [
     ],
     admissions: [
       'Supreme Court of Nigeria (1999)',
+      'Former Head, Legal & Prosecution Department, EFCC (Multiple Zonal Commands)',
       'Chartered Institute of Taxation of Nigeria (CITN)',
-      'Fellow, Institute of Chartered Arbitrators (FCIArb)'
+      'Fellow, Institute of Chartered Arbitrators (FCIArb)',
+      'Association of Certified Anti-Money Laundering Specialists (ACAMS)'
     ],
     keyMatters: [
-      'Advised a Tier-1 international bank on its $450M cross-border corporate reorganization across West Africa.',
-      'Lead counsel to a multinational energy consortium during negotiations with statutory regulators regarding fiscal compliance under the Petroleum Industry Act.',
-      'Architected institutional AML/CFT compliance and governance framework for one of Africa’s largest fintech payment switches.'
+      'Spearheaded and supervised the investigation, case management, and successful prosecution of complex multi-billion-naira financial crimes, money laundering, and bank fraud cases during his tenure as Head of Legal & Prosecution at the EFCC across multiple zonal directorates.',
+      'Routinely liaises with law enforcement, regulatory bodies (EFCC, ICPC, NFIU, CBN, SEC, Police), and international enforcement agencies on behalf of corporate boards and multinational entities during sensitive regulatory audits and investigations.',
+      'Architected comprehensive AML/CFT compliance regimes and crisis mitigation protocols for leading financial institutions, fintech switches, and energy conglomerates navigating enforcement inquiries.'
     ],
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop'
+    image: "/images/Al'qasim Jafar.png"
   },
   {
     id: 'chinyere-okafor',
@@ -509,7 +515,7 @@ export const TEAM: TeamMember[] = [
       'Represented a syndicate of oilfield service contractors in multi-party commercial arbitration over vessel procurement and offshore fabrication delays.',
       'Advised on regulatory compliance and statutory decommissioning liabilities under the Petroleum Industry Act 2021.'
     ],
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Nweye R. Robinson.jpeg'
   },
   {
     id: 'churchill-osila',
