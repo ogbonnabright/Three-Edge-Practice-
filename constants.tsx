@@ -20,7 +20,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 907 914 0069',
     email: 'abuja@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 19:00',
-    partnerInCharge: "Al'qasim Jafar (Managing Partner) & Chinyere Okafor (Senior Partner)",
+    partnerInCharge: "Al'Qasim Jafar (Managing Partner) & Chinyere Okafor (Senior Partner)",
     mapQuery: 'Plot 483 Ajose Adeogun Street, Utako, Abuja',
     practiceFocus: [
       'Government & Stakeholder Relations',
@@ -62,6 +62,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     mapQuery: '25 Post Office Road, Kano, Nigeria',
     practiceFocus: [
       'Islamic Banking, Sukuk & Non-Interest Finance',
+      'BDC AML/CFT Compliance & Ease of Doing Business',
       'Cross-Border Trade & AfCFTA Corridor Advisory',
       'Agribusiness, Commodity Export & Land Tenures',
       'Commercial Arbitration & Northern Division Litigation',
@@ -100,8 +101,9 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'AML/CFT Compliance and Advisory',
         details: 'We provide comprehensive Anti-Money Laundering and Counter-Financing of Terrorism strategies in line with the Money Laundering (Prevention and Prohibition) Act, 2022. Our services include institutional risk assessments, KYC/CDD framework design, and representation during regulatory audits by the EFCC, CBN, or SEC. We offer specialized support including the outsourcing of qualified Compliance Officers, ongoing institutional AML/CFT training for employees, and the management of mandatory disclosures and regulatory reporting requirements.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' },
+          { name: 'Aisha Tanko', role: 'Associate (Kano BDC Advisory)', email: 'atanko@tep.com.ng' }
         ]
       },
       {
@@ -140,7 +142,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Government & Stakeholder Engagement',
         details: 'We manage relationships with key regulators, legislative bodies, and local communities. Our approach is built on transparency, respect, and strategic alignment of interests to ensure project continuity.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' },
           { name: 'Musa Bello', role: 'Public Affairs Director', email: 'm.bello@tep.com.ng' }
         ]
@@ -149,7 +151,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Environmental and Social Governance (ESG)',
         details: 'Integrating sustainability into the corporate DNA. We advise on environmental impact assessments, social responsibility frameworks, and governance structures that meet international ESG reporting standards.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
         ]
       },
@@ -157,7 +159,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Crisis and Reputational Management',
         details: 'When institutional challenges arise, we provide decisive leadership. We work with PR teams to handle legal communication and strategy during industrial actions, environmental incidents, host community crises, or regulatory disputes.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
         ]
       }
@@ -173,7 +175,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Regulatory Investigations',
         details: 'Defense against EFCC, ICPC, and other specialized enforcement agencies. We manage document production, witness preparation, and negotiation during the pre-charge phase of investigations.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' }
         ]
       },
@@ -181,7 +183,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'White Collar & Corporate Crime',
         details: 'Comprehensive defense strategy for allegations of fraud, embezzlement, insider trading, or tax evasion. We combine technical accounting knowledge with courtroom advocacy to deliver decisive results.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' },
           { name: 'Umar Farouk', role: 'Senior Litigation Counsel', email: 'u.farouk@tep.com.ng' }
         ]
@@ -220,7 +222,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Construction and Real Estate',
         details: 'Facilitating complex physical development. We handle land acquisitions, title perfection, joint venture agreements, and regulatory approvals for major infrastructure and residential projects.',
         staff: [
-          { name: "Al'qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' }
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' }
         ]
       },
       {
@@ -237,7 +239,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
 export const TEAM: TeamMember[] = [
   {
     id: 'alqasim-jafar',
-    name: "Al'qasim Jafar",
+    name: "Al'Qasim Jafar",
     role: 'Managing Partner',
     category: 'Partners',
     location: 'Abuja',
@@ -245,8 +247,8 @@ export const TEAM: TeamMember[] = [
     phone: '+234 (0) 907 914 0069',
     linkedin: 'https://linkedin.com',
     practiceAreas: ['AML/CFT Compliance', 'Government & Stakeholder Engagement', 'Crisis and Reputational Management', 'Corporate Criminal Defense'],
-    bio: "Former Head of Legal and Prosecution across various zonal commands of the EFCC with decades of enforcement experience, Al'qasim is a leading authority in AML/CFT compliance, corporate criminal defense, and liaison with law enforcement and regulatory agencies.",
-    fullBio: "Al'qasim Jafar is the Managing Partner of Three Edge Practice (TEP). A veteran prosecutor and strategic advisor, he served for decades with the Economic and Financial Crimes Commission (EFCC), where he held pivotal leadership roles as the Head of the Legal and Prosecution Department across various zonal commands of the Commission. Drawing on decades of institutional and trial experience at the highest levels of financial crimes enforcement, Al'qasim is a distinguished expert in liaising with law enforcement, intelligence, and regulatory agencies. His practice encompasses AML/CFT compliance architecture, high-stakes corporate criminal defense, white-collar investigations, government and stakeholder engagement, and crisis and reputational management for multinational corporations, financial institutions, and executive leadership.",
+    bio: "Former Head of Legal and Prosecution across various zonal commands of the EFCC with decades of enforcement experience, Al'Qasim is a leading authority in AML/CFT compliance, corporate criminal defense, and liaison with law enforcement and regulatory agencies.",
+    fullBio: "Al'Qasim Jafar is the Managing Partner of Three Edge Practice (TEP). A veteran prosecutor and strategic advisor, he served for decades with the Economic and Financial Crimes Commission (EFCC), where he held pivotal leadership roles as the Head of the Legal and Prosecution Department across various zonal commands of the Commission. Drawing on decades of institutional and trial experience at the highest levels of financial crimes enforcement, Al'Qasim is a distinguished expert in liaising with law enforcement, intelligence, and regulatory agencies. His practice encompasses AML/CFT compliance architecture, high-stakes corporate criminal defense, white-collar investigations, government and stakeholder engagement, and crisis and reputational management for multinational corporations, financial institutions, and executive leadership.",
     education: [
       'LL.M. (Corporate & Commercial Law), King’s College London',
       'LL.B. (First Class Honours), University of Lagos',
@@ -264,7 +266,7 @@ export const TEAM: TeamMember[] = [
       'Routinely liaises with law enforcement, regulatory bodies (EFCC, ICPC, NFIU, CBN, SEC, Police), and international enforcement agencies on behalf of corporate boards and multinational entities during sensitive regulatory audits and investigations.',
       'Architected comprehensive AML/CFT compliance regimes and crisis mitigation protocols for leading financial institutions, fintech switches, and energy conglomerates navigating enforcement inquiries.'
     ],
-    image: "/images/Al'qasim Jafar.png"
+    image: "/images/Al'Qasim Jafar.png"
   },
   {
     id: 'chinyere-okafor',
@@ -498,7 +500,7 @@ export const TEAM: TeamMember[] = [
     location: 'Port Harcourt',
     email: 'rrnweye@tep.com.ng',
     phone: '+234 (0) 84 301 224',
-    linkedin: 'https://linkedin.com',
+    linkedin: 'https://www.linkedin.com/in/robinson-nweye-515b9712b/',
     practiceAreas: ['Energy & Natural Resources', 'Commercial Litigation', 'Environmental Law', 'White Collar Defense'],
     bio: 'An accomplished courtroom advocate and energy counsel specializing in complex oil and gas litigation, environmental remediation claims, and appellate advocacy.',
     fullBio: 'Nweye R. Robinson is a Managing Counsel in Three Edge Practice’s Port Harcourt office, co-leading the Energy, Natural Resources and Dispute Resolution practice. With over 15 years of courtroom experience spanning the Federal High Court, Court of Appeal, and Supreme Court of Nigeria, Robinson routinely represents international oil companies, indigenous concession holders, and engineering contractors in high-stakes joint venture disputes, offshore facility claims, and environmental tort litigations.',
@@ -546,7 +548,7 @@ export const TEAM: TeamMember[] = [
       'Structured legal security documentation and statutory mortgages for a consortium of commercial lenders funding a commercial port expansion.',
       'Assisted a multinational FMCG conglomerate in a cross-border acquisition and pre-merger clearance with the FCCPC.'
     ],
-    image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Churchill Osila.png'
   },
   {
     id: 'eugenia-anuforo',
@@ -556,7 +558,7 @@ export const TEAM: TeamMember[] = [
     location: 'Abuja',
     email: 'eianuforo@tep.com.ng',
     phone: '+234 (0) 9 461 4012',
-    linkedin: 'https://linkedin.com',
+    linkedin: 'https://www.linkedin.com/in/eugie10/',
     practiceAreas: ['Government Relations', 'Public Procurement', 'Corporate Commercial', 'Data Protection & Privacy'],
     bio: 'Navigating federal administrative statutory processes, public-private partnership concessions, and high-level stakeholder relations for corporate leaders.',
     fullBio: 'Eugenia Ifunanya Anuforo is a Senior Associate in the Abuja headquarters, leading the Public Procurement, Concessions, and Government Regulatory Relations team. She provides strategic counsel to international development partners, infrastructure developers, and technology corporations interfacing with Federal Ministries, Departments, and Agencies (MDAs), the Bureau of Public Procurement (BPP), and the Infrastructure Concession Regulatory Commission (ICRC).',
@@ -575,7 +577,7 @@ export const TEAM: TeamMember[] = [
       'Advised a foreign green energy investor on obtaining statutory generation licenses and tariff clearance from NERC.',
       'Represented a global pharmaceutical firm in statutory compliance investigations and expedited regulatory approvals before NAFDAC.'
     ],
-    image: 'https://images.unsplash.com/photo-1573497019236-17f8177b81e8?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Eugenia Ifunanya Anuforo.jpeg'
   },
   {
     id: 'tamunoibi-aprekuma',
@@ -663,7 +665,7 @@ export const TEAM: TeamMember[] = [
       'Advised an indigenous offshore supply vessel operator on cross-border charterparty negotiations and marine insurance indemnity coverage.',
       'Prepared legal compliance frameworks for flare gas monetization and clean energy carbon credit initiatives in the Niger Delta.'
     ],
-    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Iniekebiama Goodluck Ofoda.png'
   },
   {
     id: 'racheal-erakpotubor',
@@ -691,7 +693,36 @@ export const TEAM: TeamMember[] = [
       'Conducted data privacy and NDPA 2023 compliance audits for healthcare and educational institutions.',
       'Advised on corporate filings, governance board resolutions, and annual statutory returns for foreign subsidiary incorporations.'
     ],
-    image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=800&auto=format&fit=crop'
+    image: '/images/Racheal Erakpotubor.png'
+  },
+  {
+    id: 'aisha-tanko',
+    name: 'Aisha Tanko',
+    role: 'Associate, Corporate Commercial & Dispute Resolution',
+    category: 'Associates',
+    location: 'Kano',
+    email: 'atanko@tep.com.ng',
+    phone: '+234 (0) 64 630 894',
+    linkedin: 'https://linkedin.com',
+    practiceAreas: ['AML/CFT Compliance & BDC Advisory', 'Corporate Commercial', 'Dispute Resolution', 'Islamic Finance & Non-Interest Banking', 'Regulatory Compliance & Ease of Doing Business'],
+    bio: 'Advising Bureau De Change (BDC) operators in Kano on AML/CFT compliance and ease of doing business, alongside corporate commercial structuring, non-interest finance, and dispute resolution.',
+    fullBio: 'Aisha Tanko is an Associate at Three Edge Practice based in the firm’s Kano office. She advises Bureau De Change (BDC) operators and foreign exchange dealers across Kano and Northern Nigeria on AML/CFT compliance architecture, CBN/SCUML regulatory guidelines, and ease of doing business frameworks. In addition, she counsels corporate enterprises, commercial lenders, and agribusiness concerns on corporate commercial structuring, non-interest finance documentation, regulatory compliance, and commercial dispute resolution before state and federal courts across Northern Nigeria.',
+    education: [
+      'LL.B. (Honours), Bayero University, Kano',
+      'B.L., Nigerian Law School'
+    ],
+    admissions: [
+      'Supreme Court of Nigeria',
+      'Nigerian Bar Association (NBA)',
+      'Institute of Chartered Mediators and Conciliators (ICMC)'
+    ],
+    keyMatters: [
+      'Advises Bureau De Change (BDC) operators and currency dealers in Kano on AML/CFT statutory compliance, customer due diligence (CDD) procedures, and reporting obligations under CBN and SCUML regulations to enhance operational ease of doing business.',
+      'Advised regional commercial enterprises and commodity trading cooperatives on corporate commercial structuring, vendor agreements, and statutory compliance.',
+      'Assisted in legal documentation and regulatory review for Islamic finance and non-interest banking facilities.',
+      'Represented corporate clients in commercial dispute resolution, debt recovery, and mediation proceedings before the High Court and arbitral panels.'
+    ],
+    image: '/images/Aisha Tanko.jpeg'
   }
 ];
 
@@ -702,7 +733,7 @@ export const INSIGHTS: Insight[] = [
     date: 'FEB 12, 2025',
     excerpt: 'An authoritative review of the 2026 Tax Regime under the now-effective Nigeria Tax Reform Act 2025, detailing the new enforcement reality.',
     image: 'https://picsum.photos/seed/tep_tax/600/400',
-    author: "Al'qasim Jafar",
+    author: "Al'Qasim Jafar",
     content: `The 1st of January 2026 marks a watershed moment in the history of Nigerian fiscal administration. With the Nigeria Tax Reform Act 2025 now fully in force, the nation has moved from a fragmented revenue collection model to a centralized, digital-first structure. This is no longer a period of legislative anticipation; it is a period of active enforcement and operational adjustment. For institutional entities, the 2026 fiscal year represents the primary testing ground for a new social contract between the state and the taxpayer.
 
 I. THE NEW LEGISLATIVE REALITY: THE 2025 ACT
@@ -846,7 +877,7 @@ References:
     date: 'NOV 12, 2024',
     excerpt: 'Assessing the ethical and legal boundaries of AI integration under the Rules of Professional Conduct 2023.',
     image: 'https://picsum.photos/seed/tep_ai/600/400',
-    author: "Al'qasim Jafar",
+    author: "Al'Qasim Jafar",
     content: `The integration of Generative AI into legal and corporate environments presents a profound challenge to traditional concepts of privilege and liability. At Three Edge Practice, we view AI as an 'Efficiency Engine' that must be strictly piloted by human legal judgment.
 
 Confidentiality & The RPC 2023:

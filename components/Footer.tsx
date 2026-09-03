@@ -1,7 +1,28 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const Footer: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleConsultClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/contact') {
+      const formEl = document.getElementById('consultation-form');
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          const inputEl = document.getElementById('client-name-input');
+          inputEl?.focus();
+        }, 400);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else {
+      navigate('/contact#consultation-form');
+    }
+  };
+
   return (
     <footer className="bg-gray-50 py-16 px-6 sm:px-12 md:px-20 border-t border-gray-200">
       <div className="max-w-7xl mx-auto">
@@ -54,12 +75,13 @@ const Footer: React.FC = () => {
                 Partner-led advisory across Nigeria's vital economic and regulatory corridors.
               </p>
             </div>
-            <NavLink 
-              to="/contact" 
-              className="px-6 py-3 border border-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#990000] hover:text-white hover:border-[#990000] transition-all duration-300 w-full sm:w-auto text-center"
+            <button
+              type="button"
+              onClick={handleConsultClick}
+              className="px-6 py-3 border border-black bg-transparent text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#990000] hover:text-white hover:border-[#990000] active:scale-95 transition-all duration-300 w-full sm:w-auto text-center cursor-pointer shadow-xs"
             >
               Consult an Attorney
-            </NavLink>
+            </button>
           </div>
         </div>
         

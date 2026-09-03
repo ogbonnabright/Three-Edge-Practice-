@@ -53,8 +53,24 @@ const Contact: React.FC = () => {
           setFormData((prev) => ({ ...prev, office: foundOffice.city }));
         }
       }
+      // Scroll to consultation form when attorney param is provided
+      setTimeout(() => {
+        const formEl = document.getElementById('consultation-form');
+        formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
     }
   }, [attorneyParam]);
+
+  const scrollToConsultationForm = () => {
+    const formEl = document.getElementById('consultation-form');
+    if (formEl) {
+      formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        const inputEl = document.getElementById('client-name-input');
+        inputEl?.focus();
+      }, 400);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,9 +98,26 @@ const Contact: React.FC = () => {
             Nationwide Presence. Strategic Proximity.
           </h1>
           
-          <p className="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-light">
+          <p className="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-light mb-8">
             With regional offices strategically positioned in Abuja, Lagos, Kano, and Port Harcourt, Three Edge Practice provides responsive, top-tier counsel at the critical hubs of Nigerian government, commerce, and industry.
           </p>
+
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={scrollToConsultationForm}
+              className="px-8 py-4 bg-[#990000] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-lg shadow-black/30"
+            >
+              <span>Consult an Attorney</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <a
+              href={`tel:${activeOffice.phone.replace(/[^0-9+]/g, '')}`}
+              className="px-8 py-4 border border-white/20 bg-white/5 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>Call Direct Line</span>
+            </a>
+          </div>
 
           {/* Quick Office Jump Links */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-white/10">
@@ -302,7 +335,7 @@ const Contact: React.FC = () => {
           </div>
 
           {/* Right Column (5 Cols): Strategic Consultation Request Form */}
-          <div className="lg:col-span-5 bg-white border border-gray-200 p-8 sm:p-10 shadow-sm sticky top-8">
+          <div id="consultation-form" className="lg:col-span-5 bg-white border border-gray-200 p-8 sm:p-10 shadow-sm sticky top-8 scroll-mt-24">
             <div className="border-b border-gray-200 pb-4 mb-6">
               <span className="text-[#990000] text-xs font-bold tracking-widest uppercase block mb-1">
                 Client Engagement
@@ -366,10 +399,11 @@ const Contact: React.FC = () => {
 
                 {/* Name */}
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  <label htmlFor="client-name-input" className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
                     Full Name *
                   </label>
                   <input
+                    id="client-name-input"
                     type="text"
                     required
                     value={formData.name}
