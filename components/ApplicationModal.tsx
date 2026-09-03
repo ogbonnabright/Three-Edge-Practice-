@@ -6,6 +6,8 @@ export interface JobVacancy {
   title: string;
   type: string;
   department?: string;
+  overview?: string;
+  requirements?: string;
 }
 
 interface ApplicationModalProps {
@@ -16,11 +18,41 @@ interface ApplicationModalProps {
 }
 
 export const VACANCIES_LIST: JobVacancy[] = [
-  { title: 'Senior Associate (Criminal Defense)', type: 'Lagos', department: 'Litigation & White Collar Defense' },
-  { title: 'Legal Trainee (2024/2025 Cycle)', type: 'Abuja', department: 'Corporate & Regulatory Advocacy' },
-  { title: 'Regulatory Compliance Specialist', type: 'Lagos / Remote', department: 'Energy & Policy Practice' },
-  { title: 'Senior Energy & Natural Resources Counsel', type: 'Port Harcourt', department: 'Energy, Oil & Gas' },
-  { title: 'General Speculative Application', type: 'All Regional Offices', department: 'Three Edge Practice Talent Pool' }
+  {
+    title: 'Senior Associate (Criminal Defense)',
+    type: 'Lagos',
+    department: 'Litigation & White Collar Defense',
+    overview: 'Lead corporate criminal defense, enforcement agency representations (EFCC, ICPC, Police SFU), and high-stakes criminal trials before superior courts of record.',
+    requirements: 'Minimum 7+ years post-call litigation and criminal trial experience with proven trial advocacy.'
+  },
+  {
+    title: 'Legal Trainee (2024/2025 Cycle)',
+    type: 'Abuja',
+    department: 'Corporate & Regulatory Advocacy',
+    overview: 'Structured 12-month mentorship rotation across regulatory compliance, government relations, transactional due diligence, and commercial contract drafting.',
+    requirements: 'First Class or Second Class Upper LL.B / BL credentials with keen analytical acumen.'
+  },
+  {
+    title: 'Regulatory Compliance Specialist',
+    type: 'Lagos / Remote',
+    department: 'Energy & Policy Practice',
+    overview: 'Design and deploy regulatory audit frameworks, ESG reporting, AML/CFT compliance architectures, and statutory licensing filings for multinational clients.',
+    requirements: '3–5 years experience in regulatory compliance, corporate governance, or policy advisory.'
+  },
+  {
+    title: 'Senior Energy & Natural Resources Counsel',
+    type: 'Port Harcourt',
+    department: 'Energy, Oil & Gas',
+    overview: 'Advise indigenous and international energy operators on Petroleum Industry Act (PIA) implementation, host community trusts, joint ventures, and oilfield dispute arbitration.',
+    requirements: 'Minimum 8+ years post-call experience in Nigerian upstream energy and infrastructure law.'
+  },
+  {
+    title: 'General Speculative Application',
+    type: 'All Regional Offices',
+    department: 'Three Edge Practice Talent Pool',
+    overview: 'We invite exceptional legal practitioners, corporate researchers, and litigators across Abuja, Lagos, Port Harcourt, and Kano to submit unsolicited dossiers for lateral intake.',
+    requirements: 'Open to exceptional legal practitioners and pupils across all seniority levels.'
+  }
 ];
 
 export const getSpecificOfficeLocation = (typeStr?: string): string | null => {
