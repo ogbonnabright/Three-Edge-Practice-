@@ -131,7 +131,7 @@ const TheFirm: React.FC = () => {
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Years of Practice</p>
             </div>
             <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <h4 className="text-4xl font-bold mb-2 text-black">500+</h4>
+              <h4 className="text-4xl font-bold mb-2 text-black">120+</h4>
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Strategic Wins</p>
             </div>
             <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
