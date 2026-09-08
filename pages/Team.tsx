@@ -657,7 +657,7 @@ const Team: React.FC = () => {
                       <Briefcase className="w-4 h-4 text-[#990000]" />
                       <span>Professional Overview</span>
                     </h3>
-                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base mb-4 font-light">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base mb-4 font-light whitespace-pre-line">
                       {activeMember.fullBio || activeMember.bio}
                     </p>
                   </div>

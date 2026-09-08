@@ -78,7 +78,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 84 301 220',
     email: 'portharcourt@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 18:30',
-    partnerInCharge: 'Emeka Nnamdi (Senior Counsel)',
+    partnerInCharge: 'Churchill Osila (Managing Counsel & Head of Office)',
     mapQuery: '32 Mbonu Street, D/Line, Port Harcourt',
     practiceFocus: [
       'Upstream & Midstream Oil & Gas (PIA 2021)',
@@ -127,7 +127,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         staff: [
           { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
           { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' },
-          { name: 'Nwinee Williams', role: 'Associate (CIArb)', email: 'nwineewilliams@tep.com.ng' }
+          { name: 'Nwinee Williams', role: 'Senior Associate (CIArb)', email: 'nwineewilliams@tep.com.ng' }
         ]
       }
     ]
@@ -185,7 +185,9 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
           { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' },
-          { name: 'Umar Farouk', role: 'Senior Litigation Counsel', email: 'u.farouk@tep.com.ng' }
+          { name: 'Churchill Osila', role: 'Managing Counsel, Head of Office (PH) & Defense Attorney', email: 'cosila@tep.com.ng' },
+          { name: 'Umar Farouk', role: 'Senior Litigation Counsel', email: 'u.farouk@tep.com.ng' },
+          { name: 'Racheal Erakpotubor', role: 'Associate, Corporate Criminal Defense (Kano)', email: 'rrerakpotubor@tep.com.ng' }
         ]
       },
       {
@@ -230,6 +232,14 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Navigating the extractive industries. We provide counsel on licensing, PSCs, JVs, and local content compliance in the oil, gas, and solid minerals sectors.',
         staff: [
           { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
+        ]
+      },
+      {
+        title: 'Corporate Governance & Commercial Transactions',
+        details: 'End-to-end commercial transactional counsel, corporate secretarial advisory, joint ventures, shareholder agreements, CAC statutory compliance, and commercial contract negotiations for corporate enterprises.',
+        staff: [
+          { name: 'Chioma Onyejesi', role: 'Associate, Corporate Commercial', email: 'c.onyejesi@tep.com.ng' },
+          { name: 'Churchill Osila', role: 'Managing Counsel, Head of Office (PH)', email: 'cosila@tep.com.ng' }
         ]
       }
     ]
@@ -524,29 +534,31 @@ export const TEAM: TeamMember[] = [
   {
     id: 'churchill-osila',
     name: 'Churchill Osila',
-    role: 'Senior Associate, Banking & Corporate Commercial',
-    category: 'Senior Associates',
-    location: 'Lagos',
+    role: 'Managing Counsel, Head of Port Harcourt Office',
+    category: 'Managing Counsel',
+    location: 'Port Harcourt',
     email: 'cosila@tep.com.ng',
-    phone: '+234 (0) 1 270 3991',
+    phone: '+234 (0) 84 301 225',
     linkedin: 'https://linkedin.com',
-    practiceAreas: ['Banking & Finance', 'Corporate & Commercial', 'Mergers & Acquisitions', 'AML/CFT Compliance'],
-    bio: 'Specializing in syndicated lending, cross-border corporate transactions, debt capital restructuring, and financial regulatory compliance.',
-    fullBio: 'Churchill Osila is a Senior Associate in the Banking, Finance, and Corporate Commercial practice group in Lagos. He advises commercial banks, development finance institutions (DFIs), private equity houses, and conglomerate borrowers on complex syndicated loan facilities, asset securitizations, and regulatory compliance with the Central Bank of Nigeria (CBN) and SEC directives.',
+    practiceAreas: ['Commercial Litigation', 'Dispute Resolution', 'White Collar Defense', 'Corporate Criminal Defense', 'Energy & Natural Resources', 'Maritime & Shipping'],
+    bio: 'Head of the firm’s Port Harcourt office and veteran litigation lawyer called to the Nigerian Bar in 2008, conducting high-stakes defense litigation across state and federal courts.',
+    fullBio: 'Churchill Osila is the Managing Counsel and Head of Three Edge Practice’s Port Harcourt Office. A formidable courtroom advocate and litigation specialist, he was called to the Nigerian Bar in 2008 and brings over 17 years of battle-tested courtroom experience to the firm. He has conducted numerous high-stakes litigations as a defense attorney, successfully defending multinational energy firms, financial institutions, maritime operators, and corporate executives in complex commercial disputes, corporate criminal defense, asset forfeiture defense, and contractual conflicts before State High Courts, the Federal High Court, and the Court of Appeal.',
     education: [
-      'LL.M. (International Commercial Law), University of Nottingham',
-      'LL.B., University of Lagos',
-      'B.L., Nigerian Law School'
+      'LL.M., Commercial Law & Dispute Resolution',
+      'LL.B. (Honours), Rivers State University',
+      'B.L., Nigerian Law School (2008)'
     ],
     admissions: [
-      'Supreme Court of Nigeria (2015)',
-      'Nigerian Bar Association (Section on Business Law)',
-      'International Bar Association (Banking Law Committee)'
+      'Supreme Court of Nigeria (2008)',
+      'Nigerian Bar Association (NBA)',
+      'NBA Section on Legal Practice (SLP)',
+      'International Bar Association (Litigation Committee)'
     ],
     keyMatters: [
-      'Advised on a $180M syndicated corporate debt refinancing facility for a leading telecommunications infrastructure provider.',
-      'Structured legal security documentation and statutory mortgages for a consortium of commercial lenders funding a commercial port expansion.',
-      'Assisted a multinational FMCG conglomerate in a cross-border acquisition and pre-merger clearance with the FCCPC.'
+      'Served as lead defense attorney in multi-billion-naira commercial and energy disputes before the Federal High Court and appellate divisions.',
+      'Defended corporate entities and executives against regulatory enforcement proceedings, asset seizure orders, and specialized agency investigations.',
+      'Conducted extensive trial defense advocacy in contentious maritime admiralty claims, charterparty breaches, and offshore vessel arrests across Niger Delta ports.',
+      'Secured precedent-setting defense dismissals and favorable settlements in complex contractual, oil spill liability, and cross-border commercial litigation.'
     ],
     image: '/images/Churchill Osila.png'
   },
@@ -612,24 +624,26 @@ export const TEAM: TeamMember[] = [
   {
     id: 'nwinee-williams',
     name: 'Nwinee Williams',
-    role: 'Associate, Intellectual Property, Arbitration & Dispute Resolution',
-    category: 'Associates',
+    role: 'Senior Associate, Intellectual Property, Arbitration & Dispute Resolution',
+    category: 'Senior Associates',
     location: 'Port Harcourt',
     email: 'nwineewilliams@tep.com.ng',
     phone: '+234 (0) 84 301 230',
     linkedin: 'https://www.linkedin.com/in/nwineewilliams/',
     practiceAreas: ['Intellectual Property', 'Arbitration & ADR', 'Commercial Litigation', 'Public Sector & Regulatory Governance'],
-    bio: 'Former legal officer with HM Ministry of Justice (UK) and CIArb member, specializing in intellectual property rights, commercial arbitration, and regulatory dispute resolution.',
-    fullBio: 'Nwinee Williams is an Associate in the firm’s Intellectual Property, Arbitration, and Commercial Dispute Resolution practice groups. Bringing international experience from his work with HM Ministry of Justice (UK), Nwinee advises corporate innovators, creative enterprises, and multinational entities on trademark and patent portfolio prosecution, IP commercialization, copyright enforcement under the Copyright Act 2022, and licensing agreements. As a Member of the Chartered Institute of Arbitrators (CIArb), he also represents clients in domestic and cross-border commercial arbitrations and high-stakes litigation.',
+    bio: 'Dual-qualified lawyer admitted to the Supreme Court of Nigeria (2017) and as a Solicitor in England & Wales (2024), CIArb member, and former HM Ministry of Justice (UK) legal officer specializing in intellectual property, commercial arbitration, and dispute resolution.',
+    fullBio: 'Nwinee Williams is a Senior Associate in the firm’s Intellectual Property, Arbitration, and Commercial Dispute Resolution practice groups. He is a dual-qualified practitioner, admitted as a Barrister and Solicitor of the Supreme Court of Nigeria (2017) and admitted to practice as a Solicitor in England and Wales / United Kingdom (2024). Bringing extensive cross-border experience from his work with HM Ministry of Justice (UK), Nwinee advises corporate innovators, creative enterprises, and multinational entities on trademark and patent portfolio prosecution, IP commercialization, copyright enforcement under the Copyright Act 2022, and cross-border licensing agreements. As a Member of the Chartered Institute of Arbitrators (CIArb), he also represents clients in domestic and multi-jurisdictional commercial arbitrations and complex litigation.',
     education: [
-      'LL.M., United Kingdom',
+      'Master of Laws (LL.M.), Intellectual Property Law, Swansea University / Prifysgol Abertawe',
       'LL.B., Rivers State University',
       'B.L., Nigerian Law School'
     ],
     admissions: [
-      'Supreme Court of Nigeria (2019)',
+      'Supreme Court of Nigeria (2017)',
+      'Solicitor of the Senior Courts of England and Wales / UK (2024)',
       'Member, Chartered Institute of Arbitrators (CIArb)',
-      'Nigerian Bar Association'
+      'Nigerian Bar Association',
+      'Law Society of England and Wales'
     ],
     keyMatters: [
       'Advised creative enterprises and technology ventures on trademark filings, patent licensing structures, and copyright protection frameworks.',
@@ -641,22 +655,22 @@ export const TEAM: TeamMember[] = [
   {
     id: 'iniekebiama-ofoda',
     name: 'Iniekebiama Goodluck Ofoda',
-    role: 'Associate, Maritime, Energy Transition & Trade',
-    category: 'Associates',
+    role: 'Senior Associate, Maritime, Energy Transition & Trade',
+    category: 'Senior Associates',
     location: 'Port Harcourt',
     email: 'oigoodluck@tep.com.ng',
     phone: '+234 (0) 84 301 235',
     linkedin: 'https://linkedin.com',
     practiceAreas: ['Maritime & Shipping', 'Energy Transition & ESG', 'Cross-Border Trade', 'Commercial Litigation'],
-    bio: 'Advising shipowners, offshore service providers, and renewable energy ventures on vessel arrests, charterparties, and cross-border maritime commerce.',
-    fullBio: 'Iniekebiama Goodluck Ofoda is an Associate in the Maritime, Energy, and Trade practice group. He handles contentious maritime admiralty claims, vessel arrests and releases, marine insurance disputes, and advises clients on decarbonization compliance and transitional fuel projects across the Gulf of Guinea.',
+    bio: 'Senior Associate advising shipowners, offshore service providers, and renewable energy ventures on vessel arrests, charterparties, and cross-border maritime commerce.',
+    fullBio: 'Iniekebiama Goodluck Ofoda is a Senior Associate in the Maritime, Energy, and Trade practice group. He handles contentious maritime admiralty claims, vessel arrests and releases, marine insurance disputes, and advises clients on decarbonization compliance and transitional fuel projects across the Gulf of Guinea.',
     education: [
-      'LL.M. (Maritime Law), Swansea University, Wales',
-      'LL.B., Niger Delta University',
+      'LL.M., Rivers State University',
+      'LL.B., Ahmadu Bello University, Zaria',
       'B.L., Nigerian Law School'
     ],
     admissions: [
-      'Supreme Court of Nigeria (2018)',
+      'Supreme Court of Nigeria (2017)',
       'Young International Arbitrators Group (YIAG - LCIA)',
       'Nigerian Bar Association'
     ],
@@ -670,28 +684,31 @@ export const TEAM: TeamMember[] = [
   {
     id: 'racheal-erakpotubor',
     name: 'Racheal Erakpotubor',
-    role: 'Associate, IP, Tech & Corporate Compliance',
+    role: 'Associate, Commercial Litigation & Corporate Criminal Defense',
     category: 'Associates',
-    location: 'Abuja',
+    location: 'Kano',
     email: 'rrerakpotubor@tep.com.ng',
-    phone: '+234 (0) 9 461 4018',
+    phone: '+234 (0) 64 630 890',
     linkedin: 'https://linkedin.com',
-    practiceAreas: ['Data Protection & Privacy', 'Intellectual Property', 'Corporate & Commercial', 'Tax Advisory'],
-    bio: 'Specializing in intellectual property protection, NDPA compliance, digital trademarks, and general corporate secretarial advisory.',
-    fullBio: 'Racheal Erakpotubor is an Associate in the Technology, IP, and Corporate Compliance group at the firm’s Abuja office. She assists clients with trademark registrations, patent filings before the Nigerian IP Registry, data privacy impact assessments (DPIAs), corporate secretarial governance, and statutory compliance with the CAC and NDPC.',
+    practiceAreas: ['Commercial Litigation', 'Corporate Criminal Defense', 'Financial Institutions & DNFBPs Defense', 'ESG & Sustainability Advisory', 'Corporate & Commercial'],
+    bio: 'Based in the Kano office, specializing in complex corporate and commercial litigation, defending businesses, financial institutions, and designated non-financial businesses and professions (DNFBPs) in complex criminal trials, and ESG compliance.',
+    fullBio: 'Racheal Erakpotubor is a litigation Associate in Three Edge Practice’s Kano office. Her practice is focused on complex corporate and commercial litigation as well as high-stakes corporate criminal defense. She represents and defends corporate entities, commercial enterprises, financial institutions, and Designated Non-Financial Businesses and Professions (DNFBPs) facing complex criminal trials, regulatory enforcement proceedings, and white-collar prosecutions. Certified in Environmental, Social, and Governance (ESG), Racheal also advises commercial organizations on ESG frameworks, corporate sustainability compliance, and mitigating governance risks in complex commercial environments alongside active trial advocacy across State and Federal High Courts.',
     education: [
-      'LL.B., Benson Idahosa University',
-      'B.L., Nigerian Law School'
+      'LL.B. (Honours), Ahmadu Bello University, Zaria',
+      'B.L., Nigerian Law School',
+      'Certificate in Environmental, Social & Governance (ESG)'
     ],
     admissions: [
       'Supreme Court of Nigeria (2020)',
       'Nigerian Bar Association',
-      'Institute of Chartered Secretaries and Administrators of Nigeria (ICSAN) Graduate Member'
+      'Institute of Chartered Secretaries and Administrators of Nigeria (ICSAN) Graduate Member',
+      'Certificate in ESG (Environmental, Social & Governance)'
     ],
     keyMatters: [
-      'Managed trademark and patent filing portfolios for high-growth tech startups and creative consumer brands across West Africa.',
-      'Conducted data privacy and NDPA 2023 compliance audits for healthcare and educational institutions.',
-      'Advised on corporate filings, governance board resolutions, and annual statutory returns for foreign subsidiary incorporations.'
+      'Defended corporate enterprises, commercial banks, and financial institutions in high-stakes corporate criminal trials and financial crime prosecutions before the Federal High Court.',
+      'Represented Designated Non-Financial Businesses and Professions (DNFBPs) and currency dealers in complex criminal proceedings and regulatory enforcement actions under the Money Laundering (Prevention and Prohibition) Act.',
+      'Advised and litigated complex multi-party commercial disputes, contractual breaches, and debt recovery claims on behalf of regional and international corporations in Northern Nigeria.',
+      'Conducted trial advocacy, witness cross-examination, and appellate filings in contentious white-collar criminal litigation and commercial disputes across the Kano and Abuja jurisdictions.'
     ],
     image: '/images/Racheal Erakpotubor.png'
   },
@@ -723,6 +740,40 @@ export const TEAM: TeamMember[] = [
       'Represented corporate clients in commercial dispute resolution, debt recovery, and mediation proceedings before the High Court and arbitral panels.'
     ],
     image: '/images/Aisha Tanko.jpeg'
+  },
+  {
+    id: 'chioma-onyejesi',
+    name: 'Chioma Onyejesi',
+    role: 'Associate, Corporate Commercial & Dispute Resolution',
+    category: 'Associates',
+    location: 'Abuja',
+    email: 'c.onyejesi@tep.com.ng',
+    phone: '+234 (0) 9 461 4022',
+    linkedin: 'https://linkedin.com',
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Commercial Litigation', 'Regulatory Compliance & Ease of Doing Business'],
+    bio: 'Associate (ILA, AICMC, MTI) advising commercial enterprises on corporate commercial transactions, regulatory governance, mediation & dispute resolution, and contract negotiation.',
+    fullBio: 'Chioma Onyejesi is an Associate at Three Edge Practice in the Corporate Commercial and Dispute Resolution Practice Groups based in the firm’s Abuja office. She advises multinational corporations, domestic enterprises, and financial institutions on corporate governance, statutory regulatory compliance, commercial contract negotiation, and alternative dispute resolution (ADR). With strong analytical acumen, Chioma regularly assists senior counsel in commercial mediation, conciliation, complex commercial litigation, and arbitral proceedings.',
+    education: [
+      'LL.B. (Honours), University of Nigeria',
+      'B.L., Nigerian Law School',
+      'Associate, Institute of Chartered Mediators and Conciliators (AICMC)',
+      'Certified Mediator, Mediation Training Institute (MTI)'
+    ],
+    admissions: [
+      'Supreme Court of Nigeria',
+      'Associate Member, Institute of Chartered Mediators and Conciliators (AICMC)',
+      'Member, Mediation Training Institute (MTI)',
+      'Member, International Law Association (ILA)',
+      'Nigerian Bar Association (NBA)',
+      'NBA Section on Business Law (NBA-SBL)'
+    ],
+    keyMatters: [
+      'Advised commercial enterprises on corporate restructuring, governance compliance with the Corporate Affairs Commission (CAC), and commercial agreements drafting.',
+      'Assisted senior dispute resolution partners in commercial litigation and debt recovery proceedings before state and federal High Courts.',
+      'Conducted statutory regulatory compliance audits and corporate due diligence for institutional clients across the commercial and financial sectors.',
+      'Drafted bespoke corporate governance charters, shareholders agreements, and non-disclosure contracts for emerging and established commercial concerns.'
+    ],
+    image: '/images/Chioma Onyejesi.png'
   }
 ];
 
