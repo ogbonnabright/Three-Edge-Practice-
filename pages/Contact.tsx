@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { 
@@ -12,7 +12,12 @@ import {
   ArrowRight, 
   Building2, 
   Compass,
-  Check
+  Check,
+  UploadCloud,
+  FileText,
+  Paperclip,
+  X,
+  AlertCircle
 } from 'lucide-react';
 import { REGIONAL_OFFICES, TEAM, PRACTICE_AREAS } from '../constants';
 import { RegionalOffice } from '../types';
@@ -21,6 +26,8 @@ const Contact: React.FC = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const attorneyParam = query.get('attorney');
+  const practiceParam = query.get('practice');
+  const matterParam = query.get('matter');
 
   // Selected office tab
   const [selectedOfficeId, setSelectedOfficeId] = useState<string>('abuja');
@@ -32,12 +39,18 @@ const Contact: React.FC = () => {
     phone: '',
     office: 'Abuja',
     attorney: attorneyParam || '',
-    practiceArea: '',
-    message: ''
+    practiceArea: practiceParam || '',
+    message: matterParam ? `Strategic Consultation Request — Focus Area: ${matterParam}\n\n` : ''
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  // Brief document upload state
+  const [briefFile, setBriefFile] = useState<File | null>(null);
+  const [isDraggingBrief, setIsDraggingBrief] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
+  const briefInputRef = useRef<HTMLInputElement>(null);
 
   const activeOffice: RegionalOffice = REGIONAL_OFFICES.find((o) => o.id === selectedOfficeId) || REGIONAL_OFFICES[0];
 
@@ -53,13 +66,26 @@ const Contact: React.FC = () => {
           setFormData((prev) => ({ ...prev, office: foundOffice.city }));
         }
       }
-      // Scroll to consultation form when attorney param is provided
+    }
+    if (practiceParam) {
+      setFormData((prev) => ({ ...prev, practiceArea: practiceParam }));
+    }
+    if (matterParam) {
+      setFormData((prev) => {
+        if (!prev.message || prev.message.includes('Focus Area:')) {
+          return { ...prev, message: `Strategic Consultation Request — Focus Area: ${matterParam}\n\n` };
+        }
+        return prev;
+      });
+    }
+    if (attorneyParam || practiceParam || matterParam) {
+      // Scroll to consultation form when query parameters are provided
       setTimeout(() => {
         const formEl = document.getElementById('consultation-form');
         formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 200);
     }
-  }, [attorneyParam]);
+  }, [attorneyParam, practiceParam, matterParam]);
 
   const scrollToConsultationForm = () => {
     const formEl = document.getElementById('consultation-form');
@@ -69,6 +95,62 @@ const Contact: React.FC = () => {
         const inputEl = document.getElementById('client-name-input');
         inputEl?.focus();
       }, 400);
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
+
+  const validateAndSetBriefFile = (file: File) => {
+    setBriefError(null);
+    const MAX_SIZE = 25 * 1024 * 1024; // 25MB
+    if (file.size > MAX_SIZE) {
+      setBriefError('Document exceeds 25MB limit. Please provide a compressed file or link.');
+      return false;
+    }
+    const allowedExtensions = ['.pdf', '.doc', '.docx', '.zip', '.txt', '.rtf', '.png', '.jpg', '.jpeg'];
+    const fileNameLower = file.name.toLowerCase();
+    const isAllowed = allowedExtensions.some(ext => fileNameLower.endsWith(ext));
+    if (!isAllowed) {
+      setBriefError('Supported formats: PDF, DOC, DOCX, ZIP, or TXT documents.');
+      return false;
+    }
+    setBriefFile(file);
+    return true;
+  };
+
+  const handleBriefChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      validateAndSetBriefFile(e.target.files[0]);
+    }
+  };
+
+  const handleRemoveBrief = () => {
+    setBriefFile(null);
+    setBriefError(null);
+    if (briefInputRef.current) {
+      briefInputRef.current.value = '';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingBrief(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingBrief(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingBrief(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      validateAndSetBriefFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -361,7 +443,20 @@ const Contact: React.FC = () => {
                 <p className="text-gray-600 text-xs leading-relaxed max-w-sm mx-auto">
                   Thank you for reaching out to Three Edge Practice. A designated partner from our <span className="font-bold text-black">{formData.office} office</span> will review your matter and respond within 24 business hours.
                 </p>
+                {briefFile && (
+                  <div className="bg-gray-50 border border-gray-200 p-3 max-w-sm mx-auto flex items-center gap-3 text-left">
+                    <div className="p-2 bg-[#990000]/10 text-[#990000] flex-shrink-0">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-black truncate">{briefFile.name}</p>
+                      <p className="text-[10px] text-gray-500 font-mono">{formatFileSize(briefFile.size)} · Brief Attached & Dispatched</p>
+                    </div>
+                  </div>
+                )}
+
                 <button
+                  id="submit-another-inquiry-button"
                   onClick={() => {
                     setIsSubmitted(false);
                     setFormData({
@@ -373,8 +468,13 @@ const Contact: React.FC = () => {
                       practiceArea: '',
                       message: ''
                     });
+                    setBriefFile(null);
+                    setBriefError(null);
+                    if (briefInputRef.current) {
+                      briefInputRef.current.value = '';
+                    }
                   }}
-                  className="mt-6 inline-flex items-center space-x-2 px-6 py-2.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-[#990000] transition-colors"
+                  className="mt-6 inline-flex items-center space-x-2 px-6 py-2.5 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-[#990000] transition-colors cursor-pointer"
                 >
                   <span>Submit Another Inquiry</span>
                 </button>
@@ -483,19 +583,124 @@ const Contact: React.FC = () => {
                   </select>
                 </div>
 
-                {/* Confidential Brief */}
-                <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
-                    Confidential Summary of Matter *
-                  </label>
+                {/* Confidential Brief & Document Upload */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="matter-summary-textarea" className="block text-[11px] font-bold uppercase tracking-wider text-gray-700">
+                      Confidential Summary of Matter *
+                    </label>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold flex items-center gap-1">
+                      <Paperclip className="w-3 h-3 text-[#990000]" />
+                      <span>Brief Upload Enabled</span>
+                    </span>
+                  </div>
+
                   <textarea
+                    id="matter-summary-textarea"
                     required
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Provide a high-level summary of the dispute, advisory request, or transactional mandate..."
+                    placeholder="Provide a high-level summary of the dispute, advisory request, or transactional mandate. In case you wish to attach a brief or supporting documents, upload them below..."
                     className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors resize-none"
                   ></textarea>
+
+                  {/* Document Upload Provision */}
+                  <div className="space-y-2 pt-0.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
+                        <Paperclip className="w-3.5 h-3.5 text-[#990000]" />
+                        <span>Client Brief / Supporting Document (Optional)</span>
+                      </span>
+                      <span className="text-[9px] text-gray-400 font-mono">Max 25MB</span>
+                    </div>
+
+                    <input
+                      id="brief-file-input"
+                      ref={briefInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx,.zip,.txt,.rtf,.png,.jpg,.jpeg"
+                      className="hidden"
+                      onChange={handleBriefChange}
+                    />
+
+                    {briefFile ? (
+                      <div className="border border-gray-200 bg-gray-50/90 p-3.5 flex items-center justify-between transition-all">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="w-9 h-9 bg-[#990000]/10 text-[#990000] flex items-center justify-center flex-shrink-0">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs font-bold text-black truncate" title={briefFile.name}>
+                                {briefFile.name}
+                              </p>
+                              <span className="text-[9px] bg-green-100 text-green-800 font-semibold px-1.5 py-0.5 uppercase tracking-wider">
+                                Attached
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-gray-500 font-mono mt-0.5">
+                              {formatFileSize(briefFile.size)} · Privileged & Encrypted Document
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                          <button
+                            id="replace-brief-button"
+                            type="button"
+                            onClick={() => briefInputRef.current?.click()}
+                            className="text-[10px] font-bold uppercase tracking-wider text-gray-600 hover:text-black px-2.5 py-1 border border-gray-200 hover:border-black bg-white transition-colors cursor-pointer"
+                          >
+                            Replace
+                          </button>
+                          <button
+                            id="remove-brief-button"
+                            type="button"
+                            onClick={handleRemoveBrief}
+                            className="p-1.5 text-gray-400 hover:text-[#990000] hover:bg-gray-100 transition-colors cursor-pointer"
+                            title="Remove attached brief"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        id="brief-dropzone"
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => briefInputRef.current?.click()}
+                        className={`border border-dashed p-4 text-center cursor-pointer transition-all duration-200 ${
+                          isDraggingBrief 
+                            ? 'border-[#990000] bg-[#990000]/5 scale-[0.99]' 
+                            : 'border-gray-300 hover:border-[#990000] bg-gray-50/50 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="flex flex-col items-center justify-center space-y-1.5">
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <UploadCloud className="w-4 h-4 text-[#990000]" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-black">
+                              <span className="text-[#990000] underline font-bold">Upload Brief or Supporting Documents</span>
+                            </p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              Drag and drop or click to browse · PDF, DOC, DOCX, ZIP, or TXT up to 25MB
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {briefError && (
+                      <div className="flex items-center gap-1.5 text-xs text-[#990000] mt-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{briefError}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <button

@@ -18,7 +18,7 @@ const TheFirm: React.FC = () => {
           >
             <h2 className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-6">The Firm</h2>
             <h1 className="text-5xl md:text-7xl font-bold text-black leading-tight font-serif mb-8">
-              A legacy of<br />
+              A standard of<br />
               <span className="text-[#990000]">strategic excellence.</span>
             </h1>
             <div className="h-[1px] w-24 bg-black"></div>
@@ -28,7 +28,7 @@ const TheFirm: React.FC = () => {
         {/* Floating Detail */}
         <div className="absolute bottom-12 right-12 hidden lg:block">
           <p className="text-[10px] text-gray-400 tracking-[0.3em] uppercase mb-2">Institutional</p>
-          <p className="text-xl font-bold font-serif italic text-black">Longevity</p>
+          <p className="text-xl font-bold font-serif italic text-black">Precision</p>
         </div>
       </section>
 
@@ -127,11 +127,11 @@ const TheFirm: React.FC = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <h4 className="text-4xl font-bold mb-2 text-black">15+</h4>
-              <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Years of Practice</p>
+              <h4 className="text-4xl font-bold mb-2 text-black">100%</h4>
+              <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Partner-Led Advisory</p>
             </div>
             <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <h4 className="text-4xl font-bold mb-2 text-black">120+</h4>
+              <h4 className="text-4xl font-bold mb-2 text-black">50+</h4>
               <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Strategic Wins</p>
             </div>
             <div className="border-l-4 border-[#990000] p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
