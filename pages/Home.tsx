@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Lock, ShieldCheck, Activity, FileText, ArrowRight } from 'lucide-react';
 import HeroAnimation from '../components/HeroAnimation';
 
 const Home: React.FC = () => {
@@ -252,6 +253,52 @@ const Home: React.FC = () => {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Client Legal Case Portal Section */}
+      <section className="py-20 px-8 md:px-24 bg-[#0f1115] text-white relative overflow-hidden border-t border-b border-gray-800">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#990000]/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+        <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+          <div className="max-w-2xl space-y-4">
+            <div className="flex items-center space-x-3">
+              <span className="w-8 h-[2px] bg-[#990000]"></span>
+              <span className="text-[#990000] text-xs font-bold tracking-[0.35em] uppercase flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Client Privilege & Transparency</span>
+              </span>
+            </div>
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight">
+              Client Legal Case Portal & Real-Time Dashboard
+            </h3>
+            <p className="text-gray-300 text-sm sm:text-base font-light leading-relaxed">
+              Track active trial proceedings, monitor certified electronic court filings, and communicate directly with designated lead defense counsel in real time powered by secure cloud database technology.
+            </p>
+            <div className="pt-4 flex flex-wrap gap-6 text-xs text-gray-400">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-[#990000]" />
+                <span className="text-white font-medium">Real-Time Proceeding Feeds</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#990000]" />
+                <span className="text-white font-medium">Certified Court Document Vault</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#990000]" />
+                <span className="text-white font-medium">256-Bit Encrypted Privilege</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={() => navigate('/portal')}
+              className="w-full sm:w-auto px-8 py-5 bg-[#990000] hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-xl cursor-pointer"
+            >
+              <span>Access Client Portal</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </section>
 

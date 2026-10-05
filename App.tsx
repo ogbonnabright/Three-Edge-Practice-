@@ -10,6 +10,7 @@ import Team from './pages/Team';
 import Insights from './pages/Insights';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
+import ClientPortal from './pages/ClientPortal';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Clean up any legacy HashRouter fragment (e.g., #/team) so the preview/browser loads the landing page
@@ -73,6 +74,9 @@ const App: React.FC = () => {
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/portal" element={<ClientPortal />} />
+                <Route path="/portal/:roleView" element={<ClientPortal />} />
+                <Route path="/portal/case/:caseId" element={<ClientPortal />} />
                 <Route path="*" element={<Home />} />
               </Routes>
             </PageTransition>

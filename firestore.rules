@@ -1,0 +1,119 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny all unlisted paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Admin authorization check:
+    // User is an Admin if:
+    // 1. Their email matches firm partner / owner email
+    // 2. OR their Firebase UID exists in the /admins collection
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "chiaghalam@gmail.com" ||
+        request.auth.token.email == "admin@tep.com.ng" ||
+        (request.auth.token.email != null && request.auth.token.email.matches('.*@tep[.]com[.]ng$')) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Connection testing endpoint
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Users Collection (PII Isolated strictly to the authenticated owner or admin)
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidId(userId);
+      allow update: if (isOwner(userId) || isAdmin()) && isValidId(userId);
+      allow delete: if false;
+    }
+
+    // Admins Collection (Verifying admin role documents)
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && isValidId(adminId);
+      allow list: if isAdmin();
+      allow create, update: if isSignedIn() && isValidId(adminId) && (
+        isAdmin() || 
+        (adminId == request.auth.uid && (
+          request.auth.token.email == "chiaghalam@gmail.com" ||
+          request.auth.token.email == "admin@tep.com.ng" ||
+          incoming().adminKey == "TEP_PARTNER_LEGAL_CHAMBERS_2026"
+        ))
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Legal Cases Collection:
+    // STRICT ROLE-BASED ACCESS CONTROL:
+    // - Firm email (chiaghalam@gmail.com / @tep.com.ng) routes to Admin with full access across all cases
+    // - Client emails registered during onboarding process access ONLY the cases registered for their email or UID
+    // - Clients can NEVER read or list another client's cases
+    // - Clients CANNOT create (onboard) or delete cases
+    // - Admins can read, list, create (onboard), update, and delete ALL cases across the firm
+    match /cases/{caseId} {
+      // Get single case: Allowed if admin OR if the case's clientUid matches the caller's Firebase UID OR clientEmail matches the caller's email
+      allow get: if isSignedIn() && isValidId(caseId) && (
+        isAdmin() || 
+        (resource != null && (
+          resource.data.clientUid == request.auth.uid ||
+          (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+        ))
+      );
+      
+      // List cases query:
+      // Admins can query all cases
+      // Clients can only list where clientUid == request.auth.uid OR clientEmail == request.auth.token.email
+      allow list: if isSignedIn() && (
+        isAdmin() || 
+        resource.data.clientUid == request.auth.uid ||
+        (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+      );
+      
+      // Onboard (create) case: STRICTLY ADMIN ONLY
+      allow create: if isSignedIn() && isValidId(caseId) && isAdmin();
+      
+      // Update case (status, updates, documents):
+      // Admins have full update rights.
+      // Clients can update notes / metadata only on their own case, but cannot change ownership (clientUid or clientEmail)
+      allow update: if isSignedIn() && isValidId(caseId) && (
+        isAdmin() || 
+        (
+          (resource.data.clientUid == request.auth.uid || (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)) &&
+          incoming().clientUid == existing().clientUid &&
+          incoming().clientEmail == existing().clientEmail
+        )
+      );
+      
+      // Delete case: STRICTLY ADMIN ONLY
+      allow delete: if isSignedIn() && isValidId(caseId) && isAdmin();
+    }
+  }
+}

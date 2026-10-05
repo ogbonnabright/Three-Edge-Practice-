@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Lock } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 
 const Sidebar: React.FC = () => {
@@ -21,13 +21,22 @@ const Sidebar: React.FC = () => {
             TEP<span className="w-1.5 h-1.5 rounded-full bg-[#990000] ml-1"></span>
           </span>
         </NavLink>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 text-black hover:text-[#990000] transition-colors"
-          aria-label="Toggle Menu"
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-3">
+          <NavLink
+            to="/portal"
+            className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 text-[11px] font-bold uppercase tracking-wider text-black hover:text-[#990000]"
+          >
+            <Lock className="w-3 h-3 text-[#990000]" />
+            <span>Portal</span>
+          </NavLink>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 text-black hover:text-[#990000] transition-colors"
+            aria-label="Toggle Menu"
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Slide-over Drawer */}
@@ -40,12 +49,17 @@ const Sidebar: React.FC = () => {
                 to={item.path}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `text-lg font-bold tracking-wider uppercase transition-colors ${
+                  `text-lg font-bold tracking-wider uppercase transition-colors flex items-center justify-between ${
                     isActive ? 'text-[#990000]' : 'text-gray-600 hover:text-black'
                   }`
                 }
               >
-                {item.label}
+                <span>{item.label}</span>
+                {item.path === '/portal' && (
+                  <span className="text-[10px] font-mono px-2 py-0.5 bg-[#990000]/10 text-[#990000] font-bold">
+                    SECURE
+                  </span>
+                )}
               </NavLink>
             ))}
           </nav>
@@ -70,20 +84,30 @@ const Sidebar: React.FC = () => {
           </NavLink>
         </div>
 
-        <nav className="flex-1 px-10 flex flex-col justify-center space-y-6">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `text-sm font-semibold tracking-widest transition-colors duration-300 ${
-                  isActive ? 'text-[#990000]' : 'text-gray-400 hover:text-black'
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+        <nav className="flex-1 px-10 flex flex-col justify-center space-y-5">
+          {NAV_ITEMS.map((item) => {
+            const isPortal = item.path === '/portal';
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  isPortal
+                    ? `text-xs font-bold tracking-widest uppercase py-2 px-3 border transition-all flex items-center justify-between ${
+                        isActive
+                          ? 'bg-[#990000] text-white border-[#990000]'
+                          : 'bg-gray-50 text-black border-gray-200 hover:border-[#990000] hover:text-[#990000]'
+                      }`
+                    : `text-sm font-semibold tracking-widest transition-colors duration-300 ${
+                        isActive ? 'text-[#990000]' : 'text-gray-400 hover:text-black'
+                      }`
+                }
+              >
+                <span>{item.label}</span>
+                {isPortal && <Lock className="w-3 h-3 text-[#990000] group-hover:text-white" />}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="p-10">

@@ -94,6 +94,7 @@ const Footer: React.FC = () => {
             <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">Twitter</a>
             <NavLink to="/insights" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">Legal Insights</NavLink>
             <NavLink to="/contact" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">Offices</NavLink>
+            <NavLink to="/portal" className="text-[10px] text-[#990000] font-bold tracking-widest uppercase cursor-pointer hover:text-black transition-colors">Client Portal</NavLink>
           </div>
         </div>
       </div>

@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "User account information and profile preferences.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "phone": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "email"]
+    },
+    "adminProfile": {
+      "title": "AdminProfile",
+      "description": "Admin privilege record for partners and designated case managers authorized to onboard or delete dockets.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email"]
+    },
+    "legalCase": {
+      "title": "LegalCase",
+      "description": "A client legal case representation with real-time status and hearing dates.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "caseNumber": { "type": "string" },
+        "title": { "type": "string" },
+        "clientUid": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "practiceArea": { "type": "string" },
+        "leadAttorney": { "type": "string" },
+        "leadAttorneyEmail": { "type": "string" },
+        "regionalOffice": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Active Trial",
+            "Pre-Trial Discovery",
+            "Regulatory Review",
+            "Arbitration in Progress",
+            "Settlement Discussions",
+            "Closed / Decided"
+          ]
+        },
+        "stage": { "type": "string" },
+        "filingDate": { "type": "string" },
+        "nextHearingDate": { "type": "string" },
+        "courtJurisdiction": { "type": "string" },
+        "summary": { "type": "string" },
+        "recentUpdates": {
+          "type": "array",
+          "description": "Chronological history of case proceedings and counsel filings"
+        },
+        "documents": {
+          "type": "array",
+          "description": "Filed court processes, witness statements, and regulatory approvals"
+        },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "caseNumber", "title", "clientUid", "clientEmail", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "User profile collection isolated per authenticated user ID."
+    },
+    "/admins/{adminId}": {
+      "schema": "adminProfile",
+      "description": "Admin privileges collection verifying authorized partners and case managers."
+    },
+    "/cases/{caseId}": {
+      "schema": "legalCase",
+      "description": "Legal cases assigned to specific client UID, manageable only by Admins for onboarding and deletion."
+    }
+  }
+}

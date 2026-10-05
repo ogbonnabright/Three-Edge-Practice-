@@ -8,6 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'INSIGHTS', path: '/insights' },
   { label: 'CAREERS', path: '/careers' },
   { label: 'CONTACT', path: '/contact' },
+  { label: 'CLIENT PORTAL', path: '/portal' },
 ];
 
 export const REGIONAL_OFFICES: RegionalOffice[] = [
