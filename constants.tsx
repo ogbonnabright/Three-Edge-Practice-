@@ -20,7 +20,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 907 914 0069',
     email: 'abuja@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 19:00',
-    partnerInCharge: "Al'Qasim Jafar (Managing Partner) & Chinyere Okafor (Senior Partner)",
+    partnerInCharge: "Al'Qasim Jafar (Managing Partner)",
     mapQuery: 'Plot 483 Ajose Adeogun Street, Utako, Abuja',
     practiceFocus: [
       'Government & Stakeholder Relations',
@@ -39,7 +39,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 1 270 3980',
     email: 'lagos@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 19:00',
-    partnerInCharge: 'Ibrahim Musa (Partner, Dispute Resolution & White Collar)',
+    partnerInCharge: 'Tamunoibi Aprekuma (Head, IT Law & Tech Regulatory / Startups)',
     mapQuery: 'Walter Carrington Crescent, Victoria Island, Lagos',
     practiceFocus: [
       'Mergers, Acquisitions & Private Equity',
@@ -58,7 +58,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 64 630 890',
     email: 'kano@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 18:00',
-    partnerInCharge: 'Dr. Kabir Sanusi (Partner)',
+    partnerInCharge: 'Racheal Erakpotubor & Aisha Tanko (Regional Practice Leads)',
     mapQuery: '25 Post Office Road, Kano, Nigeria',
     practiceFocus: [
       'Islamic Banking, Sukuk & Non-Interest Finance',
@@ -78,7 +78,7 @@ export const REGIONAL_OFFICES: RegionalOffice[] = [
     phone: '+234 (0) 84 301 220',
     email: 'portharcourt@tep.com.ng',
     hours: 'Mon - Fri: 08:00 - 18:30',
-    partnerInCharge: 'Churchill Osila (Managing Counsel & Head of Office)',
+    partnerInCharge: 'Churchill Osila (Partner & Head of Office) & Nweye R. Robinson (Partner)',
     mapQuery: '32 Mbonu Street, D/Line, Port Harcourt',
     practiceFocus: [
       'Upstream & Midstream Oil & Gas (PIA 2021)',
@@ -102,7 +102,6 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'We provide comprehensive Anti-Money Laundering and Counter-Financing of Terrorism strategies in line with the Money Laundering (Prevention and Prohibition) Act, 2022. Our services include institutional risk assessments, KYC/CDD framework design, and representation during regulatory audits by the EFCC, CBN, or SEC. We offer specialized support including the outsourcing of qualified Compliance Officers, ongoing institutional AML/CFT training for employees, and the management of mandatory disclosures and regulatory reporting requirements.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' },
           { name: 'Aisha Tanko', role: 'Associate (Kano BDC Advisory)', email: 'atanko@tep.com.ng' }
         ]
       },
@@ -110,24 +109,23 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Import Duty Exemption Advisory',
         details: 'Navigating the fiscal incentives landscape. We assist manufacturers and energy firms in obtaining and maintaining Import Duty Exemption Certificates (IDEC), ensuring significant cost optimization for large-scale capital projects.',
         staff: [
-          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
+          { name: 'Aisha Tanko', role: 'Associate, Regulatory Compliance', email: 'atanko@tep.com.ng' }
         ]
       },
       {
         title: 'Data Protection',
         details: 'In the era of the Nigeria Data Protection Act (NDPA) 2023, the General Application and Implementation Directive (GAID) 2025, and the global standards set by the General Data Protection Regulation (GDPR), we protect your data integrity. We conduct privacy impact assessments, draft data processing agreements, and manage breach notification protocols to safeguard corporate reputation and ensure rigorous adherence to evolving local and international regulatory standards.',
         staff: [
-          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
-          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
+          { name: 'Tamunoibi Aprekuma', role: 'Head, IT Law & Tech Regulatory', email: 'taprekuma@tep.com.ng' },
+          { name: 'Eugenia Ifunanya Anuforo', role: 'Senior Associate, Regulatory & Public Policy', email: 'eianuforo@tep.com.ng' }
         ]
       },
       {
         title: 'Intellectual Property',
         details: 'Protecting innovation and creative assets. We offer comprehensive IP services including trademark registration, patent filings, and copyright protection under the Trademarks Act, Patents and Designs Act, and the Copyright Act 2022. We advise on IP commercialization, licensing agreements, and enforcement strategies to safeguard the intangible assets of technology startups, creative industries, and manufacturing firms.',
         staff: [
-          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' },
-          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' },
-          { name: 'Nwinee Williams', role: 'Senior Associate (CIArb)', email: 'nwineewilliams@tep.com.ng' }
+          { name: 'Nwinee Williams', role: 'Senior Associate (CIArb, UK Solicitor)', email: 'nwineewilliams@tep.com.ng' },
+          { name: 'Tamunoibi Aprekuma', role: 'Head, IT Law & Tech Regulatory', email: 'taprekuma@tep.com.ng' }
         ]
       }
     ]
@@ -143,8 +141,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'We manage relationships with key regulators, legislative bodies, and local communities. Our approach is built on transparency, respect, and strategic alignment of interests to ensure project continuity.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' },
-          { name: 'Musa Bello', role: 'Public Affairs Director', email: 'm.bello@tep.com.ng' }
+          { name: 'Eugenia Ifunanya Anuforo', role: 'Senior Associate, Regulatory & Public Policy', email: 'eianuforo@tep.com.ng' }
         ]
       },
       {
@@ -152,7 +149,8 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Integrating sustainability into the corporate DNA. We advise on environmental impact assessments, social responsibility frameworks, and governance structures that meet international ESG reporting standards.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
+          { name: 'Racheal Erakpotubor', role: 'Associate, ESG & Sustainability', email: 'rrerakpotubor@tep.com.ng' },
+          { name: 'Iniekebiama Goodluck Ofoda', role: 'Senior Associate, Energy Transition & ESG', email: 'oigoodluck@tep.com.ng' }
         ]
       },
       {
@@ -160,7 +158,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'When institutional challenges arise, we provide decisive leadership. We work with PR teams to handle legal communication and strategy during industrial actions, environmental incidents, host community crises, or regulatory disputes.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
+          { name: 'Churchill Osila', role: 'Partner & Defense Attorney', email: 'cosila@tep.com.ng' }
         ]
       }
     ]
@@ -176,7 +174,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Defense against EFCC, ICPC, and other specialized enforcement agencies. We manage document production, witness preparation, and negotiation during the pre-charge phase of investigations.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' }
+          { name: 'Churchill Osila', role: 'Partner & Defense Attorney', email: 'cosila@tep.com.ng' }
         ]
       },
       {
@@ -184,9 +182,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'Comprehensive defense strategy for allegations of fraud, embezzlement, insider trading, or tax evasion. We combine technical accounting knowledge with courtroom advocacy to deliver decisive results.',
         staff: [
           { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
-          { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' },
-          { name: 'Churchill Osila', role: 'Managing Counsel, Head of Office (PH) & Defense Attorney', email: 'cosila@tep.com.ng' },
-          { name: 'Umar Farouk', role: 'Senior Litigation Counsel', email: 'u.farouk@tep.com.ng' },
+          { name: 'Churchill Osila', role: 'Partner, Head of Office (PH) & Defense Attorney', email: 'cosila@tep.com.ng' },
           { name: 'Racheal Erakpotubor', role: 'Associate, Corporate Criminal Defense (Kano)', email: 'rrerakpotubor@tep.com.ng' }
         ]
       },
@@ -194,7 +190,8 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Asset Forfeiture & Recovery',
         details: 'Protecting corporate assets during litigation. We challenge interim forfeiture orders and assist in the legal recovery of assets targeted by regulatory enforcement actions.',
         staff: [
-          { name: 'Ibrahim Musa', role: 'Partner, Criminal Defense', email: 'i.musa@tep.com.ng' }
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: 'Churchill Osila', role: 'Partner & Defense Attorney', email: 'cosila@tep.com.ng' }
         ]
       }
     ]
@@ -209,15 +206,15 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Tax Advisory',
         details: 'Strategic fiscal planning and compliance. We advise on corporate income tax, VAT, withholding tax, and transfer pricing, ensuring that our clients maintain optimal tax efficiency while adhering to FIRS regulations.',
         staff: [
-          { name: 'Kevin Azuka', role: 'Senior Associate', email: 'k.azuka@tep.com.ng' }
+          { name: "Al'Qasim Jafar", role: 'Managing Partner', email: 'a.jafar@tep.com.ng' },
+          { name: 'Chioma Onyejesi', role: 'Associate, Corporate Commercial', email: 'c.onyejesi@tep.com.ng' }
         ]
       },
       {
         title: 'IT Law, Tech Regulatory & Startup Advisory',
         details: 'From technical code audits and software licensing to regulatory sandbox approvals and Series A structuring. We guide founders and multinational tech companies through venture capital, IP protection, NDPA compliance, and corporate governance.',
         staff: [
-          { name: 'Tamunoibi Aprekuma', role: 'Head, IT Law & Tech Regulatory / Startups', email: 'taprekuma@tep.com.ng' },
-          { name: 'Sarah Thompson', role: 'Associate Partner', email: 's.thompson@tep.com.ng' }
+          { name: 'Tamunoibi Aprekuma', role: 'Head, IT Law & Tech Regulatory / Startups', email: 'taprekuma@tep.com.ng' }
         ]
       },
       {
@@ -231,7 +228,8 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         title: 'Energy and Natural Resources',
         details: 'Navigating the extractive industries. We provide counsel on licensing, PSCs, JVs, and local content compliance in the oil, gas, and solid minerals sectors.',
         staff: [
-          { name: 'Chinyere Okafor', role: 'Senior Partner', email: 'c.okafor@tep.com.ng' }
+          { name: 'Nweye R. Robinson', role: 'Partner, Dispute Resolution & Energy', email: 'rrnweye@tep.com.ng' },
+          { name: 'Churchill Osila', role: 'Partner, Head of Office (PH)', email: 'cosila@tep.com.ng' }
         ]
       },
       {
@@ -239,7 +237,7 @@ export const PRACTICE_AREAS: PracticeArea[] = [
         details: 'End-to-end commercial transactional counsel, corporate secretarial advisory, joint ventures, shareholder agreements, CAC statutory compliance, and commercial contract negotiations for corporate enterprises.',
         staff: [
           { name: 'Chioma Onyejesi', role: 'Associate, Corporate Commercial', email: 'c.onyejesi@tep.com.ng' },
-          { name: 'Churchill Osila', role: 'Managing Counsel, Head of Office (PH)', email: 'cosila@tep.com.ng' }
+          { name: 'Churchill Osila', role: 'Partner, Head of Office (PH)', email: 'cosila@tep.com.ng' }
         ]
       }
     ]
@@ -279,241 +277,17 @@ export const TEAM: TeamMember[] = [
     image: "/images/Al'Qasim Jafar.png"
   },
   {
-    id: 'chinyere-okafor',
-    name: 'Chinyere Okafor',
-    role: 'Senior Partner',
-    category: 'Partners',
-    location: 'Abuja',
-    email: 'c.okafor@tep.com.ng',
-    phone: '+234 (0) 9 461 4000',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Energy & Natural Resources', 'Government Relations', 'Crisis Management', 'Infrastructure'],
-    bio: 'An expert in government relations, crisis management, and infrastructure development, Chinyere has successfully navigated complex regulatory storms for multinational clients.',
-    fullBio: 'Chinyere Okafor heads TEP’s Abuja office and leads the Energy & Government Relations Practice. With extensive top-tier advisory experience spanning major public-private partnerships, oil & gas concessioning, and crisis dispute mediation, she is known as an indispensable advisor to boards navigating political and regulatory volatility across African jurisdictions.',
-    education: [
-      'LL.M. (Energy & Infrastructure Law), Harvard Law School',
-      'LL.B. (Honours), University of Nigeria, Nsukka',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2003)',
-      'Nigerian Bar Association (Section on Business Law)',
-      'International Bar Association (Energy Law Section)'
-    ],
-    keyMatters: [
-      'Represented a syndicate of international infrastructure financiers on a $1.2B deep-sea port concession project.',
-      'Secured landmark regulatory clearances for a cross-border gas pipeline development consortium.',
-      'Successfully guided an international consumer brand through complex parliamentary hearings and executive regulatory settlements.'
-    ],
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'ibrahim-musa',
-    name: 'Ibrahim Musa',
-    role: 'Partner, White Collar & Dispute Resolution',
-    category: 'Partners',
-    location: 'Lagos',
-    email: 'i.musa@tep.com.ng',
-    phone: '+234 (0) 1 270 3982',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['White Collar Defense', 'Commercial Litigation', 'Anti-Corruption', 'International Arbitration'],
-    bio: 'A formidable advocate in corporate crime defense and international commercial arbitration, Ibrahim is known for his analytical rigor and courtroom victories.',
-    fullBio: 'Ibrahim Musa is a Partner in the Dispute Resolution and White Collar Crime Defense practice. A seasoned trial advocate with appearances at all levels of Nigerian courts up to the Supreme Court, Ibrahim specializes in high-stakes corporate crime, asset forfeiture defense, anti-money laundering litigation, and multi-forum commercial disputes.',
-    education: [
-      'LL.M. (International Dispute Resolution), London School of Economics (LSE)',
-      'LL.B., Ahmadu Bello University, Zaria',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2006)',
-      'Fellow, Chartered Institute of Arbitrators UK (FCIArb)',
-      'International Association of Defense Counsel'
-    ],
-    keyMatters: [
-      'Successfully defended a multinational financial institution against a N35 Billion regulatory enforcement penalty, achieving complete dismissal.',
-      'Represented an executive board in cross-border anti-bribery and corruption investigations spanning Nigeria, the UK, and Switzerland.',
-      'Secured multi-million dollar arbitral awards under UNCITRAL and ICC arbitration rules for commercial telecommunication providers.'
-    ],
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'sarah-thompson',
-    name: 'Sarah Thompson',
-    role: 'Partner, Data Protection & Cyber Law',
-    category: 'Partners',
-    location: 'Lagos',
-    email: 's.thompson@tep.com.ng',
-    phone: '+234 (0) 1 270 3984',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Data Protection & Privacy', 'Cybersecurity Law', 'Fintech Advisory', 'ESG Strategy'],
-    bio: 'Specializing in data protection, NDPA compliance, and ESG advisory, Sarah brings a modern global perspective to governance in the digital economy.',
-    fullBio: 'Sarah Thompson co-leads TEP’s Digital Economy, Privacy, and Cyber Law Practice Group. She is recognized internationally as a leading voice on the Nigeria Data Protection Act (NDPA) 2023, GAID 2025, and cross-border data transfer mechanisms. Sarah acts as external Data Protection Officer (DPO) and strategic advisor to leading tech unicorns, cloud providers, and digital health platforms.',
-    education: [
-      'LL.M. (Technology, Media & IP Law), University of Cambridge',
-      'LL.B., University of Ibadan',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2010)',
-      'Certified Information Privacy Professional/Europe (CIPP/E)',
-      'International Association of Privacy Professionals (IAPP)'
-    ],
-    keyMatters: [
-      'Led the NDPA/GDPR compliance audit and privacy architecture transformation for an African digital banking platform with over 15 million users.',
-      'Advised global tech conglomerates on cross-border data localization, cloud sovereignty, and regulatory enforcement response.',
-      'Structured institutional ESG metrics, human rights compliance, and supply chain reporting standards for multinational consumer brands.'
-    ],
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'tunde-fashola',
-    name: 'Babatunde Fashola',
-    role: 'Managing Counsel',
-    category: 'Managing Counsel',
-    location: 'Lagos',
-    email: 'b.fashola@tep.com.ng',
-    phone: '+234 (0) 1 270 3986',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Real Estate & Construction', 'Banking & Finance', 'Corporate Governance'],
-    bio: 'Renowned for his strategic command of complex real estate transactions, project financing, and urban zoning legal frameworks.',
-    fullBio: 'Babatunde Fashola is a Managing Counsel with extensive expertise in structuring large-scale property acquisitions, syndication facilities, and commercial real estate development schemes. He provides nuanced commercial counsel to REITs, institutional developers, and private equity funds.',
-    education: [
-      'LL.M. (Commercial Law), University of Lagos',
-      'LL.B., Obafemi Awolowo University, Ile-Ife',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2008)',
-      'Nigerian Bar Association (Section on Business Law)'
-    ],
-    keyMatters: [
-      'Structured a $120M multi-asset mixed-use commercial development in Victoria Island, Lagos.',
-      'Advised an international hotel chain on management contracts, land tenure regularization, and state fiscal compliance.'
-    ],
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'amina-shehu',
-    name: 'Amina Bello Shehu',
-    role: 'Managing Counsel',
-    category: 'Managing Counsel',
-    location: 'Abuja',
-    email: 'a.shehu@tep.com.ng',
-    phone: '+234 (0) 9 461 4005',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Public Procurement', 'Corporate Commercial', 'Telecommunications'],
-    bio: 'Advising institutional contractors and sovereign entities on statutory public procurement frameworks and commercial concessions.',
-    fullBio: 'Amina Bello Shehu heads regulatory transaction advisory in the firm’s Abuja office. She regularly advises telecom operators, defense contractors, and technology companies on statutory bidding, national security clearance, and federal concession agreements.',
-    education: [
-      'LL.M., University of Aberdeen, Scotland',
-      'LL.B., Bayero University Kano',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2009)',
-      'Chartered Institute of Arbitrators (MCIArb)'
-    ],
-    keyMatters: [
-      'Advised on national fiber-optic broadband concession contracts with federal regulatory authorities.',
-      'Successfully arbitrated complex commercial supply chain dispute valued at $45M.'
-    ],
-    image: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'emeka-nnamdi',
-    name: 'Emeka Nnamdi',
-    role: 'Senior Associate',
-    category: 'Senior Associates',
-    location: 'Port Harcourt',
-    email: 'e.nnamdi@tep.com.ng',
-    phone: '+234 (0) 84 301 220',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Energy & Natural Resources', 'Environmental Law', 'Maritime & Shipping'],
-    bio: 'Focuses on upstream oil & gas operations, maritime security, environmental impact litigation, and community trust frameworks.',
-    fullBio: 'Emeka Nnamdi is a Senior Associate based in our Port Harcourt office. He focuses on host community developmental trusts (HCDT) under the PIA 2021, cabotage vessel compliance, and offshore contractual agreements.',
-    education: [
-      'LL.M. (Maritime & Environmental Law), University of Southampton',
-      'LL.B., University of Calabar',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2014)',
-      'Nigerian Maritime Law Association'
-    ],
-    keyMatters: [
-      'Established host community governance structures for major deepwater exploration licenses in the Niger Delta.',
-      'Drafted vessel charterparty and midstream gas transportation agreements for industrial manufacturers.'
-    ],
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'kemi-adeleke',
-    name: 'Kemi Adeleke',
-    role: 'Senior Associate',
-    category: 'Senior Associates',
-    location: 'Lagos',
-    email: 'k.adeleke@tep.com.ng',
-    phone: '+234 (0) 1 270 3988',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Tax Advisory', 'Corporate Structuring', 'Startups & Venture Capital'],
-    bio: 'Advising high-growth technology ventures, fintechs, and venture capital syndicates on tax-efficient structuring and funding rounds.',
-    fullBio: 'Kemi Adeleke is a Senior Associate in the Corporate and Tax practices. She assists startups, private equity investors, and multinational tech firms with capital raises, employee share option plans (ESOPs), and fiscal compliance under the Nigeria Tax Reform Acts.',
-    education: [
-      'LL.B., University of Benin',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2016)',
-      'Associate, Chartered Institute of Taxation of Nigeria (ACTI)'
-    ],
-    keyMatters: [
-      'Advised a series-A fintech startup on its $18M equity funding round and cross-border IP holding restructuring.',
-      'Handled tax audit clearance and withholding tax defense for an international logistics platform.'
-    ],
-    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'kabir-sanusi',
-    name: 'Dr. Kabir Sanusi',
-    role: 'Partner, Northern Practice & Islamic Finance',
-    category: 'Partners',
-    location: 'Kano',
-    email: 'k.sanusi@tep.com.ng',
-    phone: '+234 (0) 64 630 892',
-    linkedin: 'https://linkedin.com',
-    practiceAreas: ['Islamic Finance & Sukuk', 'Cross-Border Trade (AfCFTA)', 'Commercial Arbitration', 'Agribusiness & Concessions'],
-    bio: 'Heading our Kano regional office, Dr. Sanusi advises sovereign authorities, non-interest banking institutions, and multinational agribusiness conglomerates.',
-    fullBio: 'Dr. Kabir Sanusi is the Partner-in-Charge of Three Edge Practice’s Kano regional office. With deep expertise across Northern Nigerian commercial corridors, Islamic finance structurings, Sukuk bond issuances, and cross-border Sahel trade corridors under AfCFTA, he represents financial institutions, industrial manufacturers, and state governments on complex regulatory and transactional mandates.',
-    education: [
-      'Ph.D. in Islamic Banking & Commercial Law, International Islamic University',
-      'LL.M. (Corporate & Finance Law), Queen Mary University of London',
-      'LL.B. (First Class Honours), Bayero University Kano',
-      'B.L., Nigerian Law School'
-    ],
-    admissions: [
-      'Supreme Court of Nigeria (2004)',
-      'Fellow, Chartered Institute of Arbitrators (FCIArb)',
-      'Member, Non-Interest Financial Institutions Association of Nigeria'
-    ],
-    keyMatters: [
-      'Advised on a ₦150 Billion State Government Sukuk issuance for infrastructure modernization in Northern Nigeria.',
-      'Lead legal advisor to a cross-border agricultural commodity processing conglomerate with operations spanning Kano, Chad, and Niger.',
-      'Successfully defended a multinational manufacturing client in a $30M commercial distribution arbitration.'
-    ],
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop'
-  },
-  {
     id: 'nweye-robinson',
     name: 'Nweye R. Robinson',
-    role: 'Managing Counsel, Dispute Resolution & Energy',
-    category: 'Managing Counsel',
+    role: 'Partner, Dispute Resolution & Energy',
+    category: 'Partners',
     location: 'Port Harcourt',
     email: 'rrnweye@tep.com.ng',
     phone: '+234 (0) 84 301 224',
     linkedin: 'https://www.linkedin.com/in/robinson-nweye-515b9712b/',
     practiceAreas: ['Energy & Natural Resources', 'Commercial Litigation', 'Environmental Law', 'White Collar Defense'],
-    bio: 'An accomplished courtroom advocate and energy counsel specializing in complex oil and gas litigation, environmental remediation claims, and appellate advocacy.',
-    fullBio: 'Nweye R. Robinson is a Managing Counsel in Three Edge Practice’s Port Harcourt office, co-leading the Energy, Natural Resources and Dispute Resolution practice. With over 15 years of courtroom experience spanning the Federal High Court, Court of Appeal, and Supreme Court of Nigeria, Robinson routinely represents international oil companies, indigenous concession holders, and engineering contractors in high-stakes joint venture disputes, offshore facility claims, and environmental tort litigations.',
+    bio: 'Partner and accomplished courtroom advocate and energy counsel specializing in complex oil and gas litigation, environmental remediation claims, and appellate advocacy.',
+    fullBio: 'Nweye R. Robinson is a Partner in Three Edge Practice’s Port Harcourt office, co-leading the Energy, Natural Resources and Dispute Resolution practice. With over 15 years of courtroom experience spanning the Federal High Court, Court of Appeal, and Supreme Court of Nigeria, Robinson routinely represents international oil companies, indigenous concession holders, and engineering contractors in high-stakes joint venture disputes, offshore facility claims, and environmental tort litigations.',
     education: [
       'LL.M. (Petroleum Law & Policy), University of Dundee',
       'LL.B. (Honours), Rivers State University',
@@ -534,15 +308,15 @@ export const TEAM: TeamMember[] = [
   {
     id: 'churchill-osila',
     name: 'Churchill Osila',
-    role: 'Managing Counsel, Head of Port Harcourt Office',
-    category: 'Managing Counsel',
+    role: 'Partner, Head of Port Harcourt Office',
+    category: 'Partners',
     location: 'Port Harcourt',
     email: 'cosila@tep.com.ng',
     phone: '+234 (0) 84 301 225',
     linkedin: 'https://linkedin.com',
     practiceAreas: ['Commercial Litigation', 'Dispute Resolution', 'White Collar Defense', 'Corporate Criminal Defense', 'Energy & Natural Resources', 'Maritime & Shipping'],
-    bio: 'Head of the firm’s Port Harcourt office and veteran litigation lawyer called to the Nigerian Bar in 2008, conducting high-stakes defense litigation across state and federal courts.',
-    fullBio: 'Churchill Osila is the Managing Counsel and Head of Three Edge Practice’s Port Harcourt Office. A formidable courtroom advocate and litigation specialist, he was called to the Nigerian Bar in 2008 and brings over 17 years of battle-tested courtroom experience to the firm. He has conducted numerous high-stakes litigations as a defense attorney, successfully defending multinational energy firms, financial institutions, maritime operators, and corporate executives in complex commercial disputes, corporate criminal defense, asset forfeiture defense, and contractual conflicts before State High Courts, the Federal High Court, and the Court of Appeal.',
+    bio: 'Partner and Head of the firm’s Port Harcourt office, veteran litigation lawyer called to the Nigerian Bar in 2008, conducting high-stakes defense litigation across state and federal courts.',
+    fullBio: 'Churchill Osila is a Partner and Head of Three Edge Practice’s Port Harcourt Office. A formidable courtroom advocate and litigation specialist, he was called to the Nigerian Bar in 2008 and brings over 17 years of battle-tested courtroom experience to the firm. He has conducted numerous high-stakes litigations as a defense attorney, successfully defending multinational energy firms, financial institutions, maritime operators, and corporate executives in complex commercial disputes, corporate criminal defense, asset forfeiture defense, and contractual conflicts before State High Courts, the Federal High Court, and the Court of Appeal.',
     education: [
       'LL.M., Commercial Law & Dispute Resolution',
       'LL.B. (Honours), Rivers State University',
@@ -841,7 +615,7 @@ References:
     date: 'JAN 28, 2025',
     excerpt: 'A critical review of high-velocity enforcement led by the SEC and FCCPC under current competition and securities laws.',
     image: 'https://picsum.photos/seed/tep_reg/600/400',
-    author: 'Chinyere Okafor',
+    author: "Al'Qasim Jafar",
     content: `Regulatory enforcement in Nigeria has transitioned from a consultative posture to a clinical, punitive one. The Securities and Exchange Commission (SEC) and the Federal Competition and Consumer Protection Commission (FCCPC) are currently setting precedents that redefine the cost of non-compliance.
 
 The Dawn Raid Era:
@@ -865,7 +639,7 @@ References:
     date: 'JAN 15, 2025',
     excerpt: 'Analyzing the NDPC’s enforcement trajectory under the Nigeria Data Protection Act (NDPA) 2023.',
     image: 'https://picsum.photos/seed/tep_data/600/400',
-    author: 'Sarah Thompson',
+    author: 'Tamunoibi Aprekuma',
     content: `The enactment of the Nigeria Data Protection Act (NDPA) 2023 has fundamentally shifted the legal status of personal data from a corporate asset to a significant institutional liability. The Nigeria Data Protection Commission (NDPC) has signaled that the 'grace period' for transition is over.
 
 Enforcement focal points:
@@ -886,7 +660,7 @@ References:
     date: 'DEC 20, 2024',
     excerpt: 'Structural shifts in directorial liability and reporting mandates under the Money Laundering (Prevention and Prohibition) Act 2022.',
     image: 'https://picsum.photos/seed/tep_aml/600/400',
-    author: 'Ibrahim Musa',
+    author: "Al'Qasim Jafar",
     content: `The Money Laundering (Prevention and Prohibition) Act 2022 (the 'MLA') has redefined the risk landscape for corporate officers and directors. The MLA introduces the concept of 'Directorial Liability' where a lack of personal knowledge is no longer a valid legal defense for institutional failures in AML protocols.
 
 The Expanded Scope of DNFBPs:
@@ -907,7 +681,7 @@ References:
     date: 'NOV 30, 2024',
     excerpt: 'How EU CBAM and global ESG mandates are affecting Nigerian trade and compliance requirements.',
     image: 'https://picsum.photos/seed/tep_global/600/400',
-    author: 'Chinyere Okafor',
+    author: 'Iniekebiama Goodluck Ofoda',
     content: `The regulatory reach of the European Union and the United States now extends deep into the Nigerian corporate boardroom. Laws such as the EU Carbon Border Adjustment Mechanism (CBAM) and the UK Bribery Act exert 'Downstream Compliance' pressure on Nigerian exporters and financial institutions.
 
 ESG as a Trade Mandate:

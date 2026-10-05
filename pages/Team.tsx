@@ -54,7 +54,14 @@ const Team: React.FC = () => {
     return Array.from(locs).sort();
   }, []);
 
-  const roleCategories = ['All', 'Partners', 'Managing Counsel', 'Senior Associates', 'Associates'];
+  const roleCategories = useMemo(() => {
+    const categories = ['All'];
+    if (TEAM.some((m) => m.category === 'Partners' || m.role.toLowerCase().includes('partner'))) categories.push('Partners');
+    if (TEAM.some((m) => m.category === 'Managing Counsel' || m.role.toLowerCase().includes('managing counsel'))) categories.push('Managing Counsel');
+    if (TEAM.some((m) => m.category === 'Senior Associates' || m.role.toLowerCase().includes('senior associate'))) categories.push('Senior Associates');
+    if (TEAM.some((m) => m.category === 'Associates' || (m.role.toLowerCase().includes('associate') && !m.role.toLowerCase().includes('senior associate')))) categories.push('Associates');
+    return categories;
+  }, []);
 
   // Handle URL query for highlighting / auto-opening modal
   useEffect(() => {

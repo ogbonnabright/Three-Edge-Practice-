@@ -413,7 +413,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                           <input
                             type="text"
                             required
-                            placeholder="e.g. Barr. Ngozi Adeleke"
+                            placeholder="e.g. Barr. Ngozi Nwosu"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             className="w-full pl-9 pr-3 py-2 border border-gray-300 text-xs text-black focus:outline-none focus:border-[#990000]"
@@ -430,7 +430,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                           <input
                             type="email"
                             required
-                            placeholder="e.g. ngozi.adeleke@example.com"
+                            placeholder="e.g. ngozi.nwosu@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full pl-9 pr-3 py-2 border border-gray-300 text-xs text-black focus:outline-none focus:border-[#990000]"
