@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, Lock } from 'lucide-react';
+import { Menu, X, Lock, KeyRound } from 'lucide-react';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { auth } from '../firebase';
+import { isAssociatedAdminEmail } from '../pages/ClientPortal';
 import { NAV_ITEMS } from '../constants';
 
 const Sidebar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const location = useLocation();
 
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setCurrentUser(u);
+    });
+    return () => unsub();
+  }, []);
+
+  const isAdmin = currentUser && isAssociatedAdminEmail(currentUser.email);
+
   // Close drawer on navigation
-  React.useEffect(() => {
+  useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
 
@@ -23,7 +36,7 @@ const Sidebar: React.FC = () => {
         </NavLink>
         <div className="flex items-center gap-3">
           <NavLink
-            to="/portal"
+            to="/portal/client"
             className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 text-[11px] font-bold uppercase tracking-wider text-black hover:text-[#990000]"
           >
             <Lock className="w-3 h-3 text-[#990000]" />
@@ -55,13 +68,32 @@ const Sidebar: React.FC = () => {
                 }
               >
                 <span>{item.label}</span>
-                {item.path === '/portal' && (
+                {item.path.startsWith('/portal') && (
                   <span className="text-[10px] font-mono px-2 py-0.5 bg-[#990000]/10 text-[#990000] font-bold">
                     SECURE
                   </span>
                 )}
               </NavLink>
             ))}
+
+            {/* Admin Management Link for Firm Partners */}
+            {isAdmin && (
+              <NavLink
+                to="/portal/admin"
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `text-sm font-bold tracking-wider uppercase py-2 px-3 border transition-colors flex items-center justify-between ${
+                    isActive ? 'bg-[#990000] text-white border-[#990000]' : 'bg-gray-100 text-black border-gray-300 hover:border-[#990000]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-2">
+                  <KeyRound className="w-3.5 h-3.5 text-[#990000]" />
+                  <span>ADMIN PORTAL</span>
+                </div>
+                <span className="text-[9px] font-mono font-bold uppercase bg-[#990000] text-white px-1.5 py-0.5">ADMIN</span>
+              </NavLink>
+            )}
           </nav>
 
           <div className="pt-8 border-t border-gray-100 text-xs text-gray-400">
@@ -84,9 +116,9 @@ const Sidebar: React.FC = () => {
           </NavLink>
         </div>
 
-        <nav className="flex-1 px-10 flex flex-col justify-center space-y-5">
+        <nav className="flex-1 px-10 flex flex-col justify-center space-y-4">
           {NAV_ITEMS.map((item) => {
-            const isPortal = item.path === '/portal';
+            const isPortal = item.path.startsWith('/portal');
             return (
               <NavLink
                 key={item.path}
@@ -108,6 +140,26 @@ const Sidebar: React.FC = () => {
               </NavLink>
             );
           })}
+
+          {/* Dedicated Admin Portal Link for verified Firm Administrators */}
+          {isAdmin && (
+            <NavLink
+              to="/portal/admin"
+              className={({ isActive }) =>
+                `text-xs font-bold tracking-widest uppercase py-2 px-3 border transition-all flex items-center justify-between ${
+                  isActive
+                    ? 'bg-black text-white border-black shadow-sm'
+                    : 'bg-red-50 text-[#990000] border-red-200 hover:border-[#990000]'
+                }`
+              }
+            >
+              <div className="flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>ADMIN PORTAL</span>
+              </div>
+              <span className="text-[9px] font-mono font-bold uppercase bg-[#990000] text-white px-1.5 py-0.2">ADMIN</span>
+            </NavLink>
+          )}
         </nav>
 
         <div className="p-10">

@@ -28,17 +28,22 @@ service cloud.firestore {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
-    // Admin authorization check:
-    // User is an Admin if:
-    // 1. Their email matches firm partner / owner email
-    // 2. OR their Firebase UID exists in the /admins collection
-    function isAdmin() {
-      return isSignedIn() && (
+    // Strict Admin Email Definition:
+    // STRICT RULE: Only chiaghalam@gmail.com, admin@tep.com.ng, registry@tep.com.ng, and verified @tep.com.ng accounts are associated to firm administration.
+    function isAdminEmail() {
+      return request.auth.token.email != null && (
         request.auth.token.email == "chiaghalam@gmail.com" ||
         request.auth.token.email == "admin@tep.com.ng" ||
-        (request.auth.token.email != null && request.auth.token.email.matches('.*@tep[.]com[.]ng$')) ||
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        request.auth.token.email == "registry@tep.com.ng" ||
+        request.auth.token.email.matches('^[a-zA-Z0-9._%+-]+@tep[.]com[.]ng$')
       );
+    }
+
+    // Admin authorization check:
+    // STRICT RULE: Emails that are NOT associated to admin can NEVER be admin.
+    // Non-admin emails are strictly forbidden from administrative access.
+    function isAdmin() {
+      return isSignedIn() && isAdminEmail();
     }
 
     // Connection testing endpoint
@@ -56,59 +61,72 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Admins Collection (Verifying admin role documents)
+    // Admins Collection (Strictly restricted: non-admin emails can NEVER create, update, or read other admin docs)
     match /admins/{adminId} {
-      allow get: if isSignedIn() && isValidId(adminId);
+      allow get: if isSignedIn() && isValidId(adminId) && (isAdmin() || adminId == request.auth.uid);
       allow list: if isAdmin();
-      allow create, update: if isSignedIn() && isValidId(adminId) && (
-        isAdmin() || 
-        (adminId == request.auth.uid && (
-          request.auth.token.email == "chiaghalam@gmail.com" ||
-          request.auth.token.email == "admin@tep.com.ng" ||
-          incoming().adminKey == "TEP_PARTNER_LEGAL_CHAMBERS_2026"
-        ))
-      );
+      allow create, update: if isSignedIn() && isValidId(adminId) && isAdmin();
       allow delete: if isAdmin();
+    }
+
+    // Clients Collection (Client Profiles Directory):
+    // 1. Only authorized Firm/Admin accounts (chiaghalam@gmail.com, admin@tep.com.ng, registry@tep.com.ng) can create, update, or delete clients.
+    // 2. Client emails can only read their own profile, and only if their account status is Active.
+    match /clients/{clientId} {
+      allow get: if isSignedIn() && isValidId(clientId) && (
+        isAdmin() || 
+        (resource != null && request.auth.token.email != null && resource.data.email == request.auth.token.email && resource.data.status != 'Deactivated')
+      );
+      allow list: if isSignedIn() && (
+        isAdmin() ||
+        (request.auth.token.email != null && resource.data.email == request.auth.token.email && resource.data.status != 'Deactivated')
+      );
+      allow create: if isSignedIn() && isValidId(clientId) && isAdmin();
+      allow update: if isSignedIn() && isValidId(clientId) && isAdmin();
+      allow delete: if isSignedIn() && isValidId(clientId) && isAdmin();
     }
 
     // Legal Cases Collection:
     // STRICT ROLE-BASED ACCESS CONTROL:
-    // - Firm email (chiaghalam@gmail.com / @tep.com.ng) routes to Admin with full access across all cases
-    // - Client emails registered during onboarding process access ONLY the cases registered for their email or UID
-    // - Clients can NEVER read or list another client's cases
-    // - Clients CANNOT create (onboard) or delete cases
-    // - Admins can read, list, create (onboard), update, and delete ALL cases across the firm
+    // 1. Firm emails (chiaghalam@gmail.com / admin@tep.com.ng / registry@tep.com.ng / @tep.com.ng) route to Admin with firmwide management access across all cases.
+    // 2. Client emails registered during onboarding can access ONLY cases registered for their email or UID, provided clientAccess is not Deactivated.
+    // 3. Emails NOT associated to admin can NEVER open admin management portal nor view other cases in the firm.
+    // 4. Clients can NEVER create (onboard) or delete cases.
     match /cases/{caseId} {
-      // Get single case: Allowed if admin OR if the case's clientUid matches the caller's Firebase UID OR clientEmail matches the caller's email
+      // Get single case:
+      // Admins can read all cases across the firm.
+      // Client emails can ONLY read the specific case registered for their email or UID (and not deactivated).
       allow get: if isSignedIn() && isValidId(caseId) && (
         isAdmin() || 
         (resource != null && (
-          resource.data.clientUid == request.auth.uid ||
-          (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+          (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') ||
+          (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')
         ))
       );
       
       // List cases query:
-      // Admins can query all cases
-      // Clients can only list where clientUid == request.auth.uid OR clientEmail == request.auth.token.email
+      // Admins can query all cases across the firm.
+      // Client emails can ONLY list cases registered for their verified email or UID (and not deactivated).
+      // Unassociated or non-matching queries are strictly rejected with PERMISSION_DENIED.
       allow list: if isSignedIn() && (
         isAdmin() || 
-        resource.data.clientUid == request.auth.uid ||
-        (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+        (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') ||
+        (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')
       );
       
       // Onboard (create) case: STRICTLY ADMIN ONLY
       allow create: if isSignedIn() && isValidId(caseId) && isAdmin();
       
-      // Update case (status, updates, documents):
-      // Admins have full update rights.
-      // Clients can update notes / metadata only on their own case, but cannot change ownership (clientUid or clientEmail)
+      // Update case:
+      // Admins have full update rights (manage docket info, updates, documents, notices).
+      // Clients can only update notes/status on their own case, but cannot change ownership or clientAccess.
       allow update: if isSignedIn() && isValidId(caseId) && (
         isAdmin() || 
         (
-          (resource.data.clientUid == request.auth.uid || (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)) &&
+          ((request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') || (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')) &&
           incoming().clientUid == existing().clientUid &&
-          incoming().clientEmail == existing().clientEmail
+          incoming().clientEmail == existing().clientEmail &&
+          incoming().clientAccess == existing().clientAccess
         )
       );
       
