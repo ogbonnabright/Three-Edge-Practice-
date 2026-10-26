@@ -19,6 +19,8 @@ import {
   X,
   AlertCircle
 } from 'lucide-react';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { REGIONAL_OFFICES, TEAM, PRACTICE_AREAS } from '../constants';
 import { RegionalOffice } from '../types';
 
@@ -44,6 +46,8 @@ const Contact: React.FC = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittingInquiry, setSubmittingInquiry] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // Brief document upload state
@@ -154,9 +158,34 @@ const Contact: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setSubmissionError(null);
+    setSubmittingInquiry(true);
+
+    try {
+      const inquiryId = `inq-${Date.now()}`;
+      await setDoc(doc(db, 'inquiries', inquiryId), {
+        id: inquiryId,
+        fullName: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        office: formData.office,
+        attorney: formData.attorney || null,
+        practiceArea: formData.practiceArea || null,
+        message: formData.message.trim(),
+        briefFileName: briefFile ? briefFile.name : null,
+        briefFileSize: briefFile ? formatFileSize(briefFile.size) : null,
+        status: 'Pending Review',
+        submittedAt: new Date().toISOString()
+      });
+      setIsSubmitted(true);
+    } catch (err: unknown) {
+      console.error('Inquiry submission error:', err);
+      setSubmissionError('Your inquiry could not be dispatched to the registry database. You can dispatch directly via your email client to registry@tep.com.ng.');
+    } finally {
+      setSubmittingInquiry(false);
+    }
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -703,11 +732,19 @@ const Contact: React.FC = () => {
                   </div>
                 </div>
 
+                {submissionError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-xs text-red-900 flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                    <p>{submissionError}</p>
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full bg-[#990000] text-white py-4 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-colors duration-300 flex items-center justify-center space-x-2"
+                  disabled={submittingInquiry}
+                  className="w-full bg-[#990000] text-white py-4 font-bold tracking-[0.2em] uppercase text-xs hover:bg-black transition-colors duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
                 >
-                  <span>Submit Confidential Inquiry</span>
+                  <span>{submittingInquiry ? 'Dispatching to Registry...' : 'Submit Confidential Inquiry'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 

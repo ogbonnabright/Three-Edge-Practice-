@@ -12,8 +12,12 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
     function incoming() {
@@ -24,26 +28,26 @@ service cloud.firestore {
       return resource.data;
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    // Strict Admin Email Definition:
-    // STRICT RULE: Only chiaghalam@gmail.com, admin@tep.com.ng, registry@tep.com.ng, and verified @tep.com.ng accounts are associated to firm administration.
-    function isAdminEmail() {
+    // STRICT ADMINISTRATOR AUTHORIZATION
+    // Designated administrator accounts:
+    // 1. chiaghalam@gmail.com
+    // 2. admin@tep.com.ng
+    // 3. registry@tep.com.ng
+    // Other @tep.com.ng accounts do NOT automatically receive administrator privileges!
+    // They must be explicitly authorized by an existing administrator via an active document in /admins/{uid}.
+    function isDesignatedAdminEmail() {
       return request.auth.token.email != null && (
         request.auth.token.email == "chiaghalam@gmail.com" ||
         request.auth.token.email == "admin@tep.com.ng" ||
-        request.auth.token.email == "registry@tep.com.ng" ||
-        request.auth.token.email.matches('^[a-zA-Z0-9._%+-]+@tep[.]com[.]ng$')
+        request.auth.token.email == "registry@tep.com.ng"
       );
     }
 
-    // Admin authorization check:
-    // STRICT RULE: Emails that are NOT associated to admin can NEVER be admin.
-    // Non-admin emails are strictly forbidden from administrative access.
     function isAdmin() {
-      return isSignedIn() && isAdminEmail();
+      return isSignedIn() && isEmailVerified() && (
+        isDesignatedAdminEmail() ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
     }
 
     // Connection testing endpoint
@@ -52,86 +56,117 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Users Collection (PII Isolated strictly to the authenticated owner or admin)
+    // Users Collection: Only authorized administrators can create or delete user profile records.
     match /users/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
+      allow get: if (isSignedIn() && isEmailVerified() && request.auth.uid == userId) || isAdmin();
       allow list: if isAdmin();
-      allow create: if isOwner(userId) && isValidId(userId);
-      allow update: if (isOwner(userId) || isAdmin()) && isValidId(userId);
-      allow delete: if false;
+      allow create: if isAdmin() && isValidId(userId);
+      allow update: if ((isSignedIn() && isEmailVerified() && request.auth.uid == userId && isValidId(userId) && incoming().role == existing().role) || isAdmin());
+      allow delete: if isAdmin() && isValidId(userId);
     }
 
-    // Admins Collection (Strictly restricted: non-admin emails can NEVER create, update, or read other admin docs)
+    // Authorization Registry: Explicit admin-controlled authorization mapping
+    match /authorization_registry/{authId} {
+      allow get: if isAdmin() || (
+        isSignedIn() && isEmailVerified() && isValidId(authId) && (
+          authId == request.auth.uid ||
+          (resource != null && resource.data.status == 'Active' && resource.data.uid == request.auth.uid)
+        )
+      );
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin() && isValidId(authId);
+    }
+
+    // Admins Collection (Restricted: ordinary clients cannot read, create, or promote admin records)
     match /admins/{adminId} {
-      allow get: if isSignedIn() && isValidId(adminId) && (isAdmin() || adminId == request.auth.uid);
+      allow get: if isSignedIn() && isEmailVerified() && isValidId(adminId) && (isAdmin() || adminId == request.auth.uid);
       allow list: if isAdmin();
-      allow create, update: if isSignedIn() && isValidId(adminId) && isAdmin();
-      allow delete: if isAdmin();
+      allow create: if isSignedIn() && isEmailVerified() && isValidId(adminId) && (
+        isAdmin() || (isDesignatedAdminEmail() && adminId == request.auth.uid)
+      );
+      allow update: if isAdmin() && isValidId(adminId);
+      allow delete: if isAdmin() && isValidId(adminId) && (
+        adminId != request.auth.uid || !isDesignatedAdminEmail()
+      );
     }
 
-    // Clients Collection (Client Profiles Directory):
-    // 1. Only authorized Firm/Admin accounts (chiaghalam@gmail.com, admin@tep.com.ng, registry@tep.com.ng) can create, update, or delete clients.
-    // 2. Client emails can only read their own profile, and only if their account status is Active.
+    // Clients Collection (Approved Client Registration Directory):
+    // 1. Only authorized administrators can create, update, or delete client profiles.
+    // 2. Approved clients can only read their own profile, and only if their status is Active.
+    // 3. Deactivated clients are denied access.
     match /clients/{clientId} {
-      allow get: if isSignedIn() && isValidId(clientId) && (
-        isAdmin() || 
-        (resource != null && request.auth.token.email != null && resource.data.email == request.auth.token.email && resource.data.status != 'Deactivated')
+      allow get: if isSignedIn() && isEmailVerified() && isValidId(clientId) && (
+        isAdmin() || (
+          resource != null && resource.data.status == 'Active' && (
+            resource.data.uid == request.auth.uid ||
+            (request.auth.token.email != null && resource.data.email == request.auth.token.email)
+          )
+        )
       );
-      allow list: if isSignedIn() && (
-        isAdmin() ||
-        (request.auth.token.email != null && resource.data.email == request.auth.token.email && resource.data.status != 'Deactivated')
+      allow list: if isSignedIn() && isEmailVerified() && (
+        isAdmin() || (
+          resource.data.status == 'Active' && (
+            resource.data.uid == request.auth.uid ||
+            (request.auth.token.email != null && resource.data.email == request.auth.token.email)
+          )
+        )
       );
-      allow create: if isSignedIn() && isValidId(clientId) && isAdmin();
-      allow update: if isSignedIn() && isValidId(clientId) && isAdmin();
-      allow delete: if isSignedIn() && isValidId(clientId) && isAdmin();
+      allow create: if isAdmin() && isValidId(clientId);
+      allow update: if isAdmin() && isValidId(clientId);
+      allow delete: if isAdmin() && isValidId(clientId);
     }
 
     // Legal Cases Collection:
-    // STRICT ROLE-BASED ACCESS CONTROL:
-    // 1. Firm emails (chiaghalam@gmail.com / admin@tep.com.ng / registry@tep.com.ng / @tep.com.ng) route to Admin with firmwide management access across all cases.
-    // 2. Client emails registered during onboarding can access ONLY cases registered for their email or UID, provided clientAccess is not Deactivated.
-    // 3. Emails NOT associated to admin can NEVER open admin management portal nor view other cases in the firm.
-    // 4. Clients can NEVER create (onboard) or delete cases.
+    // 1. Only administrators can onboard (create) or delete legal cases.
+    // 2. Active approved clients can read ONLY cases explicitly assigned to their UID or registered verified email.
+    // 3. Deactivated clients lose access even if authenticated.
+    // 4. Clients can update only their own case instructions/notes, but CANNOT modify ownership, clientAccess, or status.
     match /cases/{caseId} {
-      // Get single case:
-      // Admins can read all cases across the firm.
-      // Client emails can ONLY read the specific case registered for their email or UID (and not deactivated).
-      allow get: if isSignedIn() && isValidId(caseId) && (
-        isAdmin() || 
-        (resource != null && (
-          (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') ||
-          (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')
-        ))
-      );
-      
-      // List cases query:
-      // Admins can query all cases across the firm.
-      // Client emails can ONLY list cases registered for their verified email or UID (and not deactivated).
-      // Unassociated or non-matching queries are strictly rejected with PERMISSION_DENIED.
-      allow list: if isSignedIn() && (
-        isAdmin() || 
-        (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') ||
-        (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')
-      );
-      
-      // Onboard (create) case: STRICTLY ADMIN ONLY
-      allow create: if isSignedIn() && isValidId(caseId) && isAdmin();
-      
-      // Update case:
-      // Admins have full update rights (manage docket info, updates, documents, notices).
-      // Clients can only update notes/status on their own case, but cannot change ownership or clientAccess.
-      allow update: if isSignedIn() && isValidId(caseId) && (
-        isAdmin() || 
-        (
-          ((request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked') || (resource.data.clientUid == request.auth.uid && resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked')) &&
-          incoming().clientUid == existing().clientUid &&
-          incoming().clientEmail == existing().clientEmail &&
-          incoming().clientAccess == existing().clientAccess
+      allow get: if isSignedIn() && isEmailVerified() && isValidId(caseId) && (
+        isAdmin() || (
+          resource != null &&
+          resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked' && (
+            resource.data.clientUid == request.auth.uid ||
+            (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+          )
         )
       );
       
-      // Delete case: STRICTLY ADMIN ONLY
-      allow delete: if isSignedIn() && isValidId(caseId) && isAdmin();
+      allow list: if isSignedIn() && isEmailVerified() && (
+        isAdmin() || (
+          resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked' && (
+            resource.data.clientUid == request.auth.uid ||
+            (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)
+          )
+        )
+      );
+      
+      allow create: if isAdmin() && isValidId(caseId);
+      
+      allow update: if isSignedIn() && isEmailVerified() && isValidId(caseId) && (
+        isAdmin() || (
+          ((resource.data.clientUid == request.auth.uid) || (request.auth.token.email != null && resource.data.clientEmail == request.auth.token.email)) &&
+          resource.data.clientAccess != 'Deactivated' && resource.data.clientAccess != 'Revoked' &&
+          incoming().clientUid == existing().clientUid &&
+          incoming().clientEmail == existing().clientEmail &&
+          incoming().clientAccess == existing().clientAccess &&
+          incoming().caseNumber == existing().caseNumber &&
+          incoming().status == existing().status
+        )
+      );
+      
+      allow delete: if isAdmin() && isValidId(caseId);
+    }
+
+    // Inquiries Collection:
+    // 1. Legitimate contact inquiries can be submitted with validation.
+    // 2. Only authorized administrators can read, list, update, or delete inquiries.
+    match /inquiries/{inquiryId} {
+      allow create: if isValidId(inquiryId) && 
+                       incoming().fullName is string && incoming().fullName.size() <= 200 &&
+                       incoming().email is string && incoming().email.size() <= 200 &&
+                       incoming().message is string && incoming().message.size() <= 10000;
+      allow read, update, delete: if isAdmin() && isValidId(inquiryId);
     }
   }
 }

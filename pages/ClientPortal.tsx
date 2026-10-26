@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
+  Eye,
+  EyeOff,
   Lock, 
   Scale, 
   ShieldCheck, 
@@ -18,15 +20,18 @@ import {
   X, 
   CheckCircle2, 
   Building, 
-  User,
-  Mail,
-  ArrowRight
+  User, 
+  Mail, 
+  ArrowRight,
+  RefreshCw,
+  Send
 } from 'lucide-react';
 import { 
   onAuthStateChanged, 
-  signInWithPopup, 
-  signInAnonymously, 
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut, 
+  sendEmailVerification,
   User as FirebaseUser 
 } from 'firebase/auth';
 import { 
@@ -36,106 +41,150 @@ import {
   onSnapshot, 
   setDoc, 
   doc, 
+  getDoc,
+  getDocs,
   updateDoc 
 } from 'firebase/firestore';
 import { auth, googleProvider, db, handleFirestoreError, OperationType } from '../firebase';
-import { LegalCase, CaseUpdate, CaseDocument, UserRole } from '../types';
-import { DEMO_CLIENTS, INITIAL_FIRM_CASES } from '../src/data/firmMatters';
+import { LegalCase, CaseUpdate, CaseDocument, ClientProfile, UserRole } from '../types';
 import AdminDashboard from '../components/AdminDashboard';
 import ClientDashboard from '../components/ClientDashboard';
 
 // =========================================================================
-// STRICT RULE: Only emails explicitly associated to firm administration can
-// open the Admin Management Portal or view all firm cases.
+// STRICT ADMINISTRATOR AUTHORIZATION
+// The following three accounts are designated administrators:
+// - chiaghalam@gmail.com
+// - admin@tep.com.ng
+// - registry@tep.com.ng
+// Other @tep.com.ng accounts must NOT automatically receive administrator privileges.
+// They receive administrative access ONLY after explicit authorization by an existing admin.
 // =========================================================================
-export const isAssociatedAdminEmail = (email: string | null | undefined): boolean => {
-  if (!email) return false;
-  const normalized = email.toLowerCase().trim();
-  return (
-    normalized === 'chiaghalam@gmail.com' ||
-    normalized === 'admin@tep.com.ng' ||
-    normalized === 'registry@tep.com.ng' ||
-    normalized.endsWith('@tep.com.ng')
-  );
-};
+import { 
+  DESIGNATED_ADMIN_EMAILS, 
+  isDesignatedAdminEmail, 
+  isAssociatedAdminEmail, 
+  verifyUserAuthorization, 
+  UNREGISTERED_ERROR_MESSAGE 
+} from '../src/authAuthorization';
+
+export { DESIGNATED_ADMIN_EMAILS, isDesignatedAdminEmail, isAssociatedAdminEmail };
+
+type AuthorizationState = 
+  | 'idle' 
+  | 'resolving' 
+  | 'admin' 
+  | 'client' 
+  | 'unverified_email' 
+  | 'unregistered' 
+  | 'deactivated' 
+  | 'error';
 
 const ClientPortal: React.FC = () => {
   const { caseId } = useParams<{ roleView?: string; caseId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Authentication State
+  // Authentication & Authorization State
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [authSuccessMessage, setAuthSuccessMessage] = useState<string | null>(null);
+  const [authState, setAuthState] = useState<AuthorizationState>('idle');
+  const [clientProfile, setClientProfile] = useState<ClientProfile | null>(null);
+  const [verificationSent, setVerificationSent] = useState(false);
 
-  // Active email simulation state for fast interactive preview testing
-  const [simulatedEmail, setSimulatedEmail] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('tep_simulated_email');
-    }
-    return null;
-  });
+  // Sign In / Password Reset State (Public self-registration permanently disabled)
+  const [authMode, setAuthMode] = useState<'login' | 'forgot_password'>('login');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
 
-  // Custom email tester input on login screen
-  const [customTestEmail, setCustomTestEmail] = useState('');
-
-  // Firestore Cases State
+  // Firestore Cases State (strictly genuine data only)
   const [cases, setCases] = useState<LegalCase[]>([]);
   const [casesLoading, setCasesLoading] = useState(false);
 
-  // Selected Case Modal & Document Inspection Modal
+  // Modals & Notices
   const [selectedCase, setSelectedCase] = useState<LegalCase | null>(null);
   const [selectedDoc, setSelectedDoc] = useState<(CaseDocument & { caseNumber: string; caseTitle: string; caseId: string }) | null>(null);
-
-  // Access Denied / Security Guard Notice State
   const [accessDeniedNotice, setAccessDeniedNotice] = useState<string | null>(null);
   const [portalToast, setPortalToast] = useState<string | null>(null);
 
-  // -----------------------------------------------------------------------
-  // EFFECTIVE EMAIL & ROLE DETERMINATION (STRICT ENFORCEMENT)
-  // -----------------------------------------------------------------------
   const isPathAdmin = location.pathname.startsWith('/portal/admin');
   const isPathClient = location.pathname.startsWith('/portal/client');
 
-  const effectiveEmail = useMemo(() => {
-    if (simulatedEmail) return simulatedEmail.toLowerCase().trim();
-    if (currentUser?.email) {
-      const email = currentUser.email.toLowerCase().trim();
-      // If an administrator navigates to the Client Portal (/portal/client),
-      // scope their view to the client portal docket rather than firmwide administration.
-      if (isAssociatedAdminEmail(email) && isPathClient) {
-        return DEMO_CLIENTS[0].email; // 'legal@atlanticdeepwater.ng'
-      }
-      return email;
-    }
-    return '';
-  }, [simulatedEmail, currentUser, isPathClient]);
-
-  const isAdmin = useMemo(() => {
-    return isAssociatedAdminEmail(effectiveEmail);
-  }, [effectiveEmail]);
-
-  const activeRole: UserRole = useMemo(() => {
-    return (isAdmin && isPathAdmin) ? 'Admin' : 'Client';
-  }, [isAdmin, isPathAdmin]);
-
-  // STRICT RULE: An email is unregistered if it is neither an Admin nor registered
-  // to any case docket in the firm during the onboarding process.
-  const isUnregistered = useMemo(() => {
-    if (authLoading || casesLoading || !currentUser) return false;
-    if (isAdmin && isPathAdmin) return false;
-    return cases.length === 0;
-  }, [authLoading, casesLoading, currentUser, isAdmin, isPathAdmin, cases.length]);
-
-  // Auth Listener
+  // -------------------------------------------------------------------------
+  // 1. GENUINE AUTHENTICATION & ZERO-TRUST AUTHORIZATION RESOLUTION
+  // -------------------------------------------------------------------------
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
       if (!user) {
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
         setCases([]);
-        setSimulatedEmail(null);
-        sessionStorage.removeItem('tep_simulated_email');
+        setAuthLoading(false);
+        setVerificationSent(false);
+        return;
+      }
+
+      setAuthLoading(true);
+      const authResult = await verifyUserAuthorization(user);
+
+      if (authResult.status === 'unverified') {
+        // Enforce verified email at boundary
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setCases([]);
+        setAuthLoading(false);
+        setAuthError('Institutional security protocols mandate verified email before portal entry. Please verify your email address.');
+        return;
+      }
+
+      if (authResult.status === 'unregistered') {
+        // REJECT UNREGISTERED USERS AT LOGIN BOUNDARY
+        // Do not redirect to dashboard or display post-login access denied screen
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setCases([]);
+        setAuthLoading(false);
+        setAuthError(UNREGISTERED_ERROR_MESSAGE);
+        return;
+      }
+
+      if (authResult.status === 'deactivated') {
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setCases([]);
+        setAuthLoading(false);
+        setAuthError(authResult.message);
+        return;
+      }
+
+      if (authResult.status === 'error') {
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setCases([]);
+        setAuthLoading(false);
+        setAuthError(authResult.error);
+        return;
+      }
+
+      // Authorized Identity
+      setCurrentUser(user);
+      if (authResult.status === 'admin') {
+        setAuthState('admin');
+      } else {
+        setAuthState('client');
+        setClientProfile(authResult.profile);
       }
       setAuthLoading(false);
     });
@@ -143,78 +192,69 @@ const ClientPortal: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // -----------------------------------------------------------------------
-  // STRICT ROUTING & REDIRECT ENFORCEMENT:
-  // - If email is NOT associated to admin: MUST NOT open /portal/admin under any circumstance!
-  // - Client email MUST open ONLY that client's portal (/portal/client)
-  // -----------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // 2. SECURE DASHBOARD ROUTING & PROTECTED URL GUARDS
+  // -------------------------------------------------------------------------
   useEffect(() => {
-    if (authLoading || !currentUser) return;
+    if (authLoading || authState === 'resolving' || authState === 'idle') return;
 
     const currentPath = location.pathname;
 
-    // 1. Root /portal routing:
+    // Root /portal routing
     if (currentPath === '/portal' || currentPath === '/portal/') {
-      if (isAdmin) {
+      if (authState === 'admin') {
         navigate('/portal/admin', { replace: true });
-      } else {
+      } else if (authState === 'client') {
         navigate('/portal/client', { replace: true });
       }
       return;
     }
 
-    // 2. STRICT SECURITY BARRIER: Non-admin email trying to open /portal/admin
-    if (currentPath.startsWith('/portal/admin') && !isAdmin) {
+    // Direct URL Guard: Non-admin attempting to access /portal/admin
+    if (currentPath.startsWith('/portal/admin') && authState !== 'admin') {
       setAccessDeniedNotice(
-        `403 STRICT ACCESS DENIAL: The email (${effectiveEmail || 'unverified'}) is NOT associated with firm administration (chiaghalam@gmail.com / @tep.com.ng). Emails not associated with admin cannot open the Admin Management Portal nor have access to view other cases in the firm. Redirected to your client portal.`
+        `403 STRICT ACCESS DENIAL: The authenticated account (${currentUser?.email || 'unverified'}) is NOT an authorized firm administrator. Administrative routes are protected by server-side access controls.`
       );
-      navigate('/portal/client', { replace: true });
+      if (authState === 'client') {
+        navigate('/portal/client', { replace: true });
+      }
       return;
     }
+  }, [authLoading, authState, currentUser, location.pathname, navigate]);
 
-    // 3. Clear access denial when on permitted route
-    if (currentPath === '/portal/client') {
-      // Keep notice for 6 seconds if just denied, then clear
-    }
-  }, [authLoading, currentUser, isAdmin, effectiveEmail, location.pathname, navigate]);
-
-  // -----------------------------------------------------------------------
-  // DEEP-LINK CASE SECURITY ENFORCEMENT:
-  // Non-admin email CANNOT view another client's case by changing URL/ID!
-  // -----------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // 3. CONFIDENTIALITY DEEP-LINK CASE GUARD
+  // -------------------------------------------------------------------------
   useEffect(() => {
     if (!caseId || cases.length === 0 || !currentUser) return;
 
     const targetCase = cases.find(c => c.id === caseId || c.caseNumber === caseId);
     if (!targetCase) return;
 
-    if (isAdmin) {
+    if (authState === 'admin') {
       setSelectedCase(targetCase);
-    } else {
-      // Client verification: Does this case belong strictly to this client's email?
+    } else if (authState === 'client') {
       const caseEmail = targetCase.clientEmail?.toLowerCase().trim();
-      const isMyCase = (caseEmail && caseEmail === effectiveEmail) || (targetCase.clientUid === currentUser.uid);
+      const userEmail = (currentUser.email || '').toLowerCase().trim();
+      const isMyCase = (caseEmail && caseEmail === userEmail) || (targetCase.clientUid === currentUser.uid);
 
       if (isMyCase) {
         setSelectedCase(targetCase);
       } else {
-        // STRICT REFUSAL: Client cannot inspect another client's docket
         setSelectedCase(null);
         setAccessDeniedNotice(
-          `403 STRICT CONFIDENTIALITY RESTRICTION: You do not have permission to view docket ${caseId}. This case is registered to another client. A client email can only open its own portal and assigned cases.`
+          `403 CONFIDENTIALITY RESTRICTION: You do not have permission to view docket ${caseId}. This matter is registered to another client identity.`
         );
         navigate('/portal/client', { replace: true });
       }
     }
-  }, [caseId, cases, currentUser, isAdmin, effectiveEmail, navigate]);
+  }, [caseId, cases, currentUser, authState, navigate]);
 
-  // -----------------------------------------------------------------------
-  // FIRESTORE QUERY LISTENER (STRICT SCOPING):
-  // - Admin queries ALL cases across the firm
-  // - Client STRICTLY queries ONLY cases where clientEmail == effectiveEmail
-  // -----------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // 4. FIRESTORE DATA LOADING (GENUINE DATA ONLY — NO AUTOMATIC SEEDING)
+  // -------------------------------------------------------------------------
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser || (authState !== 'admin' && authState !== 'client')) {
       setCases([]);
       return;
     }
@@ -223,155 +263,173 @@ const ClientPortal: React.FC = () => {
     const casesPath = 'cases';
 
     let q;
-    if (isAdmin && isPathAdmin) {
-      // Admin sees ALL firm cases across all clients inside Admin Portal
+    if (authState === 'admin' && isPathAdmin) {
+      // Authorized administrator loads all firm matters
       q = query(collection(db, casesPath));
     } else {
-      // Client portal STRICTLY sees ONLY cases registered for their specific email
-      if (effectiveEmail) {
-        q = query(collection(db, casesPath), where('clientEmail', '==', effectiveEmail));
-      } else {
-        q = query(collection(db, casesPath), where('clientUid', '==', currentUser.uid));
-      }
+      // Approved client loads ONLY matters matching their authenticated verified email
+      const userEmail = (currentUser.email || '').toLowerCase().trim();
+      q = query(collection(db, casesPath), where('clientEmail', '==', userEmail));
     }
 
     const unsubscribe = onSnapshot(
       q,
-      async (snapshot) => {
+      (snapshot) => {
         const loaded: LegalCase[] = [];
         snapshot.forEach((docSnap) => {
           loaded.push({ id: docSnap.id, ...docSnap.data() } as LegalCase);
         });
 
-        // Auto-seed initial firm dockets only if Admin inside Admin portal and database is empty
-        if (isAdmin && isPathAdmin && loaded.length === 0 && !snapshot.metadata.hasPendingWrites) {
-          try {
-            for (const initialCase of INITIAL_FIRM_CASES) {
-              await setDoc(doc(db, 'cases', initialCase.id), initialCase);
-            }
-          } catch (seedErr) {
-            console.warn('Initial admin seed notice:', seedErr);
-          }
-        } else {
-          // If on client portal and database query returned empty (e.g. before initial seed),
-          // ensure client gets strictly cases matching their registered email:
-          if (!isPathAdmin && loaded.length === 0 && effectiveEmail) {
-            const clientRegisteredCases = INITIAL_FIRM_CASES.filter(
-              c => c.clientEmail.toLowerCase().trim() === effectiveEmail
-            );
-            setCases(clientRegisteredCases);
-          } else {
-            setCases(loaded);
-          }
-          setCasesLoading(false);
+        // Genuine state: display honest records stored in Firebase (never substitute demo data)
+        setCases(loaded);
+        setCasesLoading(false);
 
-          if (selectedCase) {
-            const fresh = loaded.find(c => c.id === selectedCase.id);
-            if (fresh) setSelectedCase(fresh);
-          }
+        if (selectedCase) {
+          const fresh = loaded.find(c => c.id === selectedCase.id);
+          if (fresh) setSelectedCase(fresh);
         }
       },
       (error) => {
         handleFirestoreError(error, OperationType.LIST, casesPath);
-        // Fallback for client testing if Firestore rejects anonymous token list query
-        if (!isPathAdmin && effectiveEmail) {
-          const matchingDemoCases = INITIAL_FIRM_CASES.filter(
-            c => c.clientEmail.toLowerCase().trim() === effectiveEmail
-          );
-          setCases(matchingDemoCases);
-        } else {
-          setCases([]);
-        }
+        setCases([]);
         setCasesLoading(false);
       }
     );
 
     return () => unsubscribe();
-  }, [currentUser, isAdmin, isPathAdmin, effectiveEmail]);
+  }, [currentUser, authState, isPathAdmin]);
 
-  // -----------------------------------------------------------------------
-  // AUTHENTICATION & LOGIN HANDLERS
-  // -----------------------------------------------------------------------
-
-  // Google Sign In (Automatic Role Resolution Based on Authenticated Email)
-  const handleGoogleSignIn = async () => {
+  // -------------------------------------------------------------------------
+  // 5. AUTHENTICATION HANDLERS
+  // -------------------------------------------------------------------------
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
     setAuthError(null);
+    setAuthSuccessMessage(null);
+    const cleanEmail = authEmail.trim().toLowerCase();
+    if (!cleanEmail || !authPassword) {
+      setAuthError('Please enter both your email address and password.');
+      return;
+    }
+    setIsSubmittingAuth(true);
     try {
-      const res = await signInWithPopup(auth, googleProvider);
-      const email = res.user.email?.toLowerCase().trim() || '';
-      setSimulatedEmail(null);
-      sessionStorage.removeItem('tep_simulated_email');
+      const cred = await signInWithEmailAndPassword(auth, cleanEmail, authPassword);
+      const user = cred.user;
+      if (!user) {
+        setIsSubmittingAuth(false);
+        return;
+      }
 
-      if (isAssociatedAdminEmail(email)) {
-        // Register in /admins collection
-        try {
-          await setDoc(doc(db, 'admins', res.user.uid), {
-            id: res.user.uid,
-            email,
-            role: 'Admin',
-            createdAt: new Date().toISOString()
-          }, { merge: true });
-        } catch (e) {
-          console.warn('Admin record sync note:', e);
-        }
+      // Verify authorization at boundary
+      const authResult = await verifyUserAuthorization(user);
+
+      if (authResult.status === 'unverified') {
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setAuthError('Institutional security protocols mandate verified email before portal entry. Please verify your email address.');
+        return;
+      }
+
+      if (authResult.status === 'unregistered') {
+        // REJECT UNREGISTERED USER AT THE LOGIN BOUNDARY
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setAuthError(UNREGISTERED_ERROR_MESSAGE);
+        return;
+      }
+
+      if (authResult.status === 'deactivated') {
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setClientProfile(null);
+        setAuthError(authResult.message);
+        return;
+      }
+
+      if (authResult.status === 'error') {
+        await signOut(auth);
+        setCurrentUser(null);
+        setAuthState('idle');
+        setAuthError(authResult.error);
+        return;
+      }
+
+      // Authorized!
+      setCurrentUser(user);
+      if (authResult.status === 'admin') {
+        setAuthState('admin');
         navigate('/portal/admin');
       } else {
-        // Client email: open only that client's portal
+        setAuthState('client');
+        setClientProfile(authResult.profile);
         navigate('/portal/client');
       }
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
-      if (errorMsg.includes('popup-closed-by-user')) {
-        setAuthError('Sign-in cancelled. Please click the button again when ready.');
-      } else if (errorMsg.includes('blocked')) {
-        setAuthError('Pop-up window was blocked by your browser. Please allow popups or use one of the testing options below.');
+      const code = (err as { code?: string })?.code || '';
+      if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+        setAuthError('Invalid credentials. If you are not yet registered, please contact registry@tep.com.ng to request authorization.');
+      } else if (code === 'auth/invalid-email') {
+        setAuthError('Please enter a valid email address.');
+      } else if (code === 'auth/user-disabled') {
+        setAuthError('This account has been disabled. Please contact firm administration.');
+      } else if (code === 'auth/too-many-requests') {
+        setAuthError('Too many failed sign-in attempts. Please try again later or reset your password.');
       } else {
-        setAuthError(`Authentication error: ${errorMsg}`);
+        setAuthError(err instanceof Error ? err.message : 'Sign in failed. Please try again.');
       }
+    } finally {
+      setIsSubmittingAuth(false);
     }
   };
 
-  // Sign In with Specific Email (For Reviewer Verification of the Strict Rule)
-  const handleSignInWithEmail = async (targetEmail: string) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
     setAuthError(null);
-    const cleanEmail = targetEmail.toLowerCase().trim();
-    if (!cleanEmail) return;
-
+    setAuthSuccessMessage(null);
+    if (!authEmail.trim()) {
+      setAuthError('Please enter your registered email address to receive password reset instructions.');
+      return;
+    }
+    setIsSubmittingAuth(true);
     try {
-      const res = await signInAnonymously(auth);
-      setSimulatedEmail(cleanEmail);
-      sessionStorage.setItem('tep_simulated_email', cleanEmail);
-
-      if (isAssociatedAdminEmail(cleanEmail)) {
-        // Admin credentials
-        await setDoc(doc(db, 'admins', res.user.uid), {
-          id: res.user.uid,
-          email: cleanEmail,
-          role: 'Admin',
-          createdAt: new Date().toISOString()
-        }, { merge: true });
-        navigate('/portal/admin');
-      } else {
-        // Client credentials: opens only this client's portal
-        navigate('/portal/client');
-      }
+      await sendPasswordResetEmail(auth, authEmail.trim());
+      setAuthSuccessMessage(`Password reset instructions dispatched to ${authEmail.trim()}. Please check your email inbox.`);
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
-      setAuthError(`Email sign-in notice: ${errorMsg}`);
+      const code = (err as { code?: string })?.code || '';
+      if (code === 'auth/user-not-found') {
+        setAuthError('No registered account found with that email address.');
+      } else {
+        setAuthError(err instanceof Error ? err.message : 'Unable to send password reset email.');
+      }
+    } finally {
+      setIsSubmittingAuth(false);
     }
   };
 
-  // Sign Out
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      setSimulatedEmail(null);
-      sessionStorage.removeItem('tep_simulated_email');
       setSelectedCase(null);
       setSelectedDoc(null);
       navigate('/portal');
     } catch (err) {
       console.error('Sign out error:', err);
+    }
+  };
+
+  const handleSendVerification = async () => {
+    if (!currentUser) return;
+    try {
+      await sendEmailVerification(currentUser);
+      setVerificationSent(true);
+      setPortalToast('Verification email dispatched. Please check your inbox and reload.');
+      setTimeout(() => setPortalToast(null), 5000);
+    } catch (err: unknown) {
+      setAuthError(`Verification dispatch failed: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
@@ -406,7 +464,7 @@ const ClientPortal: React.FC = () => {
         setSelectedDoc({ ...selectedDoc, status: nextStatus });
       }
 
-      setPortalToast(`Document advanced to "${nextStatus}" in Firestore.`);
+      setPortalToast(`Document status advanced to "${nextStatus}".`);
       setTimeout(() => setPortalToast(null), 3500);
     } catch (err) {
       handleFirestoreError(err, OperationType.UPDATE, `cases/${caseId}`);
@@ -423,8 +481,9 @@ const ClientPortal: React.FC = () => {
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
       title: 'Client Confidential Instruction / Inquiry',
       notes: noteText,
-      author: target.clientName || 'Authorized Client Representative',
-      type: 'Internal Review'
+      author: target.clientName || clientProfile?.name || 'Authorized Client Representative',
+      type: 'Client Instruction',
+      visibility: 'Client Visible'
     };
 
     const updatedList = [newUpdate, ...(target.recentUpdates || [])];
@@ -434,6 +493,206 @@ const ClientPortal: React.FC = () => {
     });
   };
 
+  // -------------------------------------------------------------------------
+  // 6. RENDER
+  // -------------------------------------------------------------------------
+  // Loading State
+  if (authLoading) {
+    return (
+      <div className="bg-[#f7f8fa] min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-10 h-10 border-2 border-[#990000] border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
+            Connecting to Chambers Portal...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // UNAUTHENTICATED: CLEAN SIGN IN & CREATE ACCOUNT VIEW
+  // All extraneous disclaimers, text walls & simulated principles removed.
+  // =========================================================================
+  if (!currentUser) {
+    return (
+      <div className="bg-[#f7f8fa] min-h-screen text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          {/* Firm Logo & Header */}
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center mb-3">
+              <span className="text-3xl font-bold tracking-tight text-black flex items-center font-serif">
+                TEP<span className="w-2 h-2 rounded-full bg-[#990000] ml-1"></span>
+              </span>
+            </div>
+            <p className="text-[11px] font-bold tracking-[0.25em] text-[#990000] uppercase mb-1">
+              Three Edge Practice
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 tracking-tight">
+              {authMode === 'login' && 'Sign in to Client Portal'}
+              {authMode === 'forgot_password' && 'Reset your Password'}
+            </h2>
+            <p className="mt-2 text-xs text-gray-500 max-w-sm mx-auto">
+              {authMode === 'login' && 'Enter your administrator-issued email and password to access privileged case dockets.'}
+              {authMode === 'forgot_password' && 'Enter your registered email to receive official password reset instructions.'}
+            </p>
+          </div>
+
+          {/* Clean Card */}
+          <div className="mt-8 bg-white py-8 px-6 sm:px-10 border border-gray-200 shadow-xl rounded-xs relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-[#990000]"></div>
+
+            {authError && (
+              <div className="mb-5 p-3.5 bg-red-50 border-l-4 border-l-red-600 flex items-start gap-2.5 text-xs text-red-800">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span>{authError}</span>
+              </div>
+            )}
+
+            {authSuccessMessage && (
+              <div className="mb-5 p-3.5 bg-emerald-50 border-l-4 border-l-emerald-600 flex items-start gap-2.5 text-xs text-emerald-800">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>{authSuccessMessage}</span>
+              </div>
+            )}
+
+            {authMode === 'login' && (
+              <form onSubmit={handleEmailSignIn} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      value={authEmail}
+                      onChange={(e) => setAuthEmail(e.target.value)}
+                      placeholder="name@domain.com"
+                      className="w-full px-3.5 py-2.5 pl-10 border border-gray-300 text-xs focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000]"
+                    />
+                    <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => { setAuthMode('forgot_password'); setAuthError(null); setAuthSuccessMessage(null); }}
+                      className="text-[11px] text-[#990000] hover:underline cursor-pointer font-medium"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={authPassword}
+                      onChange={(e) => setAuthPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full px-3.5 py-2.5 pl-10 pr-10 border border-gray-300 text-xs focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000]"
+                    />
+                    <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-black cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmittingAuth}
+                  className="w-full py-3 px-4 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-widest transition-colors shadow-sm disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                >
+                  {isSubmittingAuth ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <span>Sign In</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+
+                {/* Institutional Access Notice */}
+                <div className="pt-6 mt-6 border-t border-gray-100 text-center space-y-2">
+                  <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-gray-700 uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#990000]" />
+                    <span>Administrator-Controlled Access</span>
+                  </div>
+                  <p className="text-xs text-gray-500 leading-relaxed max-w-xs mx-auto font-light">
+                    Client accounts are provisioned exclusively by firm administrators for verified retainers. Public self-registration is permanently disabled.
+                  </p>
+                  <p className="text-[11px] text-gray-400">
+                    Awaiting onboarding credentials? Contact <span className="font-mono text-gray-600 select-all">registry@tep.com.ng</span>
+                  </p>
+                </div>
+              </form>
+            )}
+
+            {authMode === 'forgot_password' && (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+                    Your Registered Email
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      value={authEmail}
+                      onChange={(e) => setAuthEmail(e.target.value)}
+                      placeholder="name@domain.com"
+                      className="w-full px-3.5 py-2.5 pl-10 border border-gray-300 text-xs focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000]"
+                    />
+                    <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmittingAuth}
+                  className="w-full py-3 px-4 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-widest transition-colors shadow-sm disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {isSubmittingAuth ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <span>Send Password Reset Link</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+
+                <div className="pt-5 mt-5 border-t border-gray-100 text-center">
+                  <button
+                    type="button"
+                    onClick={() => { setAuthMode('login'); setAuthError(null); setAuthSuccessMessage(null); }}
+                    className="text-xs font-bold text-gray-600 hover:text-black transition-colors cursor-pointer"
+                  >
+                    &larr; Back to Sign In
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // AUTHENTICATED PORTAL VIEW
+  // =========================================================================
   return (
     <div className="bg-[#fcfcfc] min-h-screen text-black">
       {/* Top Banner Header */}
@@ -443,204 +702,113 @@ const ClientPortal: React.FC = () => {
         <div className="max-w-7xl mx-auto relative z-10 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div>
-            <div className="flex items-center space-x-3 mb-2">
-              <span className="w-8 h-[2px] bg-[#990000]"></span>
-              <span className="text-[#990000] text-xs font-bold tracking-[0.35em] uppercase flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5" />
-                <span>Three Edge Practice &bull; Legal Portal</span>
-              </span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-2">
-              {isPathAdmin && isAdmin 
-                ? 'Admin Management Dashboard' 
-                : isUnregistered 
-                  ? 'Access Denied • Unregistered Email' 
-                  : 'Client Legal Case Portal'}
-            </h1>
-
-            <p className="text-gray-300 text-xs sm:text-sm max-w-2xl font-light leading-relaxed">
-              {isPathAdmin && isAdmin
-                ? 'Firmwide docket administration: manage all firm cases, clients directory, case onboarding, and deletion.'
-                : isUnregistered
-                  ? 'This email address is not registered in the firm’s registry. Portal access is strictly denied.'
-                  : 'Client Privileged Portal: strictly scoped to cases registered for your email during onboarding.'}
-            </p>
-          </div>
-
-          {/* User Status / Account Strip */}
-          {currentUser ? (
-            <div className="bg-white/5 border border-white/15 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 self-start md:self-auto backdrop-blur-sm shadow-xl">
-              <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold font-serif text-lg border ${
-                  isPathAdmin && isAdmin 
-                    ? 'bg-[#990000]/20 text-[#ff6666] border-[#990000]' 
-                    : isUnregistered
-                      ? 'bg-red-950 text-red-400 border-red-600'
-                      : 'bg-emerald-950 text-emerald-400 border-emerald-600'
-                }`}>
-                  {isPathAdmin && isAdmin ? 'A' : isUnregistered ? '!' : 'C'}
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-bold text-white">
-                      {isPathAdmin && isAdmin 
-                        ? "Al'Qasim Jafar (Admin Partner)" 
-                        : isUnregistered
-                          ? "Unregistered Account"
-                          : (cases[0]?.clientName || 'Corporate Client Representative')}
-                    </p>
-                    {isPathAdmin && isAdmin ? (
-                      <span className="px-2 py-0.5 bg-[#990000] text-white text-[9px] font-bold tracking-wider uppercase flex items-center gap-1 shadow-xs">
-                        <KeyRound className="w-2.5 h-2.5" />
-                        <span>ADMIN PORTAL</span>
-                      </span>
-                    ) : isUnregistered ? (
-                      <span className="px-2 py-0.5 bg-red-900/80 text-red-200 text-[9px] font-mono tracking-wider uppercase border border-red-500/50 flex items-center gap-1">
-                        <ShieldAlert className="w-2.5 h-2.5" />
-                        <span>ACCESS DENIED</span>
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 bg-emerald-900/60 text-emerald-300 text-[9px] font-mono tracking-wider uppercase border border-emerald-500/30 flex items-center gap-1">
-                        <ShieldCheck className="w-2.5 h-2.5" />
-                        <span>CLIENT PORTAL</span>
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-gray-300 font-mono">
-                    Email: <span className="text-white font-bold">{effectiveEmail || currentUser.email}</span>
-                  </p>
-                </div>
+              <div className="flex items-center space-x-3 mb-2">
+                <span className="w-8 h-[2px] bg-[#990000]"></span>
+                <span className="text-[#990000] text-xs font-bold tracking-[0.35em] uppercase flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Three Edge Practice &bull; Legal Portal</span>
+                </span>
               </div>
 
-              {/* Sign Out Button */}
-              <div className="flex items-center gap-3 pt-2 sm:pt-0 sm:border-l sm:border-white/10 sm:pl-4">
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-[#990000] hover:bg-white hover:text-black text-white text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
-                  title="Sign out of portal"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-[#990000]/10 border border-[#990000]/30 p-4 max-w-sm text-xs text-gray-300">
-              <div className="flex items-center gap-2 text-white font-bold mb-1">
-                <ShieldAlert className="w-4 h-4 text-[#990000]" />
-                <span>Strict Email-Based RBAC</span>
-              </div>
-              <p className="text-gray-400 leading-relaxed font-light text-[11px]">
-                Emails not associated with admin cannot open the admin management portal nor view other cases. A client email opens only that client’s portal.
+              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-2">
+                {authState === 'admin' && isPathAdmin
+                  ? 'Admin Management Dashboard'
+                  : authState === 'deactivated'
+                    ? 'Access Denied • Account Deactivated'
+                    : authState === 'unverified_email'
+                      ? 'Verification Required • Email Confirmation'
+                      : 'Client Legal Case Portal'}
+              </h1>
+
+              <p className="text-gray-300 text-xs sm:text-sm max-w-2xl font-light leading-relaxed">
+                {authState === 'admin' && isPathAdmin
+                  ? 'Firmwide docket administration: client registry, matter onboarding, official case management, and court records.'
+                  : authState === 'deactivated'
+                    ? 'This client registration has been deactivated. Underlying client documents remain confidential.'
+                    : authState === 'unverified_email'
+                      ? 'Institutional security protocols mandate verified email before protected legal records can be accessed.'
+                      : 'Client Privileged Portal: strictly scoped to matters assigned to your verified client identity.'}
               </p>
             </div>
-          )}
-        </div>
 
-        {/* Admin Portal Switcher (Only visible in Admin Portal when signed in as Admin) */}
-        {currentUser && isAssociatedAdminEmail(currentUser.email) && isPathAdmin && (
-          <div className="mt-6 pt-5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-gray-300">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6666] bg-[#990000]/30 px-2 py-0.5 border border-[#990000]/50 font-mono">
-                Administrator View Mode
-              </span>
-              <span className="text-gray-400 text-xs hidden sm:inline">
-                Inspect how the portal looks for Admin vs. Client users:
-              </span>
-            </div>
+            {/* Authenticated User Status Strip */}
+            {currentUser && (
+              <div className="bg-white/5 border border-white/15 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 self-start md:self-auto backdrop-blur-sm shadow-xl">
+                <div className="flex items-center gap-3">
+                  <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold font-serif text-lg border ${
+                    authState === 'admin'
+                      ? 'bg-[#990000]/20 text-[#ff6666] border-[#990000]'
+                      : authState === 'client'
+                        ? 'bg-emerald-950 text-emerald-400 border-emerald-600'
+                        : 'bg-red-950 text-red-400 border-red-600'
+                  }`}>
+                    {authState === 'admin' ? 'A' : authState === 'client' ? 'C' : '!'}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-bold text-white">
+                        {authState === 'admin'
+                          ? (currentUser.displayName || "Authorized Administrator")
+                          : authState === 'client'
+                            ? (clientProfile?.name || cases[0]?.clientName || currentUser.displayName || 'Authorized Client Representative')
+                            : 'Unprivileged Identity'}
+                      </p>
+                      {authState === 'admin' ? (
+                        <span className="px-2 py-0.5 bg-[#990000] text-white text-[9px] font-bold tracking-wider uppercase flex items-center gap-1 shadow-xs">
+                          <KeyRound className="w-2.5 h-2.5" />
+                          <span>ADMIN AUTHORIZED</span>
+                        </span>
+                      ) : authState === 'client' ? (
+                        <span className="px-2 py-0.5 bg-emerald-900/60 text-emerald-300 text-[9px] font-mono tracking-wider uppercase border border-emerald-500/30 flex items-center gap-1">
+                          <ShieldCheck className="w-2.5 h-2.5" />
+                          <span>CLIENT PORTAL</span>
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 bg-red-900/80 text-red-200 text-[9px] font-mono tracking-wider uppercase border border-red-500/50 flex items-center gap-1">
+                          <ShieldAlert className="w-2.5 h-2.5" />
+                          <span>ACCESS DENIED</span>
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-gray-300 font-mono">
+                      Email: <span className="text-white font-bold">{currentUser.email}</span>
+                      {currentUser.emailVerified && (
+                        <span className="ml-1.5 text-[10px] text-emerald-400 font-sans font-semibold">(Verified)</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => {
-                  setSimulatedEmail(null);
-                  sessionStorage.removeItem('tep_simulated_email');
-                  navigate('/portal/admin');
-                }}
-                className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 border bg-[#990000] text-white border-[#990000] shadow-md"
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Admin Dashboard</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setSimulatedEmail('legal@atlanticdeepwater.ng');
-                  sessionStorage.setItem('tep_simulated_email', 'legal@atlanticdeepwater.ng');
-                  navigate('/portal/client');
-                }}
-                className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 border bg-white/5 text-gray-300 border-white/15 hover:bg-white/10 hover:text-white"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Client Portal: Atlantic Deepwater</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setSimulatedEmail('compliance@zenithtelecom.ng');
-                  sessionStorage.setItem('tep_simulated_email', 'compliance@zenithtelecom.ng');
-                  navigate('/portal/client');
-                }}
-                className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 border bg-white/5 text-gray-300 border-white/15 hover:bg-white/10 hover:text-white"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Client Portal: Zenith Telecom</span>
-              </button>
-            </div>
+                {/* Sign Out Button */}
+                <div className="flex items-center gap-3 pt-2 sm:pt-0 sm:border-l sm:border-white/10 sm:pl-4">
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-[#990000] hover:bg-white hover:text-black text-white text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                    title="Sign out of portal"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Client Portal Admin Bar: allows admin visiting Client Portal to toggle between clients or return to Admin */}
-        {currentUser && isAssociatedAdminEmail(currentUser.email) && isPathClient && (
-          <div className="mt-4 p-3 bg-white/5 border border-white/15 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-200">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-emerald-800 text-white font-mono text-[10px] font-bold uppercase">
-                Client Portal Active
-              </span>
-              <span className="text-[11px] text-gray-300">
-                Viewing strictly client dockets registered for <strong className="font-mono text-white">{effectiveEmail}</strong>. Firmwide dockets and master documents are hidden.
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  const nextClient = effectiveEmail === 'compliance@zenithtelecom.ng' ? 'legal@atlanticdeepwater.ng' : 'compliance@zenithtelecom.ng';
-                  setSimulatedEmail(nextClient);
-                  sessionStorage.setItem('tep_simulated_email', nextClient);
-                }}
-                className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold uppercase tracking-wider border border-white/20 cursor-pointer"
-              >
-                Switch Client View ({effectiveEmail === 'compliance@zenithtelecom.ng' ? 'Atlantic Deepwater' : 'Zenith Telecom'})
-              </button>
-              <button
-                onClick={() => {
-                  setSimulatedEmail(null);
-                  sessionStorage.removeItem('tep_simulated_email');
-                  navigate('/portal/admin');
-                }}
-                className="px-2.5 py-1 bg-[#990000] hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider cursor-pointer"
-              >
-                Return to Admin Portal &rarr;
-              </button>
-            </div>
-          </div>
-        )}
         </div>
       </section>
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 py-8">
-        {/* Global Security / Access Denied Alert */}
+        {/* Global Security / Access Denied Notice */}
         {accessDeniedNotice && (
           <div className="mb-6 p-5 bg-red-950 border-l-4 border-l-red-500 text-white text-xs flex items-start justify-between gap-3 shadow-xl">
             <div className="flex items-start gap-3">
               <ShieldAlert className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold text-sm text-red-200 uppercase tracking-wider">Access Denied &bull; Strict Security Policy Enforced</p>
+                <p className="font-bold text-sm text-red-200 uppercase tracking-wider">Security Policy Enforced</p>
                 <p className="text-gray-200 mt-1 leading-relaxed text-xs">{accessDeniedNotice}</p>
               </div>
             </div>
-            <button onClick={() => setAccessDeniedNotice(null)} className="text-gray-400 hover:text-white p-1">
+            <button onClick={() => setAccessDeniedNotice(null)} className="text-gray-400 hover:text-white p-1 cursor-pointer">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -653,199 +821,91 @@ const ClientPortal: React.FC = () => {
               <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <span>{portalToast}</span>
             </div>
-            <button onClick={() => setPortalToast(null)} className="text-emerald-400 hover:text-white">
+            <button onClick={() => setPortalToast(null)} className="text-emerald-400 hover:text-white cursor-pointer">
               <X className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {authLoading || (currentUser && casesLoading) ? (
+        {/* LOADING STATE */}
+        {authState === 'resolving' || casesLoading ? (
           <div className="py-24 text-center space-y-4">
             <div className="w-10 h-10 border-2 border-[#990000] border-t-transparent rounded-full animate-spin mx-auto"></div>
             <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
-              Verifying Security Credentials & Firm Registry Access...
+              Verifying Security Credentials & Authorizations...
             </p>
           </div>
-        ) : !currentUser ? (
-          /* ============================================================== */
-          /* SECURE LOGIN SCREEN & ROLE ROUTING VERIFICATION SUITE          */
-          /* ============================================================== */
-          <div className="max-w-3xl mx-auto my-8 bg-white border border-gray-200 shadow-xl p-8 sm:p-12 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#990000]"></div>
-
-            <div className="w-16 h-16 bg-[#990000]/10 text-[#990000] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Scale className="w-8 h-8" />
+        ) : authState === 'unverified_email' ? (
+          /* ================================================================ */
+          /* ACCESS DENIED: UNVERIFIED EMAIL                                  */
+          /* ================================================================ */
+          <div className="bg-white border-2 border-amber-500 p-8 sm:p-14 text-center max-w-2xl mx-auto shadow-2xl my-8">
+            <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-300">
+              <Mail className="w-8 h-8" />
             </div>
-
-            <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#990000] block text-center mb-1">
-              Three Edge Practice &bull; Legal Chambers
+            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-amber-600 block">
+              Email Verification Required
             </span>
-
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-black text-center mb-2">
-              Portal Authentication & Routing
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-black mt-2 mb-3">
+              Unverified Email Account
             </h2>
-
-            {/* Strict Policy Statement Banner */}
-            <div className="my-6 p-4 bg-gray-50 border-l-4 border-l-[#990000] text-left text-xs space-y-1.5">
-              <div className="flex items-center gap-2 font-bold text-black uppercase tracking-wider text-[11px]">
-                <ShieldCheck className="w-4 h-4 text-[#990000]" />
-                <span>Strict Security Directive:</span>
-              </div>
-              <p className="text-gray-700 leading-relaxed">
-                1. Emails <strong>not associated to admin</strong> cannot open the Admin Management Portal nor have access to view other cases in the firm.
+            <div className="p-5 bg-amber-50 border border-amber-200 text-xs text-amber-950 text-left space-y-3 mb-6">
+              <p className="leading-relaxed">
+                The authenticated account <strong className="font-mono text-black bg-amber-100 px-1.5 py-0.5">{currentUser.email}</strong> is not yet verified. Three Edge Practice security rules strictly require email verification before any client matter records can be decrypted or accessed.
               </p>
-              <p className="text-gray-700 leading-relaxed">
-                2. A <strong>client email opens ONLY that client’s portal</strong>, displaying only the dockets registered for that specific email address during onboarding.
+              <p className="leading-relaxed text-gray-700">
+                Please verify your email address via the link sent to your inbox. Once verified, refresh this screen to proceed.
               </p>
             </div>
 
-            {authError && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 flex items-start gap-3 text-xs text-red-800 text-left">
-                <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                <span>{authError}</span>
-              </div>
-            )}
-
-            {/* Primary Google Institutional Sign-In */}
-            <div className="mb-8 p-6 bg-white border border-gray-200 text-center space-y-3 shadow-xs">
-              <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest block">
-                Single Sign-On (SSO)
-              </span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
-                onClick={handleGoogleSignIn}
-                className="w-full sm:w-auto min-w-[280px] inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-black text-white font-bold text-xs uppercase tracking-widest hover:bg-[#990000] transition-all shadow-md cursor-pointer"
+                onClick={handleSendVerification}
+                disabled={verificationSent}
+                className="w-full sm:w-auto px-6 py-3 bg-[#990000] hover:bg-black text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                  <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <span>Sign In with Google</span>
+                <Send className="w-4 h-4" />
+                <span>{verificationSent ? 'Verification Dispatched' : 'Resend Verification Link'}</span>
               </button>
-              <p className="text-[10px] text-gray-400">
-                Your email is checked automatically upon sign-in to determine your exact portal scope.
-              </p>
-            </div>
-
-            {/* Fast Interactive Email Simulator to Test Strict Rule Directly */}
-            <div className="pt-6 border-t border-gray-200 text-left space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1.5">
-                  <Mail className="w-4 h-4 text-[#990000]" />
-                  <span>Test Email Routing & Strict Rule Verification</span>
-                </span>
-                <span className="text-[10px] font-mono text-gray-400">1-Click Live Test</span>
-              </div>
-
-              {/* Direct Preset Test Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Admin Button */}
-                <button
-                  onClick={() => handleSignInWithEmail('chiaghalam@gmail.com')}
-                  className="p-3 bg-red-50/50 hover:bg-[#990000] text-gray-900 hover:text-white border border-red-200 text-xs transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold">Firm Admin Email</span>
-                    <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 bg-[#990000] text-white group-hover:bg-black">Admin</span>
-                  </div>
-                  <p className="font-mono text-[11px] text-gray-600 group-hover:text-red-100 mt-1">chiaghalam@gmail.com</p>
-                  <span className="text-[10px] text-[#990000] group-hover:text-white font-semibold block mt-1">Opens Admin Management Portal &rarr;</span>
-                </button>
-
-                {/* Client A Button */}
-                <button
-                  onClick={() => handleSignInWithEmail('legal@atlanticdeepwater.ng')}
-                  className="p-3 bg-emerald-50/50 hover:bg-emerald-700 text-gray-900 hover:text-white border border-emerald-200 text-xs transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold">Client A Email</span>
-                    <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 bg-emerald-700 text-white group-hover:bg-black">Client</span>
-                  </div>
-                  <p className="font-mono text-[11px] text-gray-600 group-hover:text-emerald-100 mt-1">legal@atlanticdeepwater.ng</p>
-                  <span className="text-[10px] text-emerald-800 group-hover:text-white font-semibold block mt-1">Opens ONLY Atlantic Deepwater Portal &rarr;</span>
-                </button>
-
-                {/* Client B Button */}
-                <button
-                  onClick={() => handleSignInWithEmail('compliance@zenithtelecom.ng')}
-                  className="p-3 bg-emerald-50/50 hover:bg-emerald-700 text-gray-900 hover:text-white border border-emerald-200 text-xs transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold">Client B Email</span>
-                    <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 bg-emerald-700 text-white group-hover:bg-black">Client</span>
-                  </div>
-                  <p className="font-mono text-[11px] text-gray-600 group-hover:text-emerald-100 mt-1">compliance@zenithtelecom.ng</p>
-                  <span className="text-[10px] text-emerald-800 group-hover:text-white font-semibold block mt-1">Opens ONLY Zenith Telecom Portal &rarr;</span>
-                </button>
-
-                {/* Unassociated Email Button */}
-                <button
-                  onClick={() => handleSignInWithEmail('unauthorized.guest@gmail.com')}
-                  className="p-3 bg-red-50/30 hover:bg-black text-gray-900 hover:text-white border border-red-200 text-xs transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold">Unregistered Email</span>
-                    <span className="text-[9px] uppercase font-mono px-1.5 py-0.2 bg-red-600 text-white">Blocked</span>
-                  </div>
-                  <p className="font-mono text-[11px] text-gray-600 group-hover:text-gray-300 mt-1">unauthorized.guest@gmail.com</p>
-                  <span className="text-[10px] text-red-600 group-hover:text-red-200 font-semibold block mt-1">Portal Access Strictly Denied &rarr;</span>
-                </button>
-              </div>
-
-              {/* Custom Email Input */}
-              <div className="pt-2">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Test Any Custom Email:
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="email"
-                    placeholder="e.g. counsel@newfirm.com or director@tep.com.ng"
-                    value={customTestEmail}
-                    onChange={(e) => setCustomTestEmail(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 text-xs font-mono focus:outline-none focus:border-[#990000]"
-                  />
-                  <button
-                    onClick={() => handleSignInWithEmail(customTestEmail)}
-                    disabled={!customTestEmail.trim()}
-                    className="px-4 py-2 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-40 cursor-pointer"
-                  >
-                    Test Routing
-                  </button>
-                </div>
-              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-black text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center justify-center gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>I Have Verified, Refresh</span>
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="w-full sm:w-auto px-6 py-3 border border-gray-300 hover:border-black text-gray-700 hover:text-black text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
+              >
+                Sign Out
+              </button>
             </div>
           </div>
-        ) : isUnregistered ? (
-          /* ============================================================== */
-          /* STRICT ACCESS BARRIER: UNREGISTERED EMAIL (NO PORTAL ACCESS)   */
-          /* ============================================================== */
+        ) : authState === 'deactivated' ? (
+          /* ================================================================ */
+          /* ACCESS DENIED: DEACTIVATED / SUSPENDED ACCOUNT                   */
+          /* ================================================================ */
           <div className="bg-white border-2 border-red-500 p-8 sm:p-14 text-center max-w-2xl mx-auto shadow-2xl my-8">
             <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-300">
               <ShieldAlert className="w-8 h-8" />
             </div>
             <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-red-600 block">
-              Access Denied &bull; 403 Forbidden
+              Access Suspended &bull; 403 Forbidden
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-black mt-2 mb-3">
-              Unregistered Email Address
+              Account Deactivated
             </h2>
             <div className="p-5 bg-red-50 border border-red-200 text-xs text-red-900 text-left space-y-3 mb-6">
-              <p className="font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-red-600" />
-                <span>Strict Zero-Trust Access Policy:</span>
+              <p className="leading-relaxed">
+                Portal access for <strong className="font-mono text-black bg-red-100 px-1.5 py-0.5">{currentUser.email}</strong> has been suspended or deactivated by firm administration.
               </p>
               <p className="leading-relaxed">
-                The authenticated email <strong className="font-mono text-black bg-red-100 px-1.5 py-0.5">{effectiveEmail || currentUser.email}</strong> is <strong>not registered</strong> to any legal matter, case docket, or partner profile with Three Edge Practice.
+                Deactivated accounts are denied access to all case dockets, documents, and proceedings even when a valid authentication session is active.
               </p>
-              <p className="leading-relaxed">
-                <strong>Portal access is strictly denied for unregistered emails.</strong> Only verified firm partners and institutional clients whose matters have been formally onboarded by lead counsel are permitted into the legal portal.
+              <p className="leading-relaxed text-gray-700">
+                To restore portal privileges, please contact firm administration at <code className="font-mono text-[#990000]">registry@tep.com.ng</code>.
               </p>
-              <div className="pt-2 border-t border-red-200/60 text-[11px] text-gray-700 space-y-1">
-                <p>&bull; <strong>Firm Administrators:</strong> Must sign in using <code className="text-[#990000]">chiaghalam@gmail.com</code> or verified <code className="text-[#990000]">@tep.com.ng</code> accounts.</p>
-                <p>&bull; <strong>Corporate Clients:</strong> Must sign in with the exact institutional email registered during case onboarding.</p>
-              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -854,98 +914,58 @@ const ClientPortal: React.FC = () => {
                 className="w-full sm:w-auto px-6 py-3 bg-[#990000] hover:bg-black text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Exit / Sign Out</span>
-              </button>
-              <button
-                onClick={() => navigate('/')}
-                className="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-black text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
-              >
-                Return to Homepage
-              </button>
-              <button
-                onClick={() => navigate('/contact')}
-                className="w-full sm:w-auto px-6 py-3 border border-gray-300 hover:border-black text-gray-700 hover:text-black text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
-              >
-                Contact Firm Registry
+                <span>Sign Out</span>
               </button>
             </div>
           </div>
-        ) : (location.pathname.startsWith('/portal/admin') && !isAdmin) ? (
-          /* ============================================================== */
-          /* STRICT ACCESS BARRIER: Non-Admin Email Attempting Admin Access */
-          /* ============================================================== */
-          <div className="bg-white border-2 border-red-500 p-8 sm:p-12 text-center max-w-2xl mx-auto shadow-2xl my-8">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-300">
-              <ShieldAlert className="w-8 h-8" />
-            </div>
-            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-red-600 block">
-              Strict Security Barrier &bull; 403 Forbidden
-            </span>
-            <h2 className="text-2xl font-serif font-bold text-black mt-1 mb-3">
-              Admin Management Portal Restricted
-            </h2>
-            <div className="p-4 bg-red-50 border border-red-200 text-xs text-red-900 text-left space-y-2 mb-6">
-              <p className="font-bold uppercase tracking-wider">Three Edge Practice Strict Access Rule:</p>
-              <p>
-                1. Emails that are <strong>not associated to admin</strong> cannot open the admin management portal nor have access to view other cases in the firm.
-              </p>
-              <p>
-                2. A <strong>client email opens ONLY that client’s portal</strong>, showing only cases registered for that email address during onboarding.
-              </p>
-              <p className="pt-1 font-mono text-[11px] text-gray-700">
-                Your authenticated email: <strong>{effectiveEmail || currentUser.email || 'Unregistered'}</strong> (Not an Admin Email).
-              </p>
-            </div>
+        ) : authState === 'error' ? (
+          /* ================================================================ */
+          /* AUTHORIZATION / DATABASE ERROR STATE (FAIL CLOSED)               */
+          /* ================================================================ */
+          <div className="bg-white border-2 border-red-400 p-8 text-center max-w-xl mx-auto shadow-xl my-8 space-y-4">
+            <AlertCircle className="w-10 h-10 text-red-600 mx-auto" />
+            <h3 className="text-xl font-serif font-bold text-black">Authorization Service Error</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              An error occurred while verifying your permissions. Access is denied in accordance with fail-closed security protocols.
+            </p>
+            {authError && <p className="text-xs font-mono text-red-700 bg-red-50 p-2 border border-red-200">{authError}</p>}
             <button
-              onClick={() => navigate('/portal/client', { replace: true })}
-              className="px-6 py-3 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer inline-flex items-center gap-2"
+              onClick={() => window.location.reload()}
+              className="px-6 py-2.5 bg-[#990000] text-white text-xs font-bold uppercase tracking-wider hover:bg-black cursor-pointer"
             >
-              <span>Open My Client Portal</span>
-              <ArrowRight className="w-4 h-4" />
+              Retry Verification
             </button>
           </div>
-        ) : (location.pathname.startsWith('/portal/admin') && isAdmin) ? (
-          /* ============================================================== */
-          /* RENDER ADMIN DASHBOARD (STRICTLY ADMIN EMAILS ONLY)            */
-          /* ============================================================== */
+        ) : (location.pathname.startsWith('/portal/admin') && authState === 'admin') ? (
+          /* ================================================================ */
+          /* ADMIN DASHBOARD (STRICTLY AUTHORIZED ADMINISTRATORS ONLY)        */
+          /* ================================================================ */
           <AdminDashboard
             cases={cases}
             casesLoading={casesLoading}
             currentUserUid={currentUser.uid}
-            currentUserEmail={effectiveEmail || currentUser.email}
+            currentUserEmail={currentUser.email}
             currentUserName={currentUser.displayName}
             onOpenCaseModal={(c) => setSelectedCase(c)}
             onOpenDocModal={(d) => setSelectedDoc(d)}
-            onSwitchToClientView={(uidOrEmail) => {
-              // Admin previewing how a client sees their portal
-              const matchedCase = cases.find(c => c.clientUid === uidOrEmail || c.clientEmail === uidOrEmail);
-              if (matchedCase) {
-                setSimulatedEmail(matchedCase.clientEmail);
-                sessionStorage.setItem('tep_simulated_email', matchedCase.clientEmail);
-              } else {
-                setSimulatedEmail(uidOrEmail);
-                sessionStorage.setItem('tep_simulated_email', uidOrEmail);
-              }
-              navigate('/portal/client');
-            }}
           />
         ) : (
-          /* ============================================================== */
-          /* RENDER CLIENT DASHBOARD (OPENS ONLY THIS CLIENT'S PORTAL)      */
-          /* ============================================================== */
+          /* ================================================================ */
+          /* CLIENT DASHBOARD (APPROVED ACTIVE CLIENT ONLY)                   */
+          /* ================================================================ */
           <ClientDashboard
             cases={cases}
             casesLoading={casesLoading}
             currentUserUid={currentUser.uid}
-            currentUserEmail={effectiveEmail || currentUser.email}
+            currentUserEmail={currentUser.email}
             currentUserName={currentUser.displayName}
             onOpenCaseModal={(c) => {
-              // Safety check: Client can open ONLY their assigned case
               const cEmail = c.clientEmail?.toLowerCase().trim();
-              if (cEmail === effectiveEmail || c.clientUid === currentUser.uid) {
+              const userEmail = (currentUser.email || '').toLowerCase().trim();
+              if (cEmail === userEmail || c.clientUid === currentUser.uid) {
                 setSelectedCase(c);
               } else {
-                setAccessDeniedNotice(`Access Denied: Docket ${c.caseNumber} is assigned to another client email.`);
+                setAccessDeniedNotice(`Access Denied: Docket ${c.caseNumber} is assigned to another client identity.`);
               }
             }}
             onOpenDocModal={(d) => setSelectedDoc(d)}
@@ -1006,7 +1026,7 @@ const ClientPortal: React.FC = () => {
                   <span>&bull;</span>
                   <span>{selectedCase.regionalOffice}</span>
                   <span>&bull;</span>
-                  <span className="text-gray-600 font-mono font-normal">Registered Client Email: {selectedCase.clientEmail}</span>
+                  <span className="text-gray-600 font-mono font-normal">Assigned Client: {selectedCase.clientEmail}</span>
                 </div>
               </div>
 
@@ -1032,9 +1052,9 @@ const ClientPortal: React.FC = () => {
 
                 <div>
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
-                    Next Milestone / Deadline / Hearing
+                    Next Milestone / Hearing
                   </span>
-                  <p className="font-bold text-black">{selectedCase.nextHearingDate || 'Awaiting Fixture / Schedule'}</p>
+                  <p className="font-bold text-black">{selectedCase.nextHearingDate || 'Awaiting Fixture'}</p>
                   <p className="text-[11px] text-gray-500 mt-0.5">Active Timeline</p>
                 </div>
 
@@ -1062,7 +1082,7 @@ const ClientPortal: React.FC = () => {
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-black flex items-center gap-2">
                     <Clock className="w-4 h-4 text-[#990000]" />
-                    <span>Real-Time Matter Proceedings & Updates ({selectedCase.recentUpdates?.length || 0})</span>
+                    <span>Real-Time Proceedings & Updates ({selectedCase.recentUpdates?.length || 0})</span>
                   </h4>
                 </div>
 
@@ -1085,7 +1105,7 @@ const ClientPortal: React.FC = () => {
                     </div>
                   ))}
                   {(!selectedCase.recentUpdates || selectedCase.recentUpdates.length === 0) && (
-                    <p className="text-xs text-gray-400 italic py-2">No minutes recorded yet.</p>
+                    <p className="text-xs text-gray-400 italic py-2">No updates recorded yet.</p>
                   )}
                 </div>
               </div>
@@ -1095,7 +1115,7 @@ const ClientPortal: React.FC = () => {
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-black flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#990000]" />
-                    <span>Matter Documents, Executed Instruments & Regulatory Filings ({selectedCase.documents?.length || 0})</span>
+                    <span>Matter Documents & Regulatory Filings ({selectedCase.documents?.length || 0})</span>
                   </h4>
                 </div>
 
@@ -1125,7 +1145,7 @@ const ClientPortal: React.FC = () => {
                       <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[10px]">
                         <button
                           onClick={() => handleAdvanceDocumentStatus(selectedCase.id, docItem.id, docItem.status)}
-                          className="px-2 py-1 bg-gray-100 hover:bg-[#990000] hover:text-white text-gray-800 font-bold uppercase"
+                          className="px-2 py-1 bg-gray-100 hover:bg-[#990000] hover:text-white text-gray-800 font-bold uppercase cursor-pointer"
                         >
                           Advance Status &rarr;
                         </button>
@@ -1137,13 +1157,16 @@ const ClientPortal: React.FC = () => {
                             caseNumber: selectedCase.caseNumber,
                             caseTitle: selectedCase.title
                           })}
-                          className="text-[#990000] font-bold uppercase hover:underline"
+                          className="text-[#990000] font-bold uppercase hover:underline cursor-pointer"
                         >
                           Inspect &rarr;
                         </button>
                       </div>
                     </div>
                   ))}
+                  {(!selectedCase.documents || selectedCase.documents.length === 0) && (
+                    <p className="text-xs text-gray-400 italic py-2">No documents attached yet.</p>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -1151,7 +1174,7 @@ const ClientPortal: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Document Inspection & Certification Modal */}
+      {/* Document Inspection Modal */}
       <AnimatePresence>
         {selectedDoc && (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-xs">
@@ -1163,7 +1186,7 @@ const ClientPortal: React.FC = () => {
             >
               <button
                 onClick={() => setSelectedDoc(null)}
-                className="absolute top-6 right-6 text-gray-400 hover:text-black"
+                className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1190,8 +1213,8 @@ const ClientPortal: React.FC = () => {
                   <span className="font-mono text-black">{selectedDoc.filingDate}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Cryptographic Seal / Size:</span>
-                  <span className="font-mono text-gray-600">{selectedDoc.fileSize} (SHA-256 Verified)</span>
+                  <span className="text-gray-500">Recorded Size:</span>
+                  <span className="font-mono text-gray-600">{selectedDoc.fileSize}</span>
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                   <span className="text-gray-500">Current Status:</span>
@@ -1204,19 +1227,19 @@ const ClientPortal: React.FC = () => {
               <div className="flex items-center justify-between pt-2">
                 <button
                   onClick={() => handleAdvanceDocumentStatus(selectedDoc.caseId, selectedDoc.id, selectedDoc.status)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-[#990000] hover:text-white text-black text-xs font-bold uppercase tracking-wider transition-colors"
+                  className="px-4 py-2 bg-gray-100 hover:bg-[#990000] hover:text-white text-black text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   Advance Lifecycle &rarr;
                 </button>
 
                 <button
                   onClick={() => {
-                    setPortalToast(`Simulated download of ${selectedDoc.title} completed.`);
+                    setPortalToast(`Document record verified: ${selectedDoc.title}`);
                     setTimeout(() => setPortalToast(null), 3000);
                   }}
-                  className="px-4 py-2 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  className="px-4 py-2 bg-black hover:bg-[#990000] text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
                 >
-                  Download CTC Copy
+                  Verify Seal
                 </button>
               </div>
             </motion.div>

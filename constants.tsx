@@ -8,7 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'INSIGHTS', path: '/insights' },
   { label: 'CAREERS', path: '/careers' },
   { label: 'CONTACT', path: '/contact' },
-  { label: 'CLIENT PORTAL', path: '/portal/client' },
+  { label: 'LOGIN', path: '/portal/client' },
 ];
 
 export const REGIONAL_OFFICES: RegionalOffice[] = [
@@ -722,21 +722,27 @@ References:
 
 export const BIG_WINS: BigWin[] = [
   {
-    title: 'Successful Defense in $500M Regulatory Dispute',
-    year: '2023',
-    description: 'Secured a favorable outcome for a leading telecommunications company in a multi-jurisdictional enforcement case.',
-    result: 'Full dismissal of all regulatory charges.'
+    title: 'Upstream Petroleum Concession & Host Community Trust Restructuring',
+    year: '2026',
+    description: 'Advisory and regulatory documentation for an upstream joint venture addressing Petroleum Industry Act statutory compliance, acreage unitization, and community trust governance.',
+    result: 'Institutional advisory completed and regulatory frameworks filed with sector authorities.'
   },
   {
-    title: 'Nationwide Compliance Restructuring',
-    year: '2022',
-    description: 'Architected and implemented a comprehensive AML/CFT framework for a top-tier financial institution.',
-    result: 'Exceeded all Central Bank audit standards.'
+    title: 'Appellate Proceedings on Inter-State Fiscal Demarcation & Digital Commerce',
+    year: '2025',
+    description: 'Representation in appellate constitutional proceedings concerning the jurisdictional division between federal tax authorities and state internal revenue services regarding digital services.',
+    result: 'Appellate briefs delivered on constitutional jurisdictional grounds.'
   },
   {
-    title: 'Crisis Management for Energy Major',
-    year: '2021',
-    description: 'Managed a high-stakes reputational crisis involving community stakeholders and government agencies.',
-    result: 'Resolved within 90 days with zero litigation.'
+    title: 'Telecommunications Spectrum Infrastructure Administrative Procedure',
+    year: '2024',
+    description: 'Administrative defense and representation of a national telecommunications infrastructure operator in regulatory hearings regarding spectrum reallocation and fee assessments.',
+    result: 'Administrative dispute concluded through structured statutory resolution.'
+  },
+  {
+    title: 'Corporate Governance & AML/CFT Statutory Audit Framework',
+    year: '2024',
+    description: 'Comprehensive compliance audit and AML/CFT institutional framework design for a regulated financial services and commercial enterprise under statutory guidelines.',
+    result: 'Compliance review completed and updated regulatory reporting protocols adopted.'
   }
 ];

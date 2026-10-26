@@ -29,6 +29,8 @@ import {
   PlusCircle
 } from 'lucide-react';
 import { LegalCase, ClientProfile, CaseUpdate, CaseDocument, CaseStatus, ClientNotice, CaseUpdateType, MatterCategory, CaseDocumentCategory } from '../types';
+import { PRACTICE_PRESETS } from '../src/data/firmMatters';
+
 
 interface ClientManagementWorkspaceProps {
   client: ClientProfile;
@@ -47,7 +49,6 @@ interface ClientManagementWorkspaceProps {
   onDeleteDocument: (caseId: string, docId: string) => Promise<void>;
   onAddNoticeToCase: (caseId: string, notice: ClientNotice) => Promise<void>;
   onDeleteNotice: (caseId: string, noticeId: string) => Promise<void>;
-  onSwitchToClientView?: (email: string) => void;
   currentUserName: string | null;
   initialTab?: 'dockets' | 'updates' | 'documents' | 'notices' | 'profile';
   initialOpenAddUpdate?: boolean;
@@ -73,7 +74,6 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
   onDeleteDocument,
   onAddNoticeToCase,
   onDeleteNotice,
-  onSwitchToClientView,
   currentUserName,
   initialTab = 'dockets',
   initialOpenAddUpdate = false,
@@ -114,113 +114,6 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
     address: client.address,
     notes: client.notes || ''
   });
-
-const PRACTICE_PRESETS = [
-  {
-    name: 'Compliance and Advisory',
-    category: 'Compliance & Regulatory Advisory' as MatterCategory,
-    forum: 'Nigeria Data Protection Commission (NDPC) / CAC',
-    presiding: 'National Commissioner / Registrar-General',
-    status: 'Regulatory Audit & Compliance Review' as CaseStatus,
-    stage: 'Regulatory Compliance Audit & Impact Assessment',
-    nextMilestone: 'NOV 15, 2026 - Statutory NDPC Audit Filing Deadline',
-    docCategory: 'Compliance Audit & Impact Report' as CaseDocumentCategory,
-    docTitle: 'Regulatory Compliance Audit & Impact Report',
-    updateTitle: 'Compliance Review & Retainer Initialized',
-    updateType: 'Regulatory Development' as CaseUpdateType
-  },
-  {
-    name: 'General Corporate/Commercial Legal Support',
-    category: 'Corporate & Commercial Legal Support' as MatterCategory,
-    forum: 'Corporate Affairs Commission (CAC) / Securities & Exchange Commission',
-    presiding: 'Registrar-General / Transaction Directorate',
-    status: 'Transactional Drafting & Negotiation' as CaseStatus,
-    stage: 'Contract Drafting, Due Diligence & Negotiation',
-    nextMilestone: 'NOV 20, 2026 - Definitive Agreement Execution',
-    docCategory: 'Commercial Contract / Transaction Draft' as CaseDocumentCategory,
-    docTitle: 'Master Commercial Contract & Transaction Draft',
-    updateTitle: 'Corporate Transactional Mandate Initiated',
-    updateType: 'Legal Milestone' as CaseUpdateType
-  },
-  {
-    name: 'Corporate Criminal Defense',
-    category: 'Corporate Criminal Defense & Investigations' as MatterCategory,
-    forum: 'EFCC Legal & Prosecution Directorate / Special Operations Unit',
-    presiding: 'Director of Legal & Prosecution / Enforcement Taskforce',
-    status: 'Pre-Charge Investigation & Defense' as CaseStatus,
-    stage: 'Pre-Charge Investigation, Document Production & Defense',
-    nextMilestone: 'NOV 10, 2026 - Agency Document Production Session',
-    docCategory: 'Legal Opinion / Advisory Memo' as CaseDocumentCategory,
-    docTitle: 'Statutory Defense Position Paper & Agency Response',
-    updateTitle: 'Pre-Charge Defense File & Representation Opened',
-    updateType: 'Investigative Development' as CaseUpdateType
-  },
-  {
-    name: 'Tax Advisory & Fiscal Structuring',
-    category: 'Tax Advisory & Fiscal Structuring' as MatterCategory,
-    forum: 'Federal Inland Revenue Service (FIRS) - Large Tax Office',
-    presiding: 'Director of Corporate Tax Audit & Review Panel',
-    status: 'Active Advisory / Retainer' as CaseStatus,
-    stage: 'Tax Assessment Reconciliation & Advance Ruling Advisory',
-    nextMilestone: 'NOV 18, 2026 - FIRS Technical Audit Reconciliation',
-    docCategory: 'Tax Assessment & Defense Filing' as CaseDocumentCategory,
-    docTitle: 'Tax Advisory Position Paper & Fiscal Defense',
-    updateTitle: 'Fiscal Review & Advisory Protocol Initiated',
-    updateType: 'Legal Milestone' as CaseUpdateType
-  },
-  {
-    name: 'Energy, Maritime & Natural Resources',
-    category: 'Energy, Maritime & Natural Resources' as MatterCategory,
-    forum: 'Nigerian Upstream Petroleum Regulatory Commission (NUPRC) / Federal High Court',
-    presiding: 'Commission Chief Executive / Admiralty Division Judge',
-    status: 'Active Advisory / Retainer' as CaseStatus,
-    stage: 'Concession Review, Host Community Trust & Local Content Compliance',
-    nextMilestone: 'DEC 02, 2026 - PIA Concession Statutory Milestone',
-    docCategory: 'Regulatory Filing / Statutory Permit' as CaseDocumentCategory,
-    docTitle: 'PIA Concession & Operational Compliance Framework',
-    updateTitle: 'Energy Concession & Statutory Framework Onboarded',
-    updateType: 'Regulatory Development' as CaseUpdateType
-  },
-  {
-    name: 'IT Law, Tech Regulatory & Data Protection',
-    category: 'IT Law, Tech Regulatory & Data Protection' as MatterCategory,
-    forum: 'Nigeria Data Protection Commission (NDPC) / SEC Sandbox',
-    presiding: 'National Commissioner & DPCO Audit Directorate',
-    status: 'Regulatory Audit & Compliance Review' as CaseStatus,
-    stage: 'DPIA Privacy Audit & Software Licensing Framework',
-    nextMilestone: 'NOV 25, 2026 - Statutory Tech Compliance Filing',
-    docCategory: 'Data Protection (NDPA) Framework' as CaseDocumentCategory,
-    docTitle: 'Data Protection Impact Assessment (NDPA Framework)',
-    updateTitle: 'Technology Regulatory Retainer & Audit Activated',
-    updateType: 'Regulatory Development' as CaseUpdateType
-  },
-  {
-    name: 'Government Relations, Public Policy & ESG',
-    category: 'Government Relations, Public Policy & ESG' as MatterCategory,
-    forum: 'National Assembly Joint Committee / Ministry of Environment',
-    presiding: 'Director of Public-Private Concessions & ESG Board',
-    status: 'Active Advisory / Retainer' as CaseStatus,
-    stage: 'Policy Advisory, Public Procurement & ESG Impact Verification',
-    nextMilestone: 'NOV 30, 2026 - Ministerial Stakeholder Consultation',
-    docCategory: 'Compliance Audit & Impact Report' as CaseDocumentCategory,
-    docTitle: 'ESG Impact Verification & Public Policy Advisory',
-    updateTitle: 'Public Policy Advisory & Stakeholder Liaison Initiated',
-    updateType: 'Regulatory Development' as CaseUpdateType
-  },
-  {
-    name: 'Dispute Resolution & Commercial Advocacy',
-    category: 'Dispute Resolution & Commercial Advocacy' as MatterCategory,
-    forum: 'Federal High Court, Abuja Judicial Division',
-    presiding: 'Hon. Justice M. A. Idris (Presiding)',
-    status: 'Active Trial' as CaseStatus,
-    stage: 'Pleadings Exchange & Substantive Hearing',
-    nextMilestone: 'NOV 18, 2026 at 09:30 AM',
-    docCategory: 'Originating Summons' as CaseDocumentCategory,
-    docTitle: 'Originating Process & Statement of Claim',
-    updateTitle: 'Commercial Dispute Docket Formally Instituted',
-    updateType: 'Filing of Processes' as CaseUpdateType
-  }
-];
 
   const [docketForm, setDocketForm] = useState({
     title: '',
@@ -703,17 +596,6 @@ const PRACTICE_PRESETS = [
 
         {/* Global Client Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          {onSwitchToClientView && client.status === 'Active' && (
-            <button
-              onClick={() => onSwitchToClientView(client.email)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
-              title="Preview how this client sees their portal"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>Preview Client Portal</span>
-            </button>
-          )}
-
           <button
             onClick={() => setShowDeactivateModal(true)}
             className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border ${

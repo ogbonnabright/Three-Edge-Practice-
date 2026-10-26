@@ -1,0 +1,76 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isDesignatedAdminEmail() {
+      return request.auth.token.email != null && (
+        request.auth.token.email == "chiaghalam@gmail.com" ||
+        request.auth.token.email == "admin@tep.com.ng" ||
+        request.auth.token.email == "registry@tep.com.ng"
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && isEmailVerified() && (
+        isDesignatedAdminEmail() ||
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidSize() {
+      return request.resource.size < 25 * 1024 * 1024; // 25MB max
+    }
+
+    function isValidDocType() {
+      return request.resource.contentType.matches('application/pdf') ||
+             request.resource.contentType.matches('application/msword') ||
+             request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.wordprocessingml.document') ||
+             request.resource.contentType.matches('text/plain') ||
+             request.resource.contentType.matches('application/zip') ||
+             request.resource.contentType.matches('image/.*');
+    }
+
+    // Default deny all unlisted storage paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Case documents: /cases/{caseId}/{fileName}
+    // Only accessible to authorized admin or client owning the case (if active)
+    match /cases/{caseId}/{fileName} {
+      allow read: if isAdmin() || (
+        isSignedIn() && isEmailVerified() && (
+          firestore.get(/databases/(default)/documents/cases/$(caseId)).data.clientUid == request.auth.uid ||
+          firestore.get(/databases/(default)/documents/cases/$(caseId)).data.clientEmail == request.auth.token.email
+        ) && firestore.get(/databases/(default)/documents/cases/$(caseId)).data.clientAccess == 'Active'
+      );
+      allow write: if isAdmin() && isValidSize() && isValidDocType();
+    }
+
+    // Client uploads: /clients/{clientUid}/{fileName}
+    match /clients/{clientUid}/{fileName} {
+      allow read: if isAdmin() || (
+        isSignedIn() && isEmailVerified() && request.auth.uid == clientUid &&
+        firestore.get(/databases/(default)/documents/clients/$(clientUid)).data.status == 'Active'
+      );
+      allow create: if (
+        isAdmin() || (isSignedIn() && isEmailVerified() && request.auth.uid == clientUid)
+      ) && isValidSize() && isValidDocType();
+      allow delete: if isAdmin();
+    }
+
+    // Inquiries attachments: /inquiries/{inquiryId}/{fileName}
+    match /inquiries/{inquiryId}/{fileName} {
+      allow create: if isValidSize() && isValidDocType();
+      allow read, delete: if isAdmin();
+    }
+  }
+}

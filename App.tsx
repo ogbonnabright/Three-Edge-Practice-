@@ -9,6 +9,7 @@ import BigWins from './pages/BigWins';
 import Team from './pages/Team';
 import Insights from './pages/Insights';
 import Careers from './pages/Careers';
+import OpenPositions from './pages/OpenPositions';
 import Contact from './pages/Contact';
 import ClientPortal from './pages/ClientPortal';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -73,6 +74,7 @@ const App: React.FC = () => {
                 <Route path="/team" element={<Team />} />
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/careers" element={<Careers />} />
+                <Route path="/careers/open-positions" element={<OpenPositions />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/portal" element={<ClientPortal />} />
                 <Route path="/portal/:roleView" element={<ClientPortal />} />

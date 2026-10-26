@@ -295,7 +295,7 @@ const Home: React.FC = () => {
               onClick={() => navigate('/portal')}
               className="w-full sm:w-auto px-8 py-5 bg-[#990000] hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-xl cursor-pointer"
             >
-              <span>Access Client Portal</span>
+              <span>Login</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

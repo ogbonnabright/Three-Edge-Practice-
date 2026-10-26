@@ -27,12 +27,18 @@ import {
   Lock,
   Unlock,
   UserCheck,
-  PlusCircle
+  PlusCircle,
+  AlertTriangle,
+  Copy,
+  Key
 } from 'lucide-react';
-import { doc, setDoc, deleteDoc, updateDoc, collection, onSnapshot } from 'firebase/firestore';
+import { initializeApp, deleteApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, setDoc, deleteDoc, updateDoc, collection, onSnapshot, getDocs } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { LegalCase, CaseUpdate, CaseDocument, CaseStatus, ClientProfile, ClientNotice, ClientStatus } from '../types';
-import { DEMO_CLIENTS, INITIAL_FIRM_CASES } from '../src/data/firmMatters';
+import firebaseConfig from '../firebase-applet-config.json';
+import { LegalCase, CaseUpdate, CaseDocument, CaseStatus, ClientProfile, ClientNotice, ClientStatus, MatterCategory } from '../types';
+import { PRACTICE_PRESETS } from '../src/data/firmMatters';
 import ClientManagementWorkspace from './ClientManagementWorkspace';
 
 interface AdminDashboardProps {
@@ -43,7 +49,6 @@ interface AdminDashboardProps {
   currentUserName: string | null;
   onOpenCaseModal: (legalCase: LegalCase) => void;
   onOpenDocModal: (doc: CaseDocument & { caseNumber: string; caseTitle: string; caseId: string }) => void;
-  onSwitchToClientView?: (clientUid: string) => void;
 }
 
 type AdminTab = 'cases' | 'clients' | 'stream' | 'documents';
@@ -55,8 +60,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   currentUserEmail,
   currentUserName,
   onOpenCaseModal,
-  onOpenDocModal,
-  onSwitchToClientView
+  onOpenDocModal
 }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('cases');
 
@@ -79,7 +83,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [showOnboardModal, setShowOnboardModal] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState<LegalCase | null>(null);
   const [deletingCase, setDeletingCase] = useState(false);
-  const [isSeeding, setIsSeeding] = useState(false);
+  const [showPurgeAllClientsModal, setShowPurgeAllClientsModal] = useState(false);
+  const [purgingAllClients, setPurgingAllClients] = useState(false);
+  const [provisionedCredentials, setProvisionedCredentials] = useState<{ email: string; password: string; name: string } | null>(null);
+  const [copiedCredentials, setCopiedCredentials] = useState(false);
   const [adminToast, setAdminToast] = useState<string | null>(null);
 
   // Firestore Client Profiles State
@@ -89,6 +96,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newClientForm, setNewClientForm] = useState({
     name: '',
     email: '',
+    password: '',
     organization: '',
     representative: '',
     phone: '',
@@ -109,9 +117,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         snapshot.forEach((snap) => {
           loaded.push({ id: snap.id, ...snap.data() } as ClientProfile);
         });
-        if (loaded.length > 0) {
-          setFirestoreClients(loaded);
-        }
+        setFirestoreClients(loaded);
       },
       (err) => {
         console.warn('Clients listener note:', err);
@@ -126,31 +132,34 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     caseNumber: '',
     docketNumber: '',
     suitNumber: '',
-    selectedClientOption: DEMO_CLIENTS[0].id || DEMO_CLIENTS[0].uid || '',
+    selectedClientOption: 'custom',
     customClientUid: '',
-    clientName: DEMO_CLIENTS[0].name,
-    clientEmail: DEMO_CLIENTS[0].email,
-    practiceArea: 'Compliance and Advisory',
+    clientName: '',
+    clientEmail: '',
+    practiceArea: PRACTICE_PRESETS[0].name,
+    matterCategory: PRACTICE_PRESETS[0].category,
     regionalOffice: 'Abuja (Federal Capital Territory)',
-    courtJurisdiction: 'Nigeria Data Protection Commission (NDPC) / CAC',
-    judgeOrPanel: 'National Commissioner / Registrar-General',
-    status: 'Regulatory Audit & Compliance Review' as CaseStatus,
-    stage: 'Regulatory Compliance Audit & Impact Assessment',
+    courtJurisdiction: PRACTICE_PRESETS[0].forum,
+    judgeOrPanel: PRACTICE_PRESETS[0].presiding,
+    status: PRACTICE_PRESETS[0].status,
+    stage: PRACTICE_PRESETS[0].stage,
+    filingDate: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+    nextHearingDate: PRACTICE_PRESETS[0].nextMilestone,
     summary: '',
-    initialUpdateTitle: 'Matter Formally Onboarded by Administrator',
+    initialUpdateTitle: PRACTICE_PRESETS[0].updateTitle,
     initialUpdateNotes: 'Retainer perfected; managing partner assigned to lead matter strategy and regulatory engagement.'
   });
   const [submittingMatter, setSubmittingMatter] = useState(false);
 
-  // Aggregate Clients from Firestore, Cases & Predefined
+  // Aggregate Clients strictly from genuine Firestore clients collection & real cases
   const firmClients = useMemo(() => {
     const clientMap = new Map<string, ClientProfile & { casesCount: number; activeCases: LegalCase[] }>();
 
-    // 1. Add predefined clients first
-    DEMO_CLIENTS.forEach(dc => {
-      const cId = dc.id || dc.uid || dc.email;
+    // 1. Add genuine Firestore clients collection
+    firestoreClients.forEach(fc => {
+      const cId = fc.id || fc.uid || fc.email;
       clientMap.set(cId, {
-        ...dc,
+        ...fc,
         id: cId,
         uid: cId,
         casesCount: 0,
@@ -158,31 +167,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       });
     });
 
-    // 2. Merge Firestore clients collection
-    firestoreClients.forEach(fc => {
-      const cId = fc.id || fc.uid || fc.email;
-      const existing = clientMap.get(cId) || Array.from(clientMap.values()).find(
-        c => c.email.toLowerCase() === fc.email.toLowerCase()
-      );
-      if (existing) {
-        clientMap.set(existing.id, {
-          ...existing,
-          ...fc,
-          id: existing.id,
-          uid: existing.id
-        });
-      } else {
-        clientMap.set(cId, {
-          ...fc,
-          id: cId,
-          uid: cId,
-          casesCount: 0,
-          activeCases: []
-        });
-      }
-    });
-
-    // 3. Populate and link from actual Firestore cases
+    // 2. Populate and link from actual Firestore cases
     cases.forEach(c => {
       const cUid = c.clientUid || c.clientEmail;
       const existing = clientMap.get(cUid) || Array.from(clientMap.values()).find(
@@ -191,10 +176,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (existing) {
         existing.casesCount++;
         existing.activeCases.push(c);
-        if (c.clientName) existing.name = c.clientName;
-        if (c.clientEmail) existing.email = c.clientEmail;
+        if (c.clientName && !existing.name) existing.name = c.clientName;
+        if (c.clientEmail && !existing.email) existing.email = c.clientEmail;
         if (c.clientAccess === 'Deactivated' && existing.status === 'Active') {
-          // Keep synced if deactivation applied to case
           existing.status = 'Deactivated';
         }
       } else {
@@ -289,22 +273,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   }, [cases, statusFilter, clientFilter, practiceAreaFilter, searchQuery]);
 
-  // Seed Initial Demo Dockets to Firestore
-  const handleSeedInitialCases = async () => {
-    setIsSeeding(true);
-    try {
-      for (const initialCase of INITIAL_FIRM_CASES) {
-        await setDoc(doc(db, 'cases', initialCase.id), initialCase);
-      }
-      setAdminToast('Initialized firm dockets across all practice areas in Firestore.');
-      setTimeout(() => setAdminToast(null), 4500);
-    } catch (err) {
-      handleFirestoreError(err, OperationType.CREATE, 'cases');
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-
   // Onboard New Case / Brief Handler
   const handleOnboardCase = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -321,28 +289,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const randomSeq = Math.floor(1000 + Math.random() * 9000);
       const prefix = newMatterForm.practiceArea.toLowerCase().includes('tax') ? 'TEP/TAX/2026' :
                      newMatterForm.practiceArea.toLowerCase().includes('compliance') ? 'TEP/NDPC/2026' :
+                     newMatterForm.practiceArea.toLowerCase().includes('criminal') || newMatterForm.practiceArea.toLowerCase().includes('defense') ? 'TEP/DEF/2026' :
                      newMatterForm.practiceArea.toLowerCase().includes('corporate') ? 'TEP/CORP/2026' :
-                     newMatterForm.practiceArea.toLowerCase().includes('criminal') ? 'TEP/DEF/2026' :
-                     newMatterForm.practiceArea.toLowerCase().includes('energy') ? 'TEP/ENR/2026' : 'TEP/MAT/2026';
-      const docketNumber = newMatterForm.docketNumber.trim() || newMatterForm.caseNumber.trim() || `${prefix}/${randomSeq}`;
+                     newMatterForm.practiceArea.toLowerCase().includes('tech') || newMatterForm.practiceArea.toLowerCase().includes('it law') ? 'TEP/TECH/2026' :
+                     newMatterForm.practiceArea.toLowerCase().includes('energy') ? 'TEP/ENR/2026' :
+                     newMatterForm.practiceArea.toLowerCase().includes('government') ? 'TEP/GOV/2026' :
+                     newMatterForm.practiceArea.toLowerCase().includes('dispute') ? 'TEP/DISP/2026' : 'TEP/MAT/2026';
+      
+      const docketNumber = (newMatterForm.docketNumber || newMatterForm.caseNumber).trim() || `${prefix}/${randomSeq}`;
       const suitNumber = newMatterForm.suitNumber.trim() || undefined;
 
-      const isDispute = newMatterForm.practiceArea.toLowerCase().includes('dispute') || newMatterForm.practiceArea.toLowerCase().includes('litigation');
-      const isCompliance = newMatterForm.practiceArea.toLowerCase().includes('compliance');
-      const isCorporate = newMatterForm.practiceArea.toLowerCase().includes('corporate') && !newMatterForm.practiceArea.toLowerCase().includes('criminal');
-
-      const initialDocCategory = isDispute ? 'Originating Summons' :
-                                 isCompliance ? 'Data Protection (NDPA) Framework' :
-                                 isCorporate ? 'Commercial Contract / Transaction Draft' :
-                                 'Legal Opinion / Advisory Memo';
-      const initialDocTitle = isDispute ? `Originating Process - ${newMatterForm.title.slice(0, 35)}...` :
-                             isCompliance ? `Statutory Compliance Audit Scope - ${newMatterForm.title.slice(0, 30)}...` :
-                             isCorporate ? `Transaction Structuring Agreement - ${newMatterForm.title.slice(0, 30)}...` :
-                             `Advisory Memorandum & Scope - ${newMatterForm.title.slice(0, 30)}...`;
-
-      const initialUpdateType = isDispute ? 'Filing' :
-                               isCompliance ? 'Regulatory Development' :
-                               isCorporate ? 'Legal Milestone' : 'Internal Review';
+      const matchingPreset = PRACTICE_PRESETS.find(p => p.name === newMatterForm.practiceArea) || PRACTICE_PRESETS[0];
 
       const newCase: LegalCase = {
         id: caseId,
@@ -354,33 +311,35 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         clientName: newMatterForm.clientName.trim() || 'Institutional Client',
         clientEmail: clientEmailClean,
         practiceArea: newMatterForm.practiceArea,
+        matterCategory: newMatterForm.matterCategory || matchingPreset.category,
         leadAttorney: "Al'Qasim Jafar (Managing Partner)",
         leadAttorneyEmail: 'a.jafar@tep.com.ng',
         regionalOffice: newMatterForm.regionalOffice,
         status: newMatterForm.status,
-        stage: newMatterForm.stage,
-        filingDate: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
-        courtJurisdiction: newMatterForm.courtJurisdiction.trim(),
-        judgeOrPanel: newMatterForm.judgeOrPanel.trim(),
+        stage: newMatterForm.stage || matchingPreset.stage,
+        filingDate: newMatterForm.filingDate || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+        nextHearingDate: newMatterForm.nextHearingDate || matchingPreset.nextMilestone,
+        courtJurisdiction: (newMatterForm.courtJurisdiction || matchingPreset.forum).trim(),
+        judgeOrPanel: (newMatterForm.judgeOrPanel || matchingPreset.presiding).trim(),
         summary: newMatterForm.summary.trim() || 'Matter instituted for administrative compliance and client representation.',
         recentUpdates: [
           {
             id: `upd-${Date.now()}`,
-            date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
-            title: newMatterForm.initialUpdateTitle.trim() || 'Matter Formally Onboarded by Administrator',
+            date: newMatterForm.filingDate || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+            title: newMatterForm.initialUpdateTitle.trim() || matchingPreset.updateTitle,
             notes: newMatterForm.initialUpdateNotes.trim() || `Docket created and verified by Three Edge Practice registry for client email ${clientEmailClean}.`,
             author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
-            type: initialUpdateType
+            type: matchingPreset.updateType
           }
         ],
         documents: [
           {
             id: `doc-${Date.now()}`,
-            title: initialDocTitle,
-            category: initialDocCategory,
-            filingDate: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+            title: matchingPreset.docTitle,
+            category: matchingPreset.docCategory,
+            filingDate: newMatterForm.filingDate || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
             fileSize: '2.4 MB',
-            status: isDispute ? 'Filed' : 'Drafting'
+            status: matchingPreset.name.includes('Dispute') ? 'Filed' : 'Drafting'
           }
         ],
         createdAt: new Date().toISOString(),
@@ -407,14 +366,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setTimeout(() => setAdminToast(null), 6000);
 
       // Reset form
-      setNewMatterForm(prev => ({
-        ...prev,
+      setNewMatterForm({
         title: '',
         caseNumber: '',
         docketNumber: '',
         suitNumber: '',
-        summary: ''
-      }));
+        selectedClientOption: 'custom',
+        customClientUid: '',
+        clientName: '',
+        clientEmail: '',
+        practiceArea: PRACTICE_PRESETS[0].name,
+        matterCategory: PRACTICE_PRESETS[0].category,
+        regionalOffice: 'Abuja (Federal Capital Territory)',
+        courtJurisdiction: PRACTICE_PRESETS[0].forum,
+        judgeOrPanel: PRACTICE_PRESETS[0].presiding,
+        status: PRACTICE_PRESETS[0].status,
+        stage: PRACTICE_PRESETS[0].stage,
+        filingDate: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+        nextHearingDate: PRACTICE_PRESETS[0].nextMilestone,
+        summary: '',
+        initialUpdateTitle: PRACTICE_PRESETS[0].updateTitle,
+        initialUpdateNotes: 'Retainer perfected; managing partner assigned to lead matter strategy and regulatory engagement.'
+      });
     } catch (err) {
       handleFirestoreError(err, OperationType.CREATE, 'cases');
     } finally {
@@ -444,22 +417,48 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // CLIENT MANAGEMENT WORKSPACE HANDLERS (ADMIN AUTHORITY ONLY)
   // -------------------------------------------------------------------------
 
-  // Register New Client Profile to Firestore
+  // Register New Client Profile to Firestore with Administrator-Controlled Firebase Auth Provisioning
   const handleCreateNewClient = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = newClientForm.email.toLowerCase().trim();
+    const clientPassword = newClientForm.password.trim();
     if (!cleanEmail || !newClientForm.name.trim()) return;
 
+    if (!clientPassword || clientPassword.length < 6) {
+      alert('Password must be at least 6 characters long to provision client authentication.');
+      return;
+    }
+
     setSubmittingClient(true);
+    let clientUid = `client-${Date.now()}`;
+
     try {
-      const clientId = `client-${Date.now()}`;
+      // 1. Administrator-Controlled Firebase Authentication Account Creation
+      // Utilizes an isolated secondary app instance to preserve the current admin's active session
+      try {
+        const secondaryApp = initializeApp(firebaseConfig, `admin-provision-${Date.now()}`);
+        const secondaryAuth = getAuth(secondaryApp);
+        const userCred = await createUserWithEmailAndPassword(secondaryAuth, cleanEmail, clientPassword);
+        clientUid = userCred.user.uid;
+        await signOut(secondaryAuth);
+        await deleteApp(secondaryApp);
+      } catch (authErr: unknown) {
+        const code = (authErr as { code?: string })?.code || '';
+        if (code === 'auth/email-already-in-use') {
+          console.warn('Firebase Auth user already exists in Auth identity table; updating client registry record.');
+        } else {
+          throw new Error(`Firebase Auth Provisioning Error: ${authErr instanceof Error ? authErr.message : String(authErr)}`);
+        }
+      }
+
+      // 2. Save client profile to Firestore 'clients' collection
       const newProfile: ClientProfile = {
-        id: clientId,
-        uid: clientId,
+        id: clientUid,
+        uid: clientUid,
         name: newClientForm.name.trim(),
         email: cleanEmail,
         organization: newClientForm.organization.trim() || newClientForm.name.trim(),
-        representative: newClientForm.representative.trim() || 'Managing Counsel / Rep',
+        representative: newClientForm.representative.trim() || 'Authorized Client Representative',
         phone: newClientForm.phone.trim() || '+234 (0) 900 000 0000',
         address: newClientForm.address.trim() || 'Federal Republic of Nigeria',
         status: 'Active',
@@ -467,10 +466,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         notes: newClientForm.notes.trim()
       };
 
-      // Save client profile to Firestore 'clients' collection
-      await setDoc(doc(db, 'clients', clientId), newProfile);
+      await setDoc(doc(db, 'clients', clientUid), newProfile);
 
-      // If initial docket requested, create it and link to this client
+      // 3. Save explicit authorization record in authorization_registry
+      await setDoc(doc(db, 'authorization_registry', clientUid), {
+        id: clientUid,
+        uid: clientUid,
+        email: cleanEmail,
+        role: 'Client',
+        status: 'Active',
+        authorizedBy: currentUserEmail || 'Admin',
+        authorizedAt: new Date().toISOString()
+      });
+
+      // 4. Save user profile record in users
+      await setDoc(doc(db, 'users', clientUid), {
+        id: clientUid,
+        email: cleanEmail,
+        displayName: newClientForm.name.trim(),
+        role: 'Client',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+
+      // 5. If initial docket requested, create it and link to this client
       if (newClientForm.createInitialDocket) {
         const randomNum = Math.floor(1000 + Math.random() * 9000);
         const caseNumber = newClientForm.initialDocketNumber.trim() || `TEP-FCT-2026-${randomNum}`;
@@ -478,7 +497,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           id: `case-${Date.now()}`,
           caseNumber,
           title: newClientForm.initialDocketTitle.trim() || `${newClientForm.name} Retainer Representation & Regulatory Compliance`,
-          clientUid: clientId,
+          clientUid: clientUid,
           clientName: newClientForm.name.trim(),
           clientEmail: cleanEmail,
           practiceArea: newClientForm.practiceArea,
@@ -521,13 +540,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       }
 
       setShowAddClientModal(false);
-      setAdminToast(`Successfully registered client ${newClientForm.name} (${cleanEmail}). The client can now log in using that registered email and see only their assigned information.`);
+      setProvisionedCredentials({
+        email: cleanEmail,
+        password: clientPassword,
+        name: newClientForm.name.trim()
+      });
+      setAdminToast(`Successfully provisioned client account in Firebase Authentication for ${cleanEmail}.`);
       setTimeout(() => setAdminToast(null), 6000);
 
-      // Reset
+      // Reset Form
       setNewClientForm({
         name: '',
         email: '',
+        password: '',
         organization: '',
         representative: '',
         phone: '',
@@ -539,6 +564,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         practiceArea: 'Compliance and Advisory / Regulatory Advocacy'
       });
     } catch (err) {
+      console.error('Error provisioning client account:', err);
       handleFirestoreError(err, OperationType.CREATE, 'clients');
     } finally {
       setSubmittingClient(false);
@@ -551,11 +577,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       // 1. Update status in Firestore clients collection
       await setDoc(doc(db, 'clients', clientId), { status: newStatus }, { merge: true });
 
-      // 2. Find target client to get their email
+      // 2. Update status in authorization_registry
+      try {
+        await setDoc(doc(db, 'authorization_registry', clientId), { status: newStatus }, { merge: true });
+      } catch (authErr) {
+        console.warn('authorization_registry update note:', authErr);
+      }
+
+      // 3. Find target client to get their email
       const targetClient = firmClients.find(c => c.id === clientId || c.uid === clientId);
       const targetEmail = targetClient?.email?.toLowerCase().trim();
 
-      // 3. Update all cases for this client with new clientAccess status
+      // 4. Update all cases for this client with new clientAccess status
       const associatedCases = cases.filter(c => 
         c.clientUid === clientId || 
         (targetEmail && c.clientEmail?.toLowerCase().trim() === targetEmail)
@@ -587,6 +620,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleDeleteClientProfile = async (clientId: string, deleteCases: boolean) => {
     try {
       await deleteDoc(doc(db, 'clients', clientId));
+      try {
+        await deleteDoc(doc(db, 'authorization_registry', clientId));
+      } catch (authErr) {
+        console.warn('authorization_registry delete note:', authErr);
+      }
+      try {
+        await deleteDoc(doc(db, 'users', clientId));
+      } catch (userErr) {
+        console.warn('users delete note:', userErr);
+      }
 
       if (deleteCases) {
         const targetClient = firmClients.find(c => c.id === clientId || c.uid === clientId);
@@ -605,6 +648,64 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setTimeout(() => setAdminToast(null), 5000);
     } catch (err) {
       handleFirestoreError(err, OperationType.DELETE, `clients/${clientId}`);
+    }
+  };
+
+  // Complete Client Portal Reset: Delete All Client Accounts, Registrations, Authorizations, and Cases
+  const handlePurgeAllClientAccounts = async () => {
+    setPurgingAllClients(true);
+    const designatedAdmins = ['chiaghalam@gmail.com', 'admin@tep.com.ng', 'registry@tep.com.ng'];
+    try {
+      // 1. Delete all documents in 'clients' collection
+      const clientsSnapshot = await getDocs(collection(db, 'clients'));
+      const clientDeletePromises = clientsSnapshot.docs.map(clientDoc => deleteDoc(doc(db, 'clients', clientDoc.id)));
+      await Promise.all(clientDeletePromises);
+
+      // 2. Delete all client matter cases in 'cases' collection
+      const casesSnapshot = await getDocs(collection(db, 'cases'));
+      const caseDeletePromises = casesSnapshot.docs.map(cDoc => deleteDoc(doc(db, 'cases', cDoc.id)));
+      await Promise.all(caseDeletePromises);
+
+      // 3. Purge client authorization records (strictly preserving the 3 designated administrators)
+      try {
+        const authSnapshot = await getDocs(collection(db, 'authorization_registry'));
+        const authDeletePromises = authSnapshot.docs
+          .filter(authDoc => {
+            const data = authDoc.data();
+            const email = (data.email || authDoc.id).toLowerCase();
+            return !designatedAdmins.includes(email);
+          })
+          .map(authDoc => deleteDoc(doc(db, 'authorization_registry', authDoc.id)));
+        await Promise.all(authDeletePromises);
+      } catch (authErr) {
+        console.warn('Authorization registry check note:', authErr);
+      }
+
+      // 4. Purge client user profile records (strictly preserving designated administrators)
+      try {
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const userDeletePromises = usersSnapshot.docs
+          .filter(uDoc => {
+            const data = uDoc.data();
+            const email = (data.email || '').toLowerCase();
+            return !designatedAdmins.includes(email);
+          })
+          .map(uDoc => deleteDoc(doc(db, 'users', uDoc.id)));
+        await Promise.all(userDeletePromises);
+      } catch (userErr) {
+        console.warn('Users collection purge check note:', userErr);
+      }
+
+      setFirestoreClients([]);
+      setSelectedClientForWorkspace(null);
+      setShowPurgeAllClientsModal(false);
+      setAdminToast('All client portal accounts, registrations, and linked matter dockets successfully expunged. Zero client accounts remain in portal.');
+      setTimeout(() => setAdminToast(null), 6000);
+    } catch (err) {
+      console.error('Error purging client accounts:', err);
+      handleFirestoreError(err, OperationType.DELETE, 'clients');
+    } finally {
+      setPurgingAllClients(false);
     }
   };
 
@@ -807,11 +908,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         onDeleteDocument={handleDeleteDocument}
         onAddNoticeToCase={handleAddNoticeToCase}
         onDeleteNotice={handleDeleteNotice}
-        onSwitchToClientView={(email) => {
-          if (onSwitchToClientView) {
-            onSwitchToClientView(email);
-          }
-        }}
         currentUserName={currentUserName}
       />
     );
@@ -964,18 +1060,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <span>All Documents ({allDocuments.length})</span>
           </button>
         </div>
-
-        {/* Quick Database Seeder if empty or needed */}
-        {cases.length === 0 && (
-          <button
-            onClick={handleSeedInitialCases}
-            disabled={isSeeding}
-            className="flex items-center gap-2 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span>{isSeeding ? 'Seeding...' : 'Initialize Firm Demo Dockets'}</span>
-          </button>
-        )}
       </div>
 
       {/* Tab 1: All Firm Cases Table & Management */}
@@ -1045,15 +1129,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="pt-2 flex justify-center gap-3">
                 <button
                   onClick={() => setShowOnboardModal(true)}
-                  className="px-4 py-2 bg-[#990000] text-white text-xs font-bold uppercase tracking-wider hover:bg-black"
+                  className="px-4 py-2 bg-[#990000] text-white text-xs font-bold uppercase tracking-wider hover:bg-black cursor-pointer"
                 >
-                  Onboard First Matter
-                </button>
-                <button
-                  onClick={handleSeedInitialCases}
-                  className="px-4 py-2 bg-gray-100 text-black border border-gray-300 text-xs font-bold uppercase tracking-wider hover:bg-gray-200"
-                >
-                  Load Sample Cases
+                  Onboard Matter
                 </button>
               </div>
             </div>
@@ -1156,6 +1234,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
             <div className="flex flex-wrap items-center gap-2.5">
               <button
+                onClick={() => setShowPurgeAllClientsModal(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-red-50 hover:bg-red-600 hover:text-white text-red-700 border border-red-300 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                title="Permanently remove all client accounts and matter dockets from the portal"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete All Client Accounts</span>
+              </button>
+
+              <button
                 onClick={() => setShowAddClientModal(true)}
                 className="flex items-center gap-1.5 px-4 py-2 bg-[#990000] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer"
               >
@@ -1175,9 +1262,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {firmClients.map(client => {
-              const isDeactivated = client.status === 'Deactivated';
+          {firmClients.length === 0 ? (
+            <div className="bg-white border border-gray-200 p-12 text-center space-y-4">
+              <div className="w-16 h-16 bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center mx-auto text-gray-400">
+                <Users className="w-8 h-8 text-gray-300" />
+              </div>
+              <div className="max-w-md mx-auto">
+                <h4 className="text-lg font-serif font-bold text-black mb-1">No Client Accounts in Portal Registry</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  All previous client accounts and matter dockets have been cleared. Client accounts are onboarded via explicit administrative action using the <strong>Add Client Profile</strong> button.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAddClientModal(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#990000] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Onboard First Client</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {firmClients.map(client => {
+                const isDeactivated = client.status === 'Deactivated';
               return (
                 <div 
                   key={client.id || client.uid} 
@@ -1306,26 +1413,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <Plus className="w-3 h-3" />
                         <span>Docket</span>
                       </button>
-
-                      {/* Preview Button */}
-                      {onSwitchToClientView && (
-                        <button
-                          onClick={() => onSwitchToClientView(client.email || client.id)}
-                          className="px-2.5 py-1.5 bg-gray-50 hover:bg-gray-200 text-gray-700 text-xs font-semibold border border-gray-200 flex items-center gap-1 transition-colors cursor-pointer"
-                          title="Preview Client Dashboard exactly as seen by this client"
-                        >
-                          <Eye className="w-3 h-3" />
-                          <span>Preview</span>
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    )}
 
       {/* Tab 3: Live Firmwide Litigation Stream */}
       {activeTab === 'stream' && (
@@ -1459,10 +1555,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* Onboard New Case Modal (ADMIN ONLY) */}
       {showOnboardModal && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border-t-4 border-t-[#990000] w-full max-w-2xl my-8 p-6 sm:p-8 shadow-2xl relative">
+          <div className="bg-white border-t-4 border-t-[#990000] w-full max-w-2xl max-h-[90vh] overflow-y-auto my-8 p-6 sm:p-8 shadow-2xl relative space-y-4">
             <button
               onClick={() => setShowOnboardModal(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-black"
+              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1472,49 +1568,121 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span>Admin Matter Intake</span>
             </div>
             <h3 className="text-2xl font-serif font-bold text-black mb-1">Onboard New Legal Case / Brief</h3>
-            <p className="text-xs text-gray-500 mb-6">
-              Only authorized firm administrators can register new dockets in Firestore and link them to a client Firebase UID.
+            <p className="text-xs text-gray-500 mb-4">
+              Register new dockets in Firestore with distinct File Reference Numbers and Court Suit Numbers, linked to a verified client email.
             </p>
 
-            <form onSubmit={handleOnboardCase} className="space-y-4">
+            <form onSubmit={handleOnboardCase} className="space-y-4 text-xs">
+              {/* Practice Area Presets (Identical to ClientManagementWorkspace) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                  Matter Title *
+                <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                  Firm Practice Area / Matter Track Presets *
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-2">
+                  {PRACTICE_PRESETS.map((p) => {
+                    const isSelected = newMatterForm.practiceArea === p.name;
+                    return (
+                      <button
+                        key={p.name}
+                        type="button"
+                        onClick={() => {
+                          setNewMatterForm({
+                            ...newMatterForm,
+                            practiceArea: p.name,
+                            matterCategory: p.category,
+                            courtJurisdiction: p.forum,
+                            judgeOrPanel: p.presiding,
+                            status: p.status,
+                            stage: p.stage,
+                            nextHearingDate: p.nextMilestone,
+                            initialUpdateTitle: p.updateTitle
+                          });
+                        }}
+                        className={`p-2 text-left border rounded-xs transition-all cursor-pointer text-[11px] ${
+                          isSelected
+                            ? 'bg-[#990000] text-white border-[#990000] font-bold shadow-xs'
+                            : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-400'
+                        }`}
+                      >
+                        <span className="block truncate">{p.name}</span>
+                        <span className={`block text-[9px] truncate ${isSelected ? 'text-red-100' : 'text-gray-400'}`}>
+                          {p.category.split(' ')[0]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Matter Title */}
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Matter / Case Title *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Zenith Telecom Ltd v. Regulatory Agency (5G Spectrum Appeal)"
+                  placeholder="e.g. Zenith Telecom - Statutory NDPA Compliance Audit & GAID Framework Implementation"
                   value={newMatterForm.title}
                   onChange={(e) => setNewMatterForm({ ...newMatterForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 text-xs focus:outline-none focus:border-[#990000]"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Separate Docket Number vs Suit Number */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                    Suit / Case Number
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Docket / File Reference Number (Firm Ref) *
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. TEP-ABJ-2026-9402"
-                    value={newMatterForm.caseNumber}
-                    onChange={(e) => setNewMatterForm({ ...newMatterForm, caseNumber: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 text-xs focus:outline-none focus:border-[#990000]"
+                    placeholder="e.g. TEP/NDPC/2026/0419"
+                    value={newMatterForm.docketNumber || newMatterForm.caseNumber}
+                    onChange={(e) => setNewMatterForm({ ...newMatterForm, docketNumber: e.target.value, caseNumber: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 font-mono text-xs focus:outline-none focus:border-[#990000]"
                   />
-                  <span className="text-[10px] text-gray-400">Leave blank to auto-generate</span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">
+                    Internal firm matter ref across all practice areas. Auto-generated if blank.
+                  </span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Suit / Case Number (Court / Tribunal / Registry)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. FHC/ABJ/CS/419/2026 or CAC/RC/2026/..."
+                    value={newMatterForm.suitNumber}
+                    onChange={(e) => setNewMatterForm({ ...newMatterForm, suitNumber: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 font-mono text-xs focus:outline-none focus:border-[#990000]"
+                  />
+                  <span className="text-[10px] text-gray-400 block mt-0.5">
+                    Associated with court or regulatory proceedings. Leave blank for non-contentious / advisory.
+                  </span>
+                </div>
+              </div>
+
+              {/* Client Assignment Section */}
+              <div className="p-4 bg-gray-50 border border-gray-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-[#990000] tracking-wider flex items-center gap-1">
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Client Routing Email & Entity Assignment</span>
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-mono">Primary Auth Routing Key</span>
+                </div>
+
+                <div>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
                     Assign to Client / Select Entity *
                   </label>
                   <select
                     value={newMatterForm.selectedClientOption}
                     onChange={(e) => {
                       const val = e.target.value;
-                      const matched = DEMO_CLIENTS.find(dc => dc.uid === val);
+                      const matched = firmClients.find(dc => dc.uid === val || dc.id === val);
                       if (matched) {
                         setNewMatterForm({
                           ...newMatterForm,
@@ -1533,24 +1701,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     }}
                     className="w-full px-3 py-2 border border-gray-300 text-xs bg-white focus:outline-none focus:border-[#990000]"
                   >
-                    {DEMO_CLIENTS.map(dc => (
-                      <option key={dc.uid} value={dc.uid}>
+                    {firmClients.map(dc => (
+                      <option key={dc.id || dc.uid} value={dc.id || dc.uid}>
                         {dc.name} ({dc.email})
                       </option>
                     ))}
                     <option value="custom">+ Register New Client Email & Entity</option>
                   </select>
-                </div>
-              </div>
-
-              {/* Client Email & Identity Form (Primary Routing Key) */}
-              <div className="p-4 bg-gray-50 border border-gray-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase text-[#990000] tracking-wider flex items-center gap-1">
-                    <Mail className="w-3.5 h-3.5" />
-                    <span>Client Routing Email (Primary Auth Identifier)</span>
-                  </span>
-                  <span className="text-[10px] text-gray-400 font-mono">Routes to Client Dashboard</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1566,7 +1723,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onChange={(e) => setNewMatterForm({ ...newMatterForm, clientEmail: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 text-xs font-mono bg-white focus:outline-none focus:border-[#990000]"
                     />
-                    <span className="text-[10px] text-gray-400">Users logging in with this email will route directly to this case.</span>
+                    <span className="text-[10px] text-gray-400">Client will see this docket upon Google / Email sign-in.</span>
                   </div>
 
                   <div>
@@ -1600,136 +1757,168 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Matter Status & Filing Date */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                    Firm Practice Group / Practice Area *
-                  </label>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">Matter Status *</label>
                   <select
-                    value={newMatterForm.practiceArea}
-                    onChange={(e) => {
-                      const pa = e.target.value;
-                      let defaultForum = 'Nigeria Data Protection Commission (NDPC) / CAC';
-                      let defaultPresiding = 'National Commissioner / Registrar-General';
-                      let defaultStage = 'Regulatory Compliance Audit & Impact Assessment';
-                      let defaultStatus: CaseStatus = 'Regulatory Audit & Compliance Review';
-                      if (pa.includes('Corporate')) {
-                        defaultForum = 'Corporate Affairs Commission (CAC) / SEC';
-                        defaultPresiding = 'Registrar-General / Transaction Directorate';
-                        defaultStage = 'Contract Drafting, Due Diligence & Negotiation';
-                        defaultStatus = 'Transactional Drafting & Negotiation';
-                      } else if (pa.includes('Criminal') || pa.includes('Defense')) {
-                        defaultForum = 'EFCC Legal & Prosecution Directorate / Special Operations';
-                        defaultPresiding = 'Director of Legal & Prosecution';
-                        defaultStage = 'Pre-Charge Investigation, Document Production & Defense';
-                        defaultStatus = 'Pre-Charge Investigation & Defense';
-                      } else if (pa.includes('Tax')) {
-                        defaultForum = 'Federal Inland Revenue Service (FIRS) - Large Tax Office';
-                        defaultPresiding = 'Director of Corporate Tax Audit';
-                        defaultStage = 'Tax Assessment Reconciliation & Advance Ruling Advisory';
-                        defaultStatus = 'Active Advisory / Retainer';
-                      } else if (pa.includes('Energy')) {
-                        defaultForum = 'NUPRC / Federal High Court (Admiralty Jurisdiction)';
-                        defaultPresiding = 'Commission Chief Executive / Admiralty Judge';
-                        defaultStage = 'Concession Review & Statutory Compliance';
-                        defaultStatus = 'Active Advisory / Retainer';
-                      } else if (pa.includes('Dispute')) {
-                        defaultForum = 'Federal High Court, Abuja Judicial Division';
-                        defaultPresiding = 'Hon. Justice Presiding';
-                        defaultStage = 'Pleadings Exchange & Substantive Hearing';
-                        defaultStatus = 'Active Trial';
-                      }
-                      setNewMatterForm({
-                        ...newMatterForm,
-                        practiceArea: pa,
-                        courtJurisdiction: defaultForum,
-                        judgeOrPanel: defaultPresiding,
-                        stage: defaultStage,
-                        status: defaultStatus
-                      });
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 text-xs bg-white focus:outline-none focus:border-[#990000]"
+                    value={newMatterForm.status}
+                    onChange={(e) => setNewMatterForm({ ...newMatterForm, status: e.target.value as CaseStatus })}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
                   >
-                    <option value="Compliance and Advisory">Compliance & Regulatory Advisory (NDPA, AML/CFT, IDEC)</option>
-                    <option value="General Corporate/Commercial Legal Support">General Corporate / Commercial Legal Support & M&A</option>
-                    <option value="Corporate Criminal Defense">Corporate Criminal Defense & White-Collar Practice</option>
-                    <option value="Tax Advisory & Fiscal Structuring">Tax Advisory & Fiscal Optimization</option>
-                    <option value="Energy, Maritime & Natural Resources">Energy, Maritime & Natural Resources (PIA 2021)</option>
-                    <option value="IT Law, Tech Regulatory & Data Protection">IT Law, Tech Regulatory, Fintech & IP</option>
-                    <option value="Government Relations, Public Policy & ESG">Government Relations, Public Policy & ESG</option>
-                    <option value="Dispute Resolution & Commercial Advocacy">Dispute Resolution & Commercial Advocacy / Arbitration</option>
+                    <option value="Active Advisory / Retainer">Active Advisory / Retainer</option>
+                    <option value="Regulatory Audit & Compliance Review">Regulatory Audit & Compliance Review</option>
+                    <option value="Transactional Drafting & Negotiation">Transactional Drafting & Negotiation</option>
+                    <option value="Statutory Filing & Licensing">Statutory Filing & Licensing</option>
+                    <option value="Pre-Charge Investigation & Defense">Pre-Charge Investigation & Defense</option>
+                    <option value="Arbitration in Progress">Arbitration in Progress</option>
+                    <option value="Settlement Discussions">Settlement Discussions</option>
+                    <option value="Pre-Trial Discovery">Pre-Trial Discovery</option>
+                    <option value="Active Trial">Active Trial</option>
+                    <option value="Closed / Decided">Closed / Decided</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                    Regional Office
-                  </label>
-                  <select
-                    value={newMatterForm.regionalOffice}
-                    onChange={(e) => setNewMatterForm({ ...newMatterForm, regionalOffice: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 text-xs bg-white focus:outline-none focus:border-[#990000]"
-                  >
-                    <option value="Abuja (Federal Capital Territory)">Abuja Head Office</option>
-                    <option value="Port Harcourt (Rivers State)">Port Harcourt Office</option>
-                    <option value="Lagos (Commercial Hub)">Lagos Office</option>
-                    <option value="Kano (Northern Regional Hub)">Kano Office</option>
-                  </select>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">Filing / Inception Date *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. OCT 22, 2026"
+                    value={newMatterForm.filingDate}
+                    onChange={(e) => setNewMatterForm({ ...newMatterForm, filingDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 font-mono text-xs focus:outline-none focus:border-[#990000]"
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                    Forum / Regulatory Authority / Court / Venue *
+              {/* Regional Office */}
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Responsible Regional Office *
+                </label>
+                <select
+                  value={newMatterForm.regionalOffice}
+                  onChange={(e) => setNewMatterForm({ ...newMatterForm, regionalOffice: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 text-xs bg-white focus:outline-none focus:border-[#990000]"
+                >
+                  <option value="Abuja (Federal Capital Territory)">Abuja Head Office (Firm HQ & Regulatory Practice)</option>
+                  <option value="Port Harcourt (Rivers State)">Port Harcourt Office (Energy & Niger Delta Practice)</option>
+                  <option value="Lagos (Commercial Hub)">Lagos Office (Commercial & Corporate Finance Hub)</option>
+                  <option value="Kano (Northern Regional Hub)">Kano Office (Northern Commercial Gateway)</option>
+                </select>
+              </div>
+
+              {/* Forum / Regulatory Authority / Court with quick chips */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold uppercase tracking-wider text-gray-700">
+                    Forum / Regulatory Authority / Jurisdiction / Registry *
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. CAC / NDPC / FIRS / EFCC / Federal High Court"
-                    value={newMatterForm.courtJurisdiction}
-                    onChange={(e) => setNewMatterForm({ ...newMatterForm, courtJurisdiction: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 text-xs focus:outline-none focus:border-[#990000]"
-                  />
+                  <span className="text-[10px] text-gray-400">Quick venue presets:</span>
                 </div>
+                <div className="flex flex-wrap gap-1 mb-1.5">
+                  {[
+                    'Corporate Affairs Commission (CAC)',
+                    'Nigeria Data Protection Commission (NDPC)',
+                    'Federal Inland Revenue Service (FIRS)',
+                    'Central Bank of Nigeria (CBN)',
+                    'NUPRC (Petroleum Commission)',
+                    'EFCC Directorate, Abuja',
+                    'Arbitral Tribunal (ICC / NICArb)',
+                    'Federal High Court, Abuja Division',
+                    'Court of Appeal'
+                  ].map((forumName) => (
+                    <button
+                      key={forumName}
+                      type="button"
+                      onClick={() => setNewMatterForm({ ...newMatterForm, courtJurisdiction: forumName })}
+                      className="px-2 py-0.5 text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 rounded-xs transition-colors cursor-pointer"
+                    >
+                      {forumName.split(' ')[0]}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Nigeria Data Protection Commission (NDPC) / CAC / Federal High Court"
+                  value={newMatterForm.courtJurisdiction}
+                  onChange={(e) => setNewMatterForm({ ...newMatterForm, courtJurisdiction: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
+                />
+              </div>
+
+              {/* Presiding Authority & Procedural Stage */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
                     Presiding Authority / Lead Regulator / Panel / Judge
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. National Commissioner / Registrar-General / Hon. Justice"
+                    placeholder="e.g. National Commissioner & CEO (NDPC) / Registrar-General / Hon. Justice"
                     value={newMatterForm.judgeOrPanel}
                     onChange={(e) => setNewMatterForm({ ...newMatterForm, judgeOrPanel: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 text-xs focus:outline-none focus:border-[#990000]"
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Current Matter / Procedural Stage *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. DPIA Privacy Audit & Remediation / Due Diligence / Pleadings"
+                    value={newMatterForm.stage}
+                    onChange={(e) => setNewMatterForm({ ...newMatterForm, stage: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
                   />
                 </div>
               </div>
 
+              {/* Next Milestone / Hearing Date */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1">
-                  Case Summary & Legal Scope
+                <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Next Milestone / Statutory Deadline / Hearing Date
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. NOV 15, 2026 - Statutory NDPC Audit Filing Deadline"
+                  value={newMatterForm.nextHearingDate}
+                  onChange={(e) => setNewMatterForm({ ...newMatterForm, nextHearingDate: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 font-mono focus:outline-none focus:border-[#990000]"
+                />
+              </div>
+
+              {/* Client-Visible Summary */}
+              <div>
+                <label className="block font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Client-Visible Brief Summary & Legal Objectives *
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Concise brief of issues for determination and expected legal remedies..."
+                  required
+                  placeholder="Substantive factual matrix, regulatory requirements, commercial covenants, and legal objectives visible on the client's dashboard."
                   value={newMatterForm.summary}
                   onChange={(e) => setNewMatterForm({ ...newMatterForm, summary: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 text-xs focus:outline-none focus:border-[#990000]"
-                ></textarea>
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-[#990000]"
+                />
               </div>
 
               <div className="pt-4 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowOnboardModal(false)}
-                  className="px-5 py-2.5 bg-gray-100 text-black text-xs font-bold uppercase tracking-wider hover:bg-gray-200"
+                  className="px-5 py-2.5 bg-gray-100 text-black text-xs font-bold uppercase tracking-wider hover:bg-gray-200 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingMatter}
-                  className="px-6 py-2.5 bg-[#990000] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors disabled:opacity-50"
+                  className="px-6 py-2.5 bg-[#990000] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
                 >
                   {submittingMatter ? 'Onboarding to Firestore...' : 'Onboard Case (Save to Firestore)'}
                 </button>
@@ -1789,6 +1978,42 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   />
                   <span className="text-[10px] text-gray-400">Primary auth identifier for client portal sign-in.</span>
                 </div>
+              </div>
+
+              {/* Administrator-Controlled Password Provisioning */}
+              <div className="p-3.5 bg-gray-50 border border-gray-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-black flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-[#990000]" />
+                    <span>Initial Account Password *</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+                      let pass = '';
+                      for (let i = 0; i < 12; i++) {
+                        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+                      }
+                      setNewClientForm(prev => ({ ...prev, password: pass }));
+                    }}
+                    className="text-[10px] text-[#990000] hover:underline font-bold uppercase cursor-pointer"
+                  >
+                    Generate Secure Password
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  required
+                  minLength={6}
+                  placeholder="Minimum 6 characters (e.g. TEP-Pass-2026!)"
+                  value={newClientForm.password}
+                  onChange={(e) => setNewClientForm({ ...newClientForm, password: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 text-xs font-mono bg-white focus:outline-none focus:border-[#990000]"
+                />
+                <p className="text-[10px] text-gray-500">
+                  Administrator-Controlled Access: This explicitly provisions Firebase Authentication credentials for this email. Public self-registration is permanently disabled.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2112,6 +2337,69 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 className="px-5 py-2 bg-red-600 hover:bg-black text-white text-xs font-bold uppercase tracking-widest cursor-pointer disabled:opacity-50"
               >
                 {deletingCase ? 'Deleting...' : 'Permanently Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Complete Client Portal Reset Modal (ADMIN ONLY) */}
+      {showPurgeAllClientsModal && (
+        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border-t-4 border-t-red-700 max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-4">
+            <div className="flex items-center gap-2.5 text-red-700">
+              <AlertTriangle className="w-6 h-6 shrink-0" />
+              <div>
+                <h4 className="font-bold text-base uppercase tracking-wider">Purge All Client Accounts & Portal Data</h4>
+                <p className="text-[11px] text-gray-500">Firm Registry Controlled Reset</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-700 leading-relaxed">
+              This operation will permanently delete <strong>all client accounts</strong>, client profiles, client authorizations, and all associated case dockets from the Client Portal.
+            </p>
+
+            <div className="p-3.5 bg-amber-50 border border-amber-200 text-xs space-y-2">
+              <div className="font-bold text-amber-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                <span>Protected Administrator Accounts (Preserved):</span>
+              </div>
+              <ul className="list-disc list-inside text-gray-600 font-mono text-[11px] space-y-0.5">
+                <li>chiaghalam@gmail.com</li>
+                <li>admin@tep.com.ng</li>
+                <li>registry@tep.com.ng</li>
+              </ul>
+              <p className="text-[11px] text-gray-500 italic">
+                Only client portal accounts and matters will be expunged. The 3 designated administrator identities retain full governance.
+              </p>
+            </div>
+
+            <div className="pt-2 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPurgeAllClientsModal(false)}
+                disabled={purgingAllClients}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-black text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handlePurgeAllClientAccounts}
+                disabled={purgingAllClients}
+                className="px-5 py-2 bg-red-700 hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2"
+              >
+                {purgingAllClients ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Purging Data...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Confirm Purge All Clients</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

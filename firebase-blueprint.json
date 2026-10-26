@@ -10,6 +10,7 @@
         "displayName": { "type": "string" },
         "photoURL": { "type": "string" },
         "phone": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin", "Client"] },
         "createdAt": { "type": "string" },
         "updatedAt": { "type": "string" }
       },
@@ -17,23 +18,45 @@
     },
     "adminProfile": {
       "title": "AdminProfile",
-      "description": "Admin privilege record for partners and designated case managers authorized to onboard or delete dockets.",
+      "description": "Admin authorization record for designated administrators and explicitly approved firm partners.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "email": { "type": "string" },
-        "role": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin"] },
+        "status": { "type": "string", "enum": ["Active", "Suspended"] },
         "createdAt": { "type": "string" }
       },
-      "required": ["id", "email"]
+      "required": ["id", "email", "role"]
+    },
+    "clientProfile": {
+      "title": "ClientProfile",
+      "description": "Approved client registration profile with account status and contact details.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "organization": { "type": "string" },
+        "representative": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "status": { "type": "string", "enum": ["Active", "Deactivated"] },
+        "registeredAt": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "status", "registeredAt"]
     },
     "legalCase": {
       "title": "LegalCase",
-      "description": "A client legal case representation with real-time status and hearing dates.",
+      "description": "A client legal case representation with real-time status, court filings, and hearing dates.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "caseNumber": { "type": "string" },
+        "docketNumber": { "type": "string" },
+        "suitNumber": { "type": "string" },
         "title": { "type": "string" },
         "clientUid": { "type": "string" },
         "clientName": { "type": "string" },
@@ -42,17 +65,7 @@
         "leadAttorney": { "type": "string" },
         "leadAttorneyEmail": { "type": "string" },
         "regionalOffice": { "type": "string" },
-        "status": {
-          "type": "string",
-          "enum": [
-            "Active Trial",
-            "Pre-Trial Discovery",
-            "Regulatory Review",
-            "Arbitration in Progress",
-            "Settlement Discussions",
-            "Closed / Decided"
-          ]
-        },
+        "status": { "type": "string" },
         "stage": { "type": "string" },
         "filingDate": { "type": "string" },
         "nextHearingDate": { "type": "string" },
@@ -66,10 +79,31 @@
           "type": "array",
           "description": "Filed court processes, witness statements, and regulatory approvals"
         },
+        "clientAccess": { "type": "string", "enum": ["Active", "Deactivated", "Revoked"] },
         "createdAt": { "type": "string" },
         "updatedAt": { "type": "string" }
       },
       "required": ["id", "caseNumber", "title", "clientUid", "clientEmail", "status"]
+    },
+    "inquiry": {
+      "title": "Inquiry",
+      "description": "Client consultation inquiry and matter submission received by TEP Registry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "office": { "type": "string" },
+        "attorney": { "type": "string" },
+        "practiceArea": { "type": "string" },
+        "message": { "type": "string" },
+        "briefFileName": { "type": "string" },
+        "briefFileSize": { "type": "string" },
+        "status": { "type": "string" },
+        "submittedAt": { "type": "string" }
+      },
+      "required": ["id", "fullName", "email", "message", "submittedAt"]
     }
   },
   "firestore": {
@@ -79,11 +113,23 @@
     },
     "/admins/{adminId}": {
       "schema": "adminProfile",
-      "description": "Admin privileges collection verifying authorized partners and case managers."
+      "description": "Admin authorization collection for designated administrators and explicitly approved partners."
+    },
+    "/clients/{clientId}": {
+      "schema": "clientProfile",
+      "description": "Approved client directory. Only active registered clients are permitted portal access."
     },
     "/cases/{caseId}": {
       "schema": "legalCase",
-      "description": "Legal cases assigned to specific client UID, manageable only by Admins for onboarding and deletion."
+      "description": "Legal cases assigned to specific client UID/email, manageable only by Admins for onboarding and deletion."
+    },
+    "/authorization_registry/{authId}": {
+      "schema": "userProfile",
+      "description": "Explicit admin-controlled authorization mapping for portal users."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "inquiry",
+      "description": "Confidential inquiries and consultation requests submitted to firm chambers."
     }
   }
 }

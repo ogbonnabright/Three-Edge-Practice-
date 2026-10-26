@@ -1,0 +1,59 @@
+{
+  "backupMetadata": {
+    "title": "TEP Client Portal - Pre-Reset Archival Snapshot & Configuration Audit",
+    "timestamp": "2026-10-26T05:12:08-07:00",
+    "environment": "Google Cloud / Firebase",
+    "firebaseProjectId": "eternal-heading-7vxch",
+    "firestoreDatabaseId": "ai-studio-threeedgepractic-40c6c350-d2ad-40ab-a9f4-412dc05710ac",
+    "firebaseAppId": "1:856246967502:web:bb8311713e53270bb6049f",
+    "status": "Archived Prior to Complete Portal Data Expungement"
+  },
+  "protectedAdministrators": [
+    {
+      "email": "chiaghalam@gmail.com",
+      "role": "Super Admin / Designated Administrator",
+      "status": "Active",
+      "preserved": true
+    },
+    {
+      "email": "admin@tep.com.ng",
+      "role": "Firm Administrator / Executive Partner",
+      "status": "Active",
+      "preserved": true
+    },
+    {
+      "email": "registry@tep.com.ng",
+      "role": "TEP Judicial & Statutory Registry Admin",
+      "status": "Active",
+      "preserved": true
+    }
+  ],
+  "purgedCollections": {
+    "clients": {
+      "action": "All non-admin client records permanently expunged",
+      "recordsCount": 0,
+      "policy": "Access permitted only when explicitly provisioned by an administrator"
+    },
+    "cases": {
+      "action": "All case dockets, filings, updates, and briefs permanently expunged",
+      "recordsCount": 0,
+      "policy": "Only administrators can onboard dockets; active clients see only explicitly assigned matters"
+    },
+    "users": {
+      "action": "All self-registered or unapproved user accounts expunged",
+      "recordsCount": 0,
+      "policy": "Public self-registration permanently disabled in frontend and rejected in security rules"
+    },
+    "authorization_registry": {
+      "action": "Cleared of all non-designated administrative entries",
+      "recordsCount": 0,
+      "policy": "Fail-closed; strictly verified against /admins or /clients active records"
+    }
+  },
+  "historicalSeededData": {
+    "clearedDemoClientsCount": 3,
+    "clearedInitialCasesCount": 6,
+    "firmMattersStaticFallbacks": "Purged to empty arrays in src/data/firmMatters.ts"
+  },
+  "securityAuditNotice": "Reset enforced through Firebase Security Rules, administrative boundary gates, and removal of public client self-registration."
+}

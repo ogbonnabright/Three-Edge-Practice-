@@ -197,34 +197,23 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
 
   const clientCorporateName = clientCases[0]?.clientName || currentUserName || 'Authorized Client Representative';
 
-  // STRICT RULE: If no cases are registered for this email during onboarding, portal access is DENIED
+  // If no cases have been added yet for this client, display an honest empty state
   if (!casesLoading && clientCases.length === 0) {
     return (
-      <div className="bg-white border-2 border-red-500 p-8 sm:p-14 text-center max-w-2xl mx-auto shadow-2xl my-8">
-        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-300">
-          <ShieldAlert className="w-8 h-8" />
-        </div>
-        <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-red-600 block">
-          Access Denied &bull; 403 Forbidden
+      <div className="bg-white border border-gray-200 p-12 sm:p-16 text-center max-w-2xl mx-auto shadow-sm my-8 space-y-4">
+        <Scale className="w-12 h-12 text-gray-300 mx-auto" />
+        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#990000] block">
+          Client Account Active
         </span>
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-black mt-2 mb-3">
-          Unregistered Email Address
-        </h2>
-        <div className="p-5 bg-red-50 border border-red-200 text-xs text-red-900 text-left space-y-3 mb-6">
-          <p className="font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-red-600" />
-            <span>Strict Zero-Trust Access Policy:</span>
-          </p>
-          <p className="leading-relaxed">
-            The authenticated email <strong className="font-mono text-black bg-red-100 px-1.5 py-0.5">{normalizedEmail || currentUserUid}</strong> is <strong>not registered</strong> to any legal matter, case docket, or partner profile with Three Edge Practice.
-          </p>
-          <p className="leading-relaxed">
-            <strong>Portal access is strictly denied for unregistered emails.</strong> Only verified firm partners and institutional clients whose matters have been formally onboarded by lead counsel are permitted into the legal portal.
-          </p>
-          <p className="leading-relaxed text-gray-700">
-            If your company is represented by Three Edge Practice, contact your lead counsel to register your email address during onboarding.
-          </p>
-        </div>
+        <h3 className="text-xl sm:text-2xl font-serif font-bold text-black">
+          No Cases Have Been Added Yet
+        </h3>
+        <p className="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+          Your account (<strong className="font-mono text-black">{normalizedEmail || currentUserUid}</strong>) is approved and active in the Three Edge Practice client portal. No legal matters or practice dockets have been assigned to your profile yet.
+        </p>
+        <p className="text-[11px] text-gray-400 max-w-md mx-auto">
+          Your designated lead counsel will link your court briefs and regulatory files upon completion of initial matter onboarding.
+        </p>
       </div>
     );
   }

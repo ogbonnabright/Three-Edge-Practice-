@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { INSIGHTS } from '../constants';
 import { Insight } from '../types';
 
@@ -8,6 +8,19 @@ const Insights: React.FC = () => {
   const [selectedInsight, setSelectedInsight] = useState<Insight | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Handle URL deep link (e.g. from Global Search)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const articleTitle = params.get('article');
+    if (articleTitle) {
+      const match = INSIGHTS.find(i => i.title.toLowerCase() === articleTitle.toLowerCase());
+      if (match) {
+        setSelectedInsight(match);
+      }
+    }
+  }, [location.search]);
 
   // Scroll to top when switching between grid view and article view
   useEffect(() => {
