@@ -1,9 +1,8 @@
-import { NavItem, PracticeArea, TeamMember, Insight, BigWin, RegionalOffice } from './types';
+import { NavItem, PracticeArea, TeamMember, Insight, RegionalOffice } from './types';
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'THE FIRM', path: '/firm' },
   { label: 'PRACTICE', path: '/practice' },
-  { label: 'BIG WINS', path: '/wins' },
   { label: 'TEAM', path: '/team' },
   { label: 'INSIGHTS', path: '/insights' },
   { label: 'CAREERS', path: '/careers' },
@@ -717,32 +716,5 @@ References:
 - Evidence (Amendment) Act 2023.
 - Constitution of the Federal Republic of Nigeria 1999 (As Amended).
 - IBA Guidelines on the Use of Artificial Intelligence in the Legal Profession.`
-  }
-];
-
-export const BIG_WINS: BigWin[] = [
-  {
-    title: 'Upstream Petroleum Concession & Host Community Trust Restructuring',
-    year: '2026',
-    description: 'Advisory and regulatory documentation for an upstream joint venture addressing Petroleum Industry Act statutory compliance, acreage unitization, and community trust governance.',
-    result: 'Institutional advisory completed and regulatory frameworks filed with sector authorities.'
-  },
-  {
-    title: 'Appellate Proceedings on Inter-State Fiscal Demarcation & Digital Commerce',
-    year: '2025',
-    description: 'Representation in appellate constitutional proceedings concerning the jurisdictional division between federal tax authorities and state internal revenue services regarding digital services.',
-    result: 'Appellate briefs delivered on constitutional jurisdictional grounds.'
-  },
-  {
-    title: 'Telecommunications Spectrum Infrastructure Administrative Procedure',
-    year: '2024',
-    description: 'Administrative defense and representation of a national telecommunications infrastructure operator in regulatory hearings regarding spectrum reallocation and fee assessments.',
-    result: 'Administrative dispute concluded through structured statutory resolution.'
-  },
-  {
-    title: 'Corporate Governance & AML/CFT Statutory Audit Framework',
-    year: '2024',
-    description: 'Comprehensive compliance audit and AML/CFT institutional framework design for a regulated financial services and commercial enterprise under statutory guidelines.',
-    result: 'Compliance review completed and updated regulatory reporting protocols adopted.'
   }
 ];
