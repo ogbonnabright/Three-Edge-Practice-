@@ -31,41 +31,41 @@ const Home: React.FC = () => {
   return (
     <div className="bg-white">
       {/* 1. Hero Section */}
-      <section className="relative min-h-[calc(100vh-4rem)] md:min-h-screen md:h-screen flex flex-col justify-center px-6 sm:px-10 md:px-16 lg:px-20 py-8 sm:py-10 md:py-12 overflow-hidden border-b border-gray-50">
+      <section className="relative min-h-0 md:min-h-0 lg:min-h-screen lg:h-screen flex flex-col justify-start lg:justify-center px-5 sm:px-8 md:px-10 lg:px-20 pt-6 sm:pt-7 md:pt-8 lg:pt-12 pb-8 sm:pb-10 md:pb-10 lg:pb-12 overflow-hidden border-b border-gray-50">
         <HeroAnimation />
 
-        <div className="relative z-10 max-w-4xl my-auto">
+        <div className="relative z-10 max-w-4xl my-0 lg:my-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="flex items-center space-x-3 mb-3 md:mb-4">
-              <div className="h-[2px] w-10 bg-[#990000]"></div>
-              <span className="text-[#990000] font-bold tracking-[0.35em] text-[11px] md:text-xs uppercase">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 mb-2 sm:mb-2.5 md:mb-3 lg:mb-4">
+              <div className="h-[2px] w-8 sm:w-10 bg-[#990000]"></div>
+              <span className="text-[#990000] font-bold tracking-[0.35em] text-[10px] sm:text-[11px] md:text-xs uppercase">
                 Strategic Advocacy
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.08] text-black mb-3 md:mb-4 font-serif">
+            <h1 className="text-3xl sm:text-4xl md:text-[2.65rem] lg:text-7xl xl:text-8xl font-bold leading-[1.12] sm:leading-[1.1] md:leading-[1.08] text-black mb-2.5 sm:mb-3 md:mb-3.5 font-serif">
               Strategic Advocacy.<br />
               <span className="text-[#990000]">Decisive Results.</span>
             </h1>
 
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 font-light leading-relaxed max-w-2xl lg:max-w-3xl mb-3 md:mb-4">
+            <p className="text-xs sm:text-sm md:text-[15px] lg:text-xl text-gray-700 font-light leading-relaxed max-w-2xl lg:max-w-3xl mb-2 sm:mb-2.5 md:mb-3 lg:mb-4">
               We help businesses, institutions and international organisations navigate legal complexity, manage regulatory risk and strengthen ESG and governance performance through legal expertise and technology-enabled solutions.
             </p>
 
-            <div className="w-12 h-[2px] bg-[#990000] mb-3 md:mb-4"></div>
+            <div className="w-10 sm:w-12 h-[2px] bg-[#990000] mb-2 sm:mb-2.5 md:mb-3 lg:mb-4"></div>
 
-            <p className="text-xs sm:text-sm md:text-base text-gray-500 font-light leading-relaxed max-w-2xl mb-6 md:mb-8">
+            <p className="text-[11px] sm:text-xs md:text-[13px] lg:text-base text-gray-500 font-light leading-relaxed max-w-2xl mb-4 sm:mb-5 md:mb-5 lg:mb-8">
               Nigeria-focused legal and advisory expertise for a connected, regulated and sustainability-driven global economy.
             </p>
 
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
               <button
                 onClick={() => navigate('/contact#consultation-form')}
-                className="group relative px-6 sm:px-8 py-3.5 sm:py-4 bg-[#990000] text-white font-bold tracking-widest uppercase text-xs overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-red-900/20 cursor-pointer flex items-center gap-2"
+                className="group relative px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 md:py-3.5 bg-[#990000] text-white font-bold tracking-widest uppercase text-xs overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-red-900/20 cursor-pointer flex items-center justify-center gap-2 text-center"
               >
                 <span className="relative z-10">Request a Consultation</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
@@ -81,7 +81,7 @@ const Home: React.FC = () => {
                     navigate('/practice');
                   }
                 }}
-                className="px-6 sm:px-8 py-3.5 sm:py-4 border border-black text-black font-bold tracking-widest uppercase text-xs hover:bg-black hover:text-white transition-all duration-300 cursor-pointer"
+                className="px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 md:py-3.5 border border-black text-black font-bold tracking-widest uppercase text-xs hover:bg-black hover:text-white transition-all duration-300 cursor-pointer text-center"
               >
                 Explore Our Services
               </button>
@@ -103,7 +103,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Law, Technology & Regulatory Intelligence Section */}
-      <section className="py-20 md:py-24 px-8 md:px-24 bg-gray-50 border-b border-gray-200">
+      <section className="py-10 sm:py-14 md:py-16 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-24 bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 items-center">
             <div>

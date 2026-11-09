@@ -516,11 +516,11 @@ const ClientPortal: React.FC = () => {
   // =========================================================================
   if (!currentUser) {
     return (
-      <div className="bg-[#f7f8fa] min-h-screen text-black flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#f7f8fa] min-h-0 md:min-h-screen text-black flex flex-col justify-start pt-4 sm:pt-6 md:pt-6 lg:pt-10 pb-10 sm:pb-12 md:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           {/* Firm Logo & Header */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center mb-3">
+            <div className="inline-flex items-center justify-center mb-1.5 sm:mb-2 md:mb-2">
               <span className="text-3xl font-bold tracking-tight text-black flex items-center font-serif">
                 TEP<span className="w-2 h-2 rounded-full bg-[#990000] ml-1"></span>
               </span>
@@ -532,14 +532,14 @@ const ClientPortal: React.FC = () => {
               {authMode === 'login' && 'Sign in to Client Portal'}
               {authMode === 'forgot_password' && 'Reset your Password'}
             </h2>
-            <p className="mt-2 text-xs text-gray-500 max-w-sm mx-auto">
+            <p className="mt-1.5 sm:mt-2 text-xs text-gray-500 max-w-sm mx-auto">
               {authMode === 'login' && 'Enter your administrator-issued email and password to access privileged case dockets.'}
               {authMode === 'forgot_password' && 'Enter your registered email to receive official password reset instructions.'}
             </p>
           </div>
 
           {/* Clean Card */}
-          <div className="mt-8 bg-white py-8 px-6 sm:px-10 border border-gray-200 shadow-xl rounded-xs relative">
+          <div className="mt-5 sm:mt-6 md:mt-5 lg:mt-8 bg-white py-6 sm:py-8 md:py-7 lg:py-8 px-6 sm:px-10 border border-gray-200 shadow-xl rounded-xs relative">
             <div className="absolute top-0 left-0 right-0 h-1 bg-[#990000]"></div>
 
             {authError && (

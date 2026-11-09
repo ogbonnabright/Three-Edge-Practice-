@@ -41,15 +41,15 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Mobile Top Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-sm border-b border-gray-200 flex items-center justify-between px-6 z-[60]">
+      {/* Mobile & Tablet Top Header (below lg / 1024px) */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-sm border-b border-gray-200 flex items-center justify-between px-6 z-[60]">
         <NavLink to="/" className="flex items-center">
           <span className="text-2xl font-bold tracking-tight text-black flex items-center">
             TEP<span className="w-1.5 h-1.5 rounded-full bg-[#990000] ml-1"></span>
           </span>
         </NavLink>
         <div className="flex items-center gap-2">
-          {/* Mobile Search Button */}
+          {/* Mobile & Tablet Search Button */}
           <button
             onClick={() => setSearchModalOpen(true)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-black border border-gray-200 text-xs font-semibold rounded-xs transition-colors cursor-pointer"
@@ -76,18 +76,18 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Slide-over Drawer */}
+      {/* Mobile & Tablet Slide-over Drawer (below lg / 1024px) */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-[55] flex flex-col justify-between bg-white pt-20 px-8 pb-10 overflow-y-auto">
-          <nav className="flex flex-col space-y-5">
-            {/* Mobile Drawer Search Bar */}
+        <div className="lg:hidden fixed inset-0 z-[55] flex flex-col justify-between bg-white pt-20 px-8 pb-10 overflow-y-auto">
+          <nav className="flex flex-col space-y-4">
+            {/* Mobile & Tablet Drawer Search Bar */}
             <button
               type="button"
               onClick={() => {
                 setMobileOpen(false);
                 setSearchModalOpen(true);
               }}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-xs text-left text-xs font-medium text-gray-600 hover:border-[#990000] hover:text-black transition-colors mb-2 cursor-pointer"
+              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-xs text-left text-xs font-medium text-gray-600 hover:border-[#990000] hover:text-black transition-colors mb-1 cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <Search className="w-4 h-4 text-[#990000]" />
@@ -145,9 +145,9 @@ const Sidebar: React.FC = () => {
         </div>
       )}
 
-      {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 hidden md:flex flex-col z-50">
-        <div className="p-8 pb-5">
+      {/* Desktop-only Sidebar (1024px+) */}
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col z-50">
+        <div className="p-6 md:p-8 pb-3 md:pb-4">
           <NavLink to="/" className="flex flex-col">
             <span className="text-3xl font-bold tracking-tight text-black flex items-center">
               TEP<span className="w-2 h-2 rounded-full bg-[#990000] ml-1"></span>
@@ -158,8 +158,8 @@ const Sidebar: React.FC = () => {
           </NavLink>
         </div>
 
-        {/* Global Search Bar in Desktop Sidebar */}
-        <div className="px-8 pb-4">
+        {/* Global Search Bar in Tablet & Desktop Left Console */}
+        <div className="px-6 md:px-8 pb-2">
           <button
             type="button"
             onClick={() => setSearchModalOpen(true)}
@@ -167,7 +167,7 @@ const Sidebar: React.FC = () => {
             title="Search team members, partners, or insights (⌘K / Ctrl+K)"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Search className="w-3.5 h-3.5 text-[#990000]" shrink-0 />
+              <Search className="w-3.5 h-3.5 text-[#990000] shrink-0" />
               <span className="text-xs text-gray-500 group-hover:text-black truncate">Search team & insights...</span>
             </div>
             <kbd className="hidden sm:inline-block text-[9px] font-mono font-semibold px-1.5 py-0.5 bg-white border border-gray-300 text-gray-500 rounded-xs shadow-2xs shrink-0">
@@ -176,7 +176,7 @@ const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        <nav className="flex-1 px-8 flex flex-col justify-center space-y-3.5">
+        <nav className="flex-1 px-6 md:px-8 pt-3 md:pt-4 flex flex-col justify-start space-y-3 md:space-y-3.5">
           {NAV_ITEMS.map((item) => {
             const isPortal = item.path.startsWith('/portal');
             return (

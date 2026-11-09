@@ -30,7 +30,7 @@ const Practice: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="p-8 md:p-24 max-w-7xl mx-auto">
+      <div className="px-6 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-14 md:py-16 max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           {!selectedPractice ? (
             <motion.div
@@ -40,12 +40,12 @@ const Practice: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="mb-16">
+              <div className="mb-12 md:mb-16">
                 <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Expertise</h2>
-                <h1 className="text-5xl font-bold text-black leading-tight">Decisive Expertise Across Key Sectors.</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">Decisive Expertise Across Key Sectors.</h1>
               </div>
 
-              <div className="grid lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {PRACTICE_AREAS.map((area, idx) => (
                   <motion.div
                     key={area.id}
