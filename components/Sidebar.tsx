@@ -42,33 +42,33 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile & Tablet Top Header (below lg / 1024px) */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-sm border-b border-gray-200 flex items-center justify-between px-6 z-[60]">
-        <NavLink to="/" className="flex items-center">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-sm border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-[60]">
+        <NavLink to="/" className="flex items-center shrink-0">
           <span className="text-2xl font-bold tracking-tight text-black flex items-center">
             TEP<span className="w-1.5 h-1.5 rounded-full bg-[#990000] ml-1"></span>
           </span>
         </NavLink>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Mobile & Tablet Search Button */}
           <button
             onClick={() => setSearchModalOpen(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-black border border-gray-200 text-xs font-semibold rounded-xs transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-black border border-gray-200 text-xs font-semibold rounded-xs transition-colors cursor-pointer shrink-0"
             title="Search firm team & insights (⌘K / Ctrl+K)"
           >
             <Search className="w-3.5 h-3.5 text-[#990000]" />
-            <span className="hidden xs:inline text-[11px] uppercase tracking-wider">Search</span>
+            <span className="hidden sm:inline text-[11px] uppercase tracking-wider">Search</span>
           </button>
 
           <NavLink
             to="/portal/client"
-            className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 text-[11px] font-bold uppercase tracking-wider text-black hover:text-[#990000]"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-200 text-[11px] font-bold uppercase tracking-wider text-black hover:text-[#990000] shrink-0"
           >
             <Lock className="w-3 h-3 text-[#990000]" />
             <span>Login</span>
           </NavLink>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 text-black hover:text-[#990000] transition-colors cursor-pointer"
+            className="p-2 text-black hover:text-[#990000] transition-colors cursor-pointer shrink-0"
             aria-label="Toggle Menu"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -78,71 +78,78 @@ const Sidebar: React.FC = () => {
 
       {/* Mobile & Tablet Slide-over Drawer (below lg / 1024px) */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-[55] flex flex-col justify-between bg-white pt-20 px-8 pb-10 overflow-y-auto">
-          <nav className="flex flex-col space-y-4">
-            {/* Mobile & Tablet Drawer Search Bar */}
-            <button
-              type="button"
-              onClick={() => {
-                setMobileOpen(false);
-                setSearchModalOpen(true);
-              }}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-xs text-left text-xs font-medium text-gray-600 hover:border-[#990000] hover:text-black transition-colors mb-1 cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-[#990000]" />
-                <span>Search team, insights...</span>
-              </div>
-              <span className="text-[10px] font-mono text-gray-400 bg-white px-1.5 py-0.5 border border-gray-200">
-                FIND
-              </span>
-            </button>
-
-            {NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `text-lg font-bold tracking-wider uppercase transition-colors flex items-center justify-between ${
-                    isActive ? 'text-[#990000]' : 'text-gray-600 hover:text-black'
-                  }`
-                }
-              >
-                <span>{item.label}</span>
-                {item.path.startsWith('/portal') && (
-                  <span className="text-[10px] font-mono px-2 py-0.5 bg-[#990000]/10 text-[#990000] font-bold">
-                    SECURE
-                  </span>
-                )}
-              </NavLink>
-            ))}
-
-            {/* Admin Management Link for Firm Partners */}
-            {isAdmin && (
-              <NavLink
-                to="/portal/admin"
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `text-sm font-bold tracking-wider uppercase py-2 px-3 border transition-colors flex items-center justify-between ${
-                    isActive ? 'bg-[#990000] text-white border-[#990000]' : 'bg-gray-100 text-black border-gray-300 hover:border-[#990000]'
-                  }`
-                }
+        <>
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/50 z-[54] transition-opacity" 
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="lg:hidden fixed inset-0 sm:left-auto sm:right-0 sm:w-80 z-[55] flex flex-col justify-between bg-white pt-20 px-6 sm:px-8 pb-10 overflow-y-auto shadow-2xl border-l border-gray-200">
+            <nav className="flex flex-col space-y-4">
+              {/* Mobile & Tablet Drawer Search Bar */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setSearchModalOpen(true);
+                }}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-xs text-left text-xs font-medium text-gray-600 hover:border-[#990000] hover:text-black transition-colors mb-1 cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <KeyRound className="w-3.5 h-3.5 text-[#990000]" />
-                  <span>ADMIN PORTAL</span>
+                  <Search className="w-4 h-4 text-[#990000]" />
+                  <span>Search team, insights...</span>
                 </div>
-                <span className="text-[9px] font-mono font-bold uppercase bg-[#990000] text-white px-1.5 py-0.5">ADMIN</span>
-              </NavLink>
-            )}
-          </nav>
+                <span className="text-[10px] font-mono text-gray-400 bg-white px-1.5 py-0.5 border border-gray-200">
+                  FIND
+                </span>
+              </button>
 
-          <div className="pt-8 border-t border-gray-100 text-xs text-gray-400">
-            <p className="font-semibold text-black mb-1">Three Edge Practice</p>
-            <p>Advocacy, Strategy & Corporate Law</p>
+              {NAV_ITEMS.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `text-base sm:text-lg font-bold tracking-wider uppercase transition-colors flex items-center justify-between py-1 ${
+                      isActive ? 'text-[#990000]' : 'text-gray-600 hover:text-black'
+                    }`
+                  }
+                >
+                  <span>{item.label}</span>
+                  {item.path.startsWith('/portal') && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 bg-[#990000]/10 text-[#990000] font-bold">
+                      SECURE
+                    </span>
+                  )}
+                </NavLink>
+              ))}
+
+              {/* Admin Management Link for Firm Partners */}
+              {isAdmin && (
+                <NavLink
+                  to="/portal/admin"
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `text-xs sm:text-sm font-bold tracking-wider uppercase py-2.5 px-3 border transition-colors flex items-center justify-between ${
+                      isActive ? 'bg-[#990000] text-white border-[#990000]' : 'bg-gray-100 text-black border-gray-300 hover:border-[#990000]'
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    <KeyRound className="w-3.5 h-3.5 text-[#990000]" />
+                    <span>ADMIN PORTAL</span>
+                  </div>
+                  <span className="text-[9px] font-mono font-bold uppercase bg-[#990000] text-white px-1.5 py-0.5">ADMIN</span>
+                </NavLink>
+              )}
+            </nav>
+
+            <div className="pt-8 border-t border-gray-100 text-xs text-gray-400">
+              <p className="font-semibold text-black mb-1">Three Edge Practice</p>
+              <p>Advocacy, Strategy & Corporate Law</p>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Desktop-only Sidebar (1024px+) */}

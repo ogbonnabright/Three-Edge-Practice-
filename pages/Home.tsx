@@ -31,23 +31,23 @@ const Home: React.FC = () => {
   return (
     <div className="bg-white">
       {/* 1. Hero Section */}
-      <section className="relative min-h-0 md:min-h-0 lg:min-h-screen lg:h-screen flex flex-col justify-start lg:justify-center px-5 sm:px-8 md:px-10 lg:px-20 pt-6 sm:pt-7 md:pt-8 lg:pt-12 pb-8 sm:pb-10 md:pb-10 lg:pb-12 overflow-hidden border-b border-gray-50">
+      <section className="relative min-h-0 lg:min-h-screen flex flex-col justify-start lg:justify-center px-5 sm:px-8 md:px-10 lg:px-20 pt-3 sm:pt-4 md:pt-6 lg:pt-8 pb-8 sm:pb-10 md:pb-12 border-b border-gray-50">
         <HeroAnimation />
 
-        <div className="relative z-10 max-w-4xl my-0 lg:my-auto">
+        <div className="relative z-10 max-w-4xl my-0 lg:my-auto py-0">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="flex items-center space-x-2.5 sm:space-x-3 mb-2 sm:mb-2.5 md:mb-3 lg:mb-4">
-              <div className="h-[2px] w-8 sm:w-10 bg-[#990000]"></div>
-              <span className="text-[#990000] font-bold tracking-[0.35em] text-[10px] sm:text-[11px] md:text-xs uppercase">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 mb-2 sm:mb-2.5 md:mb-3">
+              <div className="h-[2px] w-8 sm:w-10 bg-[#990000] shrink-0"></div>
+              <span className="text-[#990000] font-bold tracking-[0.35em] text-[11px] sm:text-xs uppercase shrink-0">
                 Strategic Advocacy
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-[2.65rem] lg:text-7xl xl:text-8xl font-bold leading-[1.12] sm:leading-[1.1] md:leading-[1.08] text-black mb-2.5 sm:mb-3 md:mb-3.5 font-serif">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.12] sm:leading-[1.1] md:leading-[1.08] text-black mb-3 sm:mb-3.5 md:mb-4 font-serif">
               Strategic Advocacy.<br />
               <span className="text-[#990000]">Decisive Results.</span>
             </h1>

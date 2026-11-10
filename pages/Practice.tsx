@@ -30,7 +30,7 @@ const Practice: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="px-6 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-14 md:py-16 max-w-7xl mx-auto">
+      <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-8 sm:py-12 md:py-16 max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           {!selectedPractice ? (
             <motion.div
@@ -125,7 +125,7 @@ const Practice: React.FC = () => {
       </div>
 
       {/* Engage Our Experts CTA Section */}
-      <section className="py-24 px-8 text-center bg-white border-t border-gray-50">
+      <section className="py-14 sm:py-18 md:py-24 px-4 sm:px-8 text-center bg-white border-t border-gray-50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -165,7 +165,7 @@ const Practice: React.FC = () => {
               <div className="hidden md:block w-20 bg-[#990000] flex-shrink-0"></div>
 
               {/* Content */}
-              <div className="p-8 sm:p-12 flex-1 overflow-y-auto">
+              <div className="p-5 sm:p-8 md:p-10 flex-1 overflow-y-auto">
                 <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.4em] uppercase mb-2">Focus Area</h4>
                 <h3 className="text-2xl sm:text-3xl font-bold text-black mb-6 leading-tight">{selectedSub.title}</h3>
                 

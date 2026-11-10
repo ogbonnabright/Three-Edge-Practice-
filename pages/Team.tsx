@@ -177,7 +177,7 @@ const Team: React.FC = () => {
   return (
     <div className="bg-[#fcfcfc] min-h-screen text-black">
       {/* Templars-style Hero Section */}
-      <section className="bg-[#0f1115] text-white pt-16 pb-20 px-6 sm:px-12 md:px-20 border-b border-gray-800 relative overflow-hidden">
+      <section className="bg-[#0f1115] text-white pt-10 sm:pt-14 md:pt-16 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-8 md:px-12 lg:px-20 border-b border-gray-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-[#990000]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex items-center space-x-3 mb-4">
@@ -194,32 +194,32 @@ const Team: React.FC = () => {
           </p>
 
           {/* Key Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-12 pt-8 border-t border-white/10 text-xs uppercase tracking-widest text-gray-400">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 text-xs uppercase tracking-widest text-gray-400">
             <div>
-              <span className="block text-2xl font-serif font-bold text-white mb-1">30+</span>
-              <span>Attorneys & Counsel</span>
+              <span className="block text-xl sm:text-2xl font-serif font-bold text-white mb-1">30+</span>
+              <span className="text-[10px] sm:text-xs">Attorneys & Counsel</span>
             </div>
             <div>
-              <span className="block text-2xl font-serif font-bold text-[#990000] mb-1">4</span>
-              <span>Regional Offices</span>
+              <span className="block text-xl sm:text-2xl font-serif font-bold text-[#990000] mb-1">4</span>
+              <span className="text-[10px] sm:text-xs">Regional Offices</span>
             </div>
             <div>
-              <span className="block text-2xl font-serif font-bold text-white mb-1">12</span>
-              <span>Practice Disciplines</span>
+              <span className="block text-xl sm:text-2xl font-serif font-bold text-white mb-1">12</span>
+              <span className="text-[10px] sm:text-xs">Practice Disciplines</span>
             </div>
             <div>
-              <span className="block text-2xl font-serif font-bold text-white mb-1">100%</span>
-              <span>Partner-Led Client Care</span>
+              <span className="block text-xl sm:text-2xl font-serif font-bold text-white mb-1">100%</span>
+              <span className="text-[10px] sm:text-xs">Partner-Led Client Care</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Main Directory & Filter Interface */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 py-12">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-8 sm:py-12">
         {/* Search & Filter Toolbar */}
-        <div className="bg-white p-6 sm:p-8 rounded-none border border-gray-200 shadow-sm mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+        <div className="bg-white p-4 sm:p-6 md:p-8 rounded-none border border-gray-200 shadow-sm mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center">
             {/* Search Input */}
             <div className="md:col-span-5 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

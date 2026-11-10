@@ -661,8 +661,8 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
       )}
 
       {/* Navigation Tabs for Client-Visible Information Management */}
-      <div className="bg-white border border-gray-200 px-6 py-2 flex flex-wrap items-center justify-between gap-4 shadow-xs">
-        <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+      <div className="bg-white border border-gray-200 px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1 sm:gap-2 w-full lg:w-auto pb-1 lg:pb-0">
           <button
             onClick={() => setActiveTab('dockets')}
             className={`px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-all cursor-pointer flex items-center gap-2 border-b-2 ${

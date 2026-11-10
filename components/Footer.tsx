@@ -24,9 +24,9 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-gray-50 py-16 px-6 sm:px-12 md:px-20 border-t border-gray-200">
+    <footer className="bg-gray-50 py-12 sm:py-16 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-gray-200">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
           <div>
             <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Headquarters</h4>
             <p className="text-black font-semibold text-sm leading-relaxed mb-2">
@@ -85,11 +85,11 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6">
           <p className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">
             &copy; 2026 THREE EDGE PRACTICE. ALL RIGHTS RESERVED.
           </p>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">LinkedIn</a>
             <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">Twitter</a>
             <NavLink to="/insights" className="text-[10px] text-gray-400 font-bold tracking-widest uppercase cursor-pointer hover:text-[#990000] transition-colors">Legal Insights</NavLink>

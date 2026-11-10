@@ -59,7 +59,7 @@ const Insights: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="px-5 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-14 md:py-16 max-w-7xl mx-auto">
+      <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-8 sm:py-12 md:py-16 max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           {!selectedInsight ? (
             <motion.div
@@ -146,13 +146,13 @@ const Insights: React.FC = () => {
                       {selectedInsight.date}
                     </span>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-black font-serif leading-tight">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black font-serif leading-tight">
                     {selectedInsight.title}
                   </h1>
                   <div className="h-1 w-24 bg-[#990000]"></div>
                 </header>
 
-                <div className="aspect-[21/9] w-full bg-gray-100 overflow-hidden shadow-2xl print:hidden">
+                <div className="aspect-[16/9] sm:aspect-[21/9] w-full bg-gray-100 overflow-hidden shadow-xl print:hidden">
                   <img 
                     src={selectedInsight.image} 
                     alt={selectedInsight.title} 

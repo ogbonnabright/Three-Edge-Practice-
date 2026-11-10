@@ -538,7 +538,7 @@ const Contact: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Aliko Bello"
-                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
                   />
                 </div>
 
@@ -554,7 +554,7 @@ const Contact: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="client@organization.com"
-                      className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
                     />
                   </div>
                   <div>
@@ -567,7 +567,7 @@ const Contact: React.FC = () => {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+234 ..."
-                      className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
                     />
                   </div>
                 </div>
@@ -584,7 +584,7 @@ const Contact: React.FC = () => {
                       const found = REGIONAL_OFFICES.find((o) => o.city.toLowerCase() === e.target.value.toLowerCase());
                       if (found) setSelectedOfficeId(found.id);
                     }}
-                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
                   >
                     <option value="Abuja">Abuja (Headquarters - Federal Capital)</option>
                     <option value="Lagos">Lagos (Commercial, Banking & IP Hub)</option>
@@ -601,7 +601,7 @@ const Contact: React.FC = () => {
                   <select
                     value={formData.practiceArea}
                     onChange={(e) => setFormData({ ...formData, practiceArea: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black focus:outline-none focus:border-[#990000] focus:bg-white transition-colors"
                   >
                     <option value="">General Corporate Inquiry</option>
                     {PRACTICE_AREAS.map((pa) => (
@@ -631,7 +631,7 @@ const Contact: React.FC = () => {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Provide a high-level summary of the dispute, advisory request, or transactional mandate. In case you wish to attach a brief or supporting documents, upload them below..."
-                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors resize-none"
+                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-base sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-[#990000] focus:bg-white transition-colors resize-none"
                   ></textarea>
 
                   {/* Document Upload Provision */}

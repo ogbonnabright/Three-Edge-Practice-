@@ -9,7 +9,7 @@ const TheFirm: React.FC = () => {
   return (
     <div className="bg-white">
       {/* Cinematic Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] flex flex-col justify-center px-6 sm:px-8 md:px-12 lg:px-20 overflow-hidden border-b border-gray-50">
+      <section className="relative min-h-[380px] sm:min-h-[460px] md:h-[70vh] flex flex-col justify-center px-4 sm:px-8 md:px-12 lg:px-20 py-12 sm:py-16 md:py-20 border-b border-gray-50">
         <HeroVideo />
         
         <div className="relative z-10 max-w-4xl">
@@ -19,7 +19,7 @@ const TheFirm: React.FC = () => {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-4 md:mb-6">The Firm</h2>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black leading-tight font-serif mb-6 md:mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-black leading-tight font-serif mb-6 md:mb-8">
               A standard of<br />
               <span className="text-[#990000]">strategic excellence.</span>
             </h1>
@@ -35,7 +35,7 @@ const TheFirm: React.FC = () => {
       </section>
 
       {/* The Firm Overview Section (Moved from landing page) */}
-      <section className="py-14 md:py-20 lg:py-24 px-6 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}

@@ -1010,8 +1010,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </div>
 
       {/* Admin Tabs */}
-      <div className="bg-white border border-gray-200 px-6 py-2 flex flex-wrap items-center justify-between gap-4 shadow-xs">
-        <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+      <div className="bg-white border border-gray-200 px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        <div className="flex overflow-x-auto no-scrollbar items-center gap-1 sm:gap-2 w-full lg:w-auto pb-1 lg:pb-0">
           <button
             onClick={() => setActiveTab('cases')}
             className={`px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-all cursor-pointer flex items-center gap-2 border-b-2 ${
@@ -1138,7 +1138,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           ) : (
             <div className="bg-white border border-gray-200 overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs min-w-[700px]">
                   <thead className="bg-[#0f1115] text-white text-[11px] uppercase tracking-wider font-mono">
                     <tr>
                       <th className="py-3 px-4">Suit & Docket</th>

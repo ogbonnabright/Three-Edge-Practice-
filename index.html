@@ -23,14 +23,26 @@
         .bg-deep-red { background-color: #990000; }
         .border-deep-red { border-color: #990000; }
         
+        /* Responsive base */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         /* Smooth Scroll */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Hide scrollbar for cleaner look in specific components if needed */
+        /* Hide scrollbar for cleaner look in specific horizontal bars */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>

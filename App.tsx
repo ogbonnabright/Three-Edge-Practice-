@@ -62,8 +62,8 @@ const App: React.FC = () => {
         <Sidebar />
         
         {/* Main Content Area */}
-        <main className="flex-1 lg:ml-64 w-full overflow-x-hidden flex flex-col min-h-screen pt-16 lg:pt-0">
-          <div className="flex-grow">
+        <main className="flex-1 min-w-0 lg:ml-64 w-full overflow-x-hidden flex flex-col min-h-screen pt-16 lg:pt-0">
+          <div className="flex-grow min-w-0">
             <PageTransition>
               <Routes>
                 <Route path="/" element={<Home />} />

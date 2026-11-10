@@ -121,7 +121,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             value={queryText}
             onChange={(e) => setQueryText(e.target.value)}
             placeholder="Search team members, partners, or insights & publications..."
-            className="flex-1 text-sm sm:text-base text-black placeholder-gray-400 focus:outline-none font-medium"
+            className="flex-1 text-base sm:text-sm text-black placeholder-gray-400 focus:outline-none font-medium"
           />
           {queryText && (
             <button
