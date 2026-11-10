@@ -186,7 +186,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               <Search className="w-10 h-10 text-gray-300 mx-auto" />
               <p className="font-serif font-bold text-gray-700">No matching records found for &ldquo;{queryText}&rdquo;</p>
               <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                Try searching for keywords like <span className="font-mono text-black font-semibold">&ldquo;Tax&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;NDPA&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;Al&apos;Qasim Jafar&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;Energy&rdquo;</span>, or <span className="font-mono text-black font-semibold">&ldquo;Tamunoibi&rdquo;</span>.
+                Try searching for keywords like <span className="font-mono text-black font-semibold">&ldquo;Tax&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;NDPA&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;Al&apos;Qasim Ja&apos;afar&rdquo;</span>, <span className="font-mono text-black font-semibold">&ldquo;Energy&rdquo;</span>, or <span className="font-mono text-black font-semibold">&ldquo;Tamunoibi&rdquo;</span>.
               </p>
             </div>
           ) : (

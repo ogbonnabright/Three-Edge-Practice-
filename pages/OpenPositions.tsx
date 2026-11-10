@@ -23,7 +23,7 @@ const OpenPositions: React.FC = () => {
     <div className="bg-white min-h-screen text-black flex flex-col justify-between">
       <div>
         {/* Compact Header */}
-        <div className="bg-black text-white py-10 px-6 md:px-16 border-b border-gray-800">
+        <div className="bg-black text-white py-10 px-4 sm:px-8 md:px-12 border-b border-gray-800">
           <div className="max-w-4xl mx-auto space-y-2">
             <Link
               to="/careers"
@@ -44,12 +44,12 @@ const OpenPositions: React.FC = () => {
         </div>
 
         {/* Main Content: Modeled on https://tnp.com.ng/careers/open-positions/ */}
-        <div className="max-w-4xl mx-auto px-6 md:px-16 py-16 md:py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-12 sm:py-16 md:py-20">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border border-gray-200 p-8 sm:p-14 text-center space-y-8 bg-gray-50/50"
+            className="border border-gray-200 p-6 sm:p-10 md:p-14 text-center space-y-6 sm:space-y-8 bg-gray-50/50"
           >
             <div className="w-16 h-16 bg-white border border-gray-200 flex items-center justify-center mx-auto text-[#990000] shadow-sm">
               <Briefcase className="w-8 h-8" />

@@ -30,11 +30,11 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Headquarters</h4>
             <p className="text-black font-semibold text-sm leading-relaxed mb-2">
-              Plot 483 Ajose Adeogun Street, Utako,<br />
+              13 Sheda Close, Area 8, Garki,<br />
               Abuja, FCT, Nigeria
             </p>
             <span className="text-xs text-gray-500 font-light block">
-              T: +234-9079140069
+              T: +234 703 952 7148
             </span>
           </div>
 
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
               </div>
               <div>
                 <span className="font-bold text-black block">Kano Regional Office</span>
-                <span className="text-gray-500">Bank of Industry Tower, 25 Post Office Rd, Bompai</span>
+                <span className="text-gray-500">No. 4 Court House Close, off Miller Rd, Bompai, Kano</span>
               </div>
               <div>
                 <span className="font-bold text-black block">Port Harcourt Office</span>

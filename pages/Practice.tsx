@@ -50,7 +50,7 @@ const Practice: React.FC = () => {
                   <motion.div
                     key={area.id}
                     onClick={() => setSelectedPractice(area)}
-                    className="group relative cursor-pointer border border-gray-100 p-10 hover:border-[#990000] transition-all duration-500 bg-white hover:shadow-2xl overflow-hidden"
+                    className="group relative cursor-pointer border border-gray-100 p-6 sm:p-8 md:p-10 hover:border-[#990000] transition-all duration-500 bg-white hover:shadow-2xl overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-100 transition-opacity">
                       <ArrowRight className="w-8 h-8 text-[#990000]" />
@@ -88,26 +88,26 @@ const Practice: React.FC = () => {
                 <span>Back to All Practices</span>
               </button>
 
-              <div className="grid lg:grid-cols-2 gap-20">
+              <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20">
                 <div>
                   <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Practice Detail</h2>
-                  <h1 className="text-5xl font-bold text-black leading-tight mb-8">{selectedPractice.title}</h1>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight mb-8">{selectedPractice.title}</h1>
                   <p className="text-gray-600 text-lg leading-relaxed mb-12">
                     {selectedPractice.fullDescription}
                   </p>
                 </div>
 
-                <div className="bg-gray-50 p-12">
+                <div className="bg-gray-50 p-6 sm:p-8 md:p-12">
                   <h3 className="text-[10px] font-bold tracking-widest text-[#990000] uppercase mb-10 border-b border-gray-200 pb-4">
                     Focused Strategic Areas
                   </h3>
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {selectedPractice.subPractices.map((sub) => (
                       <motion.div
                         key={sub.title}
                         whileHover={{ x: 10 }}
                         onClick={() => setSelectedSub(sub)}
-                        className="group/item flex items-center justify-between p-6 bg-white border border-gray-100 cursor-pointer hover:border-[#990000] hover:shadow-lg transition-all"
+                        className="group/item flex items-center justify-between p-4 sm:p-6 bg-white border border-gray-100 cursor-pointer hover:border-[#990000] hover:shadow-lg transition-all"
                       >
                         <div className="flex items-center space-x-4">
                           <div className="w-2 h-2 bg-[#990000]"></div>

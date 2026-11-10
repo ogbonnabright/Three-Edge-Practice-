@@ -254,12 +254,12 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             className="relative w-full max-w-3xl bg-white shadow-2xl z-10 my-auto overflow-hidden border border-gray-200"
           >
             {/* Header */}
-            <div className="bg-black text-white p-6 md:p-8 flex items-start justify-between border-b-2 border-[#990000]">
+            <div className="bg-black text-white p-5 sm:p-6 md:p-8 flex items-start justify-between border-b-2 border-[#990000]">
               <div>
                 <span className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase block mb-1">
                   Three Edge Practice · Career Intake
                 </span>
-                <h3 className="text-2xl font-serif font-bold tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-serif font-bold tracking-tight">
                   {status === 'success' ? 'Application Lodged' : 'Candidate Application Dossier'}
                 </h3>
                 <p className="text-xs text-gray-400 mt-1">
@@ -277,7 +277,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 md:p-8 max-h-[75vh] overflow-y-auto">
+            <div className="p-5 sm:p-6 md:p-8 max-h-[75vh] overflow-y-auto">
               {status === 'success' ? (
                 <div className="py-8 text-center space-y-6">
                   <div className="w-16 h-16 bg-[#990000]/10 text-[#990000] flex items-center justify-center mx-auto border border-[#990000]/30">

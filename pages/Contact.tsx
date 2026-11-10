@@ -197,7 +197,7 @@ const Contact: React.FC = () => {
   return (
     <div className="bg-[#fcfcfc] min-h-screen text-black">
       {/* Hero Header */}
-      <section className="bg-[#0f1115] text-white pt-16 pb-20 px-6 sm:px-12 md:px-20 border-b border-gray-800 relative overflow-hidden">
+      <section className="bg-[#0f1115] text-white py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-12 lg:px-20 border-b border-gray-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-[#990000]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex items-center space-x-3 mb-4">
@@ -209,21 +209,21 @@ const Contact: React.FC = () => {
             Nationwide Presence. Strategic Proximity.
           </h1>
           
-          <p className="text-gray-300 text-base sm:text-lg max-w-3xl leading-relaxed font-light mb-8">
+          <p className="text-gray-300 text-sm sm:text-base md:text-lg max-w-3xl leading-relaxed font-light mb-8">
             With regional offices strategically positioned in Abuja, Lagos, Kano, and Port Harcourt, Three Edge Practice provides responsive, top-tier counsel at the critical hubs of Nigerian government, commerce, and industry.
           </p>
 
           <div className="flex flex-wrap gap-4">
             <button
               onClick={scrollToConsultationForm}
-              className="px-8 py-4 bg-[#990000] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-lg shadow-black/30"
+              className="px-6 sm:px-8 py-3.5 sm:py-4 bg-[#990000] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-lg shadow-black/30"
             >
               <span>Consult an Attorney</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <a
               href={`tel:${activeOffice.phone.replace(/[^0-9+]/g, '')}`}
-              className="px-8 py-4 border border-white/20 bg-white/5 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2"
+              className="px-6 sm:px-8 py-3.5 sm:py-4 border border-white/20 bg-white/5 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center space-x-2"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Call Direct Line</span>
@@ -231,7 +231,7 @@ const Contact: React.FC = () => {
           </div>
 
           {/* Quick Office Jump Links */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 pt-8 border-t border-white/10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
             {REGIONAL_OFFICES.map((office) => (
               <button
                 key={office.id}
@@ -239,7 +239,7 @@ const Contact: React.FC = () => {
                   setSelectedOfficeId(office.id);
                   setFormData((prev) => ({ ...prev, office: office.city }));
                 }}
-                className={`text-left p-3.5 border transition-all duration-300 ${
+                className={`text-left p-3 sm:p-3.5 border transition-all duration-300 ${
                   selectedOfficeId === office.id
                     ? 'border-[#990000] bg-[#990000]/15'
                     : 'border-white/10 hover:border-white/30 bg-white/5'
@@ -261,7 +261,7 @@ const Contact: React.FC = () => {
       </section>
 
       {/* Main Content Area: Regional Directory & Inquiry Form */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-14 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Left Column (7 Cols): Regional Offices Detailed Dossier */}
@@ -281,7 +281,7 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Office Navigation Tabs */}
-            <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
+            <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap gap-2 border-b border-gray-200 pb-4">
               {REGIONAL_OFFICES.map((office) => (
                 <button
                   key={office.id}
@@ -289,7 +289,7 @@ const Contact: React.FC = () => {
                     setSelectedOfficeId(office.id);
                     setFormData((prev) => ({ ...prev, office: office.city }));
                   }}
-                  className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 ${
+                  className={`px-4 sm:px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center space-x-2 shrink-0 ${
                     selectedOfficeId === office.id
                       ? 'bg-[#990000] text-white shadow-sm'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black'
@@ -309,7 +309,7 @@ const Contact: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.25 }}
-                className="bg-white border border-gray-200 p-8 shadow-sm space-y-8 relative overflow-hidden"
+                className="bg-white border border-gray-200 p-5 sm:p-8 shadow-sm space-y-6 sm:space-y-8 relative overflow-hidden"
               >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#990000]"></div>
 
@@ -446,7 +446,7 @@ const Contact: React.FC = () => {
           </div>
 
           {/* Right Column (5 Cols): Strategic Consultation Request Form */}
-          <div id="consultation-form" className="lg:col-span-5 bg-white border border-gray-200 p-8 sm:p-10 shadow-sm sticky top-8 scroll-mt-24">
+          <div id="consultation-form" className="lg:col-span-5 bg-white border border-gray-200 p-5 sm:p-8 md:p-10 shadow-sm lg:sticky lg:top-8 scroll-mt-24">
             <div className="border-b border-gray-200 pb-4 mb-6">
               <span className="text-[#990000] text-xs font-bold tracking-widest uppercase block mb-1">
                 Client Engagement

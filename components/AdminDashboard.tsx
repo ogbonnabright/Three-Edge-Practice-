@@ -312,7 +312,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         clientEmail: clientEmailClean,
         practiceArea: newMatterForm.practiceArea,
         matterCategory: newMatterForm.matterCategory || matchingPreset.category,
-        leadAttorney: "Al'Qasim Jafar (Managing Partner)",
+        leadAttorney: "Al'Qasim Ja'afar (Managing Partner)",
         leadAttorneyEmail: 'a.jafar@tep.com.ng',
         regionalOffice: newMatterForm.regionalOffice,
         status: newMatterForm.status,
@@ -328,7 +328,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             date: newMatterForm.filingDate || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
             title: newMatterForm.initialUpdateTitle.trim() || matchingPreset.updateTitle,
             notes: newMatterForm.initialUpdateNotes.trim() || `Docket created and verified by Three Edge Practice registry for client email ${clientEmailClean}.`,
-            author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+            author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
             type: matchingPreset.updateType
           }
         ],
@@ -501,7 +501,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           clientName: newClientForm.name.trim(),
           clientEmail: cleanEmail,
           practiceArea: newClientForm.practiceArea,
-          leadAttorney: "Al'Qasim Jafar (Managing Partner)",
+          leadAttorney: "Al'Qasim Ja'afar (Managing Partner)",
           leadAttorneyEmail: 'a.jafar@tep.com.ng',
           regionalOffice: 'Abuja (Federal Capital Territory)',
           status: 'Pre-Trial Discovery',
@@ -517,7 +517,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
               title: 'Client Profile Created & Retainer Registered',
               notes: `Formal client profile registered by administrator for ${cleanEmail}. Docket initialized in firm registry.`,
-              author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+              author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
               type: 'Filing'
             }
           ],
@@ -1502,7 +1502,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           <div className="bg-white border border-gray-200 overflow-hidden shadow-xs">
-            <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[640px]">
               <thead className="bg-[#0f1115] text-white text-[11px] uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-4">Document Title</th>
@@ -1548,6 +1549,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}

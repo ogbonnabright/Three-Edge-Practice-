@@ -36,7 +36,7 @@ const TheFirm: React.FC = () => {
 
       {/* The Firm Overview Section (Moved from landing page) */}
       <section className="py-14 md:py-20 lg:py-24 px-6 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-20 items-center">
+        <div className="grid md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 lg:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -282,7 +282,7 @@ const TheFirm: React.FC = () => {
               The Evolving Enforcement Landscape under the Money Laundering Act, 2022.
             </h3>
             
-            <div className="grid lg:grid-cols-[1fr_400px] gap-20">
+            <div className="grid lg:grid-cols-[1fr_400px] gap-8 sm:gap-12 lg:gap-20">
               <div className="space-y-8">
                 <p className="text-xl text-gray-700 leading-relaxed font-light">
                   The regulatory climate in Nigeria has shifted decisively toward active enforcement. Under the <strong>Money Laundering (Prevention and Prohibition) Act, 2022</strong>, regulators have commenced rigorous prosecution, securing convictions against business owners and corporate entities for critical procedural lapses.

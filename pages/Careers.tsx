@@ -130,7 +130,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 1. COMPACT HERO SECTION */}
       {/* ----------------------------------------------------------------------- */}
-      <section className="relative border-b border-gray-800 bg-black text-white py-10 md:py-14 px-6 md:px-12 lg:px-16 overflow-hidden">
+      <section className="relative border-b border-gray-800 bg-black text-white py-10 md:py-14 px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden">
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
 
@@ -201,7 +201,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 2. WHY JOIN US / THE FOUR STRATEGIC PILLARS */}
       {/* ----------------------------------------------------------------------- */}
-      <section id="why-join-us" className="py-16 md:py-24 px-6 md:px-16 lg:px-24 max-w-7xl mx-auto">
+      <section id="why-join-us" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="space-y-4 mb-14">
           <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">Life at Three Edge Practice</p>
           <h2 className="text-3xl md:text-4xl font-bold font-serif tracking-tight text-black">
@@ -300,7 +300,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 3. CULTURE QUOTE & AT-A-GLANCE METRICS */}
       {/* ----------------------------------------------------------------------- */}
-      <section className="bg-gray-50 border-y border-gray-200 py-16 px-6 md:px-16 lg:px-24">
+      <section className="bg-gray-50 border-y border-gray-200 py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 space-y-6">
             <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">The TEP Standard</span>
@@ -342,7 +342,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 4. CAREER PATHWAYS (INTERNSHIPS, TRAINEES, EXPERIENCE HIRES & BUSINESS OPS) */}
       {/* ----------------------------------------------------------------------- */}
-      <section id="pathways" className="py-20 md:py-28 px-6 md:px-16 lg:px-24 max-w-7xl mx-auto">
+      <section id="pathways" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
         <div className="space-y-4 mb-16">
           <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">Growth Architecture</p>
           <h2 className="text-3xl md:text-5xl font-bold font-serif tracking-tight text-black">
@@ -486,8 +486,8 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 5. TALENT DATABASE & SPECULATIVE DOSSIERS (CLEANED UP SECTION) */}
       {/* ----------------------------------------------------------------------- */}
-      <section id="submit-cv" className="py-20 md:py-28 px-6 md:px-16 lg:px-24 max-w-7xl mx-auto border-t border-gray-200">
-        <div className="bg-gray-50 border border-gray-200 p-8 sm:p-14 lg:p-16">
+      <section id="submit-cv" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto border-t border-gray-200">
+        <div className="bg-gray-50 border border-gray-200 p-6 sm:p-10 lg:p-14">
           <div className="max-w-4xl space-y-8">
             <div className="space-y-3">
               <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">Talent Database</p>
@@ -549,7 +549,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 6. WHAT WE LOOK FOR (THE SELECTION CRITERIA) */}
       {/* ----------------------------------------------------------------------- */}
-      <section className="bg-gray-50 border-t border-gray-200 py-20 md:py-28 px-6 md:px-16 lg:px-24">
+      <section className="bg-gray-50 border-t border-gray-200 py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-8 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-2xl mx-auto space-y-4">
             <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">Candidate Standards</p>
@@ -605,7 +605,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 7. FREQUENTLY ASKED QUESTIONS (FAQ ACCORDION) */}
       {/* ----------------------------------------------------------------------- */}
-      <section id="faqs" className="py-20 md:py-28 px-6 md:px-16 lg:px-24 max-w-5xl mx-auto">
+      <section id="faqs" className="py-12 sm:py-16 md:py-20 px-4 sm:px-8 md:px-12 lg:px-20 max-w-5xl mx-auto">
         <div className="space-y-4 mb-12">
           <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#990000]">Admissions & Queries</p>
           <h2 className="text-3xl md:text-5xl font-bold font-serif tracking-tight text-black">
@@ -657,7 +657,7 @@ export const Careers: React.FC = () => {
       {/* ----------------------------------------------------------------------- */}
       {/* 8. RECRUITMENT DESK FOOTER: SUBMIT INQUIRY BUTTON & INQUIRY MODAL */}
       {/* ----------------------------------------------------------------------- */}
-      <section className="bg-black text-white py-16 px-6 md:px-16 lg:px-24 border-t border-white/10">
+      <section className="bg-black text-white py-12 sm:py-16 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-white/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="text-2xl font-serif font-bold text-white">Have a Specific Recruitment Inquiry?</h3>

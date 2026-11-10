@@ -59,7 +59,7 @@ const Insights: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="p-8 md:p-24 max-w-7xl mx-auto">
+      <div className="px-5 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-14 md:py-16 max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           {!selectedInsight ? (
             <motion.div
@@ -70,9 +70,9 @@ const Insights: React.FC = () => {
               transition={{ duration: 0.5 }}
             >
               <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Insights</h2>
-              <h1 className="text-5xl font-bold mb-16 text-black font-serif">Thought Leadership & Regulatory Updates.</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-14 md:mb-16 text-black font-serif">Thought Leadership & Regulatory Updates.</h1>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
                 {INSIGHTS.map((insight, idx) => (
                   <motion.article
                     key={insight.title}
@@ -146,7 +146,7 @@ const Insights: React.FC = () => {
                       {selectedInsight.date}
                     </span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-bold text-black font-serif leading-tight">
+                  <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-black font-serif leading-tight">
                     {selectedInsight.title}
                   </h1>
                   <div className="h-1 w-24 bg-[#990000]"></div>
@@ -162,16 +162,16 @@ const Insights: React.FC = () => {
 
                 <div className="prose prose-lg max-w-none">
                   {selectedInsight.content.split('\n\n').map((para, i) => (
-                    <p key={i} className="text-gray-600 text-lg md:text-xl leading-relaxed font-light mb-8 whitespace-pre-line">
+                    <p key={i} className="text-gray-600 text-base sm:text-lg md:text-xl leading-relaxed font-light mb-8 whitespace-pre-line">
                       {para}
                     </p>
                   ))}
                 </div>
 
-                <div className="border-t border-gray-100 pt-12 mt-12 flex flex-col md:flex-row md:items-center justify-between gap-8 print:hidden relative">
+                <div className="border-t border-gray-100 pt-8 sm:pt-12 mt-8 sm:mt-12 flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8 print:hidden relative">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden border-2 border-[#990000]">
-                      <img src="https://picsum.photos/seed/tep_author/100/100" alt="Author" className="grayscale" />
+                    <div className="w-11 h-11 rounded-full bg-[#990000] text-white flex items-center justify-center font-bold text-xs tracking-wider border-2 border-white shadow-sm shrink-0">
+                      {selectedInsight.author ? selectedInsight.author.split(' ').map(n => n[0]).join('').slice(0, 2) : 'TEP'}
                     </div>
                     <div>
                       <p className="text-xs font-bold text-black uppercase tracking-widest">{selectedInsight.author || 'TEP Editorial Board'}</p>

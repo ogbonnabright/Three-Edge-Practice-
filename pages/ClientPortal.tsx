@@ -696,7 +696,7 @@ const ClientPortal: React.FC = () => {
   return (
     <div className="bg-[#fcfcfc] min-h-screen text-black">
       {/* Top Banner Header */}
-      <section className="bg-[#0f1115] text-white pt-16 pb-12 px-6 sm:px-12 md:px-20 border-b border-gray-800 relative overflow-hidden">
+      <section className="bg-[#0f1115] text-white py-12 sm:py-14 md:py-16 px-4 sm:px-8 md:px-12 lg:px-20 border-b border-gray-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-[#990000]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
 
         <div className="max-w-7xl mx-auto relative z-10 space-y-6">
@@ -797,7 +797,7 @@ const ClientPortal: React.FC = () => {
       </section>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-8 sm:py-10">
         {/* Global Security / Access Denied Notice */}
         {accessDeniedNotice && (
           <div className="mb-6 p-5 bg-red-950 border-l-4 border-l-red-500 text-white text-xs flex items-start justify-between gap-3 shadow-xl">
@@ -991,7 +991,7 @@ const ClientPortal: React.FC = () => {
               initial={{ opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 20 }}
-              className="relative bg-white w-full max-w-5xl max-h-[92vh] overflow-y-auto shadow-2xl z-10 border-t-4 border-[#990000] p-6 sm:p-10 space-y-8"
+              className="relative bg-white w-full max-w-5xl max-h-[92vh] overflow-y-auto shadow-2xl z-10 border-t-4 border-[#990000] p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8"
             >
               <div className="absolute top-6 right-6 flex items-center gap-2">
                 <button
@@ -1182,7 +1182,7 @@ const ClientPortal: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white w-full max-w-lg p-8 shadow-2xl relative border-t-4 border-[#990000] space-y-6"
+              className="bg-white w-full max-w-lg p-5 sm:p-8 shadow-2xl relative border-t-4 border-[#990000] space-y-5 sm:space-y-6"
             >
               <button
                 onClick={() => setSelectedDoc(null)}

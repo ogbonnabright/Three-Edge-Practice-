@@ -134,7 +134,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
     title: '',
     notes: '',
     date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
-    author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+    author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
     type: 'Court Hearing' as CaseUpdateType | string,
     visibility: 'Client Visible' as 'Client Visible' | 'Internal/Confidential',
     caseStatus: '' as CaseStatus | '',
@@ -158,7 +158,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
     message: '',
     date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
     priority: 'Privileged' as ClientNotice['priority'],
-    sender: currentUserName || "Al'Qasim Jafar (Managing Partner)"
+    sender: currentUserName || "Al'Qasim Ja'afar (Managing Partner)"
   });
 
   const showToast = (msg: string) => {
@@ -267,7 +267,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
           practiceArea: docketForm.practiceArea.trim(),
           matterCategory: docketForm.matterCategory || preset.category,
           matterTrack: docketForm.matterCategory || preset.category,
-          leadAttorney: "Al'Qasim Jafar (Managing Partner)",
+          leadAttorney: "Al'Qasim Ja'afar (Managing Partner)",
           leadAttorneyEmail: 'a.jafar@tep.com.ng',
           regionalOffice: 'Abuja (Federal Capital Territory)',
           status: docketForm.status,
@@ -283,7 +283,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
               date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
               title: preset.updateTitle,
               notes: `Registered and verified by Three Edge Practice registry for ${client.name} (${client.email}). Initial mandate and strategy protocol established.`,
-              author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+              author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
               type: preset.updateType,
               visibility: 'Client Visible',
               caseStatus: docketForm.status,
@@ -407,7 +407,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
         title: '',
         notes: '',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
-        author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+        author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
         type: 'Court Hearing',
         visibility: 'Client Visible',
         caseStatus: '',
@@ -434,7 +434,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
       title: '',
       notes: '',
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
-      author: currentUserName || "Al'Qasim Jafar (Managing Partner)",
+      author: currentUserName || "Al'Qasim Ja'afar (Managing Partner)",
       type: 'Court Hearing',
       visibility: 'Client Visible',
       caseStatus: '',
@@ -455,7 +455,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
       title: upd.title || '',
       notes: upd.notes || '',
       date: upd.date || '',
-      author: upd.author || (currentUserName || "Al'Qasim Jafar (Managing Partner)"),
+      author: upd.author || (currentUserName || "Al'Qasim Ja'afar (Managing Partner)"),
       type: upd.type || 'Court Hearing',
       visibility: upd.visibility || 'Client Visible',
       caseStatus: upd.caseStatus || '',
@@ -516,7 +516,7 @@ const ClientManagementWorkspace: React.FC<ClientManagementWorkspaceProps> = ({
         message: '',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
         priority: 'Privileged',
-        sender: currentUserName || "Al'Qasim Jafar (Managing Partner)"
+        sender: currentUserName || "Al'Qasim Ja'afar (Managing Partner)"
       });
       showToast('Client notice posted to client dashboard.');
     } catch (err) {

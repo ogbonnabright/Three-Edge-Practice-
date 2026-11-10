@@ -621,56 +621,58 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
                 </div>
               </div>
 
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#0f1115] text-white text-[11px] uppercase tracking-wider font-mono">
-                  <tr>
-                    <th className="py-3 px-4">Document Title</th>
-                    <th className="py-3 px-4">Suit Number</th>
-                    <th className="py-3 px-4">Category</th>
-                    <th className="py-3 px-4">Filing Date</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className="py-3 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredDocuments.map(d => (
-                    <tr key={d.id} className="hover:bg-gray-50">
-                      <td className="py-3.5 px-4 font-bold text-black max-w-xs">
-                        {d.title}
-                        <span className="block text-[10px] text-gray-400 font-normal">{d.fileSize}</span>
-                      </td>
-                      <td className="py-3.5 px-4 font-mono font-semibold text-black">{d.caseNumber}</td>
-                      <td className="py-3.5 px-4 text-gray-600">{d.category}</td>
-                      <td className="py-3.5 px-4 font-mono text-gray-500">{d.filingDate}</td>
-                      <td className="py-3.5 px-4">
-                        <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
-                          d.status === 'Certified' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
-                          d.status === 'Filed' ? 'bg-red-50 text-[#990000] border-red-200' :
-                          d.status === 'Served' ? 'bg-blue-50 text-blue-800 border-blue-200' :
-                          'bg-amber-50 text-amber-800 border-amber-200'
-                        }`}>
-                          {d.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right space-x-2">
-                        <button
-                          onClick={() => onAdvanceDocumentStatus(d.caseId, d.id, d.status)}
-                          className="px-2 py-1 bg-gray-100 hover:bg-[#990000] hover:text-white text-gray-700 text-[10px] font-bold uppercase tracking-wider"
-                          title="Advance document along lifecycle (Drafting -> Filed -> Served -> Certified)"
-                        >
-                          Advance &rarr;
-                        </button>
-                        <button
-                          onClick={() => onOpenDocModal(d)}
-                          className="px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-wider hover:bg-[#990000]"
-                        >
-                          Inspect
-                        </button>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[640px]">
+                  <thead className="bg-[#0f1115] text-white text-[11px] uppercase tracking-wider font-mono">
+                    <tr>
+                      <th className="py-3 px-4">Document Title</th>
+                      <th className="py-3 px-4">Suit Number</th>
+                      <th className="py-3 px-4">Category</th>
+                      <th className="py-3 px-4">Filing Date</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredDocuments.map(d => (
+                      <tr key={d.id} className="hover:bg-gray-50">
+                        <td className="py-3.5 px-4 font-bold text-black max-w-xs">
+                          {d.title}
+                          <span className="block text-[10px] text-gray-400 font-normal">{d.fileSize}</span>
+                        </td>
+                        <td className="py-3.5 px-4 font-mono font-semibold text-black">{d.caseNumber}</td>
+                        <td className="py-3.5 px-4 text-gray-600">{d.category}</td>
+                        <td className="py-3.5 px-4 font-mono text-gray-500">{d.filingDate}</td>
+                        <td className="py-3.5 px-4">
+                          <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
+                            d.status === 'Certified' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
+                            d.status === 'Filed' ? 'bg-red-50 text-[#990000] border-red-200' :
+                            d.status === 'Served' ? 'bg-blue-50 text-blue-800 border-blue-200' :
+                            'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            {d.status}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-right space-x-2">
+                          <button
+                            onClick={() => onAdvanceDocumentStatus(d.caseId, d.id, d.status)}
+                            className="px-2 py-1 bg-gray-100 hover:bg-[#990000] hover:text-white text-gray-700 text-[10px] font-bold uppercase tracking-wider"
+                            title="Advance document along lifecycle (Drafting -> Filed -> Served -> Certified)"
+                          >
+                            Advance &rarr;
+                          </button>
+                          <button
+                            onClick={() => onOpenDocModal(d)}
+                            className="px-2.5 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-wider hover:bg-[#990000]"
+                          >
+                            Inspect
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 

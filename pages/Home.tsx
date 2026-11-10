@@ -142,7 +142,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 2. Our Services Section */}
-      <section id="services" className="py-24 px-8 md:px-24 bg-white border-b border-gray-100">
+      <section id="services" className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mb-16">
             <div className="flex items-center space-x-3 mb-4">
@@ -236,7 +236,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 3. Why Three Edge Practice Section */}
-      <section className="py-24 px-8 md:px-24 bg-[#0f1115] text-white relative overflow-hidden border-t border-b border-gray-800">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-[#0f1115] text-white relative overflow-hidden border-t border-b border-gray-800">
         <div className="absolute right-0 bottom-0 w-96 h-96 bg-[#990000]/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
@@ -384,7 +384,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 5. Our Team Section */}
-      <section className="py-24 px-8 md:px-24 bg-gray-50 border-b border-gray-100">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div className="max-w-2xl">
@@ -415,10 +415,10 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Al'Qasim Ja'Afar",
+                name: "Al'Qasim Ja'afar",
                 role: "Managing Partner",
                 focus: "AML/CFT Compliance, Financial Crime & Regulatory Strategy",
-                image: "/images/Al'Qasim Jafar.png"
+                image: "/images/alqasim-jafar.png"
               },
               {
                 name: "Tamunoibi Aprekuma",
@@ -470,7 +470,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 6. Selected Experience Section */}
-      <section className="py-24 px-8 md:px-24 bg-white border-b border-gray-100">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mb-16">
             <div className="flex items-center space-x-3 mb-4">
@@ -554,7 +554,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 7. Who We Serve Section */}
-      <section className="py-24 px-8 md:px-24 bg-gray-50 border-b border-gray-100">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-3xl mb-16">
             <div className="flex items-center space-x-3 mb-4">
@@ -623,7 +623,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 8. Client Legal Case Portal Section */}
-      <section className="py-20 px-8 md:px-24 bg-[#0f1115] text-white relative overflow-hidden border-t border-b border-gray-800">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 bg-[#0f1115] text-white relative overflow-hidden border-t border-b border-gray-800">
         <div className="absolute right-0 top-0 w-96 h-96 bg-[#990000]/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
           <div className="max-w-2xl space-y-4">
@@ -669,7 +669,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 9. Let's Work Together Call to Action */}
-      <section className="py-24 px-8 text-center bg-white border-t border-gray-50">
+      <section className="py-14 sm:py-16 md:py-20 lg:py-24 px-5 sm:px-8 md:px-12 lg:px-20 text-center bg-white border-t border-gray-50">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <span className="w-8 h-[2px] bg-[#990000]"></span>

@@ -47,11 +47,7 @@ const Team: React.FC = () => {
   }, []);
 
   const locationOptions = useMemo(() => {
-    const locs = new Set<string>();
-    TEAM.forEach((m) => {
-      if (m.location) locs.add(m.location);
-    });
-    return Array.from(locs).sort();
+    return ['Abuja', 'Lagos', 'Kano', 'Port Harcourt'];
   }, []);
 
   const roleCategories = useMemo(() => {
@@ -122,7 +118,9 @@ const Team: React.FC = () => {
 
       // 4. Location
       if (selectedLocation !== 'All') {
-        if (member.location !== selectedLocation) {
+        const memLoc = (member.location || '').toLowerCase();
+        const selLoc = selectedLocation.toLowerCase();
+        if (!memLoc.includes(selLoc)) {
           return false;
         }
       }
@@ -148,7 +146,7 @@ const Team: React.FC = () => {
       `ORG:Three Edge Practice (TEP)`,
       `TITLE:${member.role}`,
       `EMAIL;TYPE=INTERNET,WORK:${member.email || 'info@tep.com.ng'}`,
-      `TEL;TYPE=WORK,VOICE:${member.phone || '+234 1 270 3980'}`,
+      `TEL;TYPE=WORK,VOICE:${member.phone || '+234 703 952 7148'}`,
       `ADR;TYPE=WORK:;;${member.location || 'Lagos'};Nigeria`,
       `URL:https://tep.com.ng`,
       `NOTE:${member.bio}`,
@@ -552,7 +550,7 @@ const Team: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 {/* Left Column: Portrait & Direct Contact Panel */}
-                <div className="lg:col-span-5 bg-gray-50 p-8 sm:p-10 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col justify-between">
+                <div className="lg:col-span-5 bg-gray-50 p-5 sm:p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col justify-between">
                   <div>
                     {/* Headshot */}
                     <div className="w-full aspect-[4/5] bg-gray-200 mb-8 relative shadow-md overflow-hidden">
@@ -632,7 +630,7 @@ const Team: React.FC = () => {
                 </div>
 
                 {/* Right Column: In-depth Biography, Education, Admissions & Matters */}
-                <div className="lg:col-span-7 p-8 sm:p-12 space-y-8">
+                <div className="lg:col-span-7 p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8">
                   {/* Header Title */}
                   <div>
                     <span className="text-[#990000] text-xs font-bold tracking-[0.3em] uppercase block mb-1">
