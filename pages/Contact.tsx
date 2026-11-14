@@ -451,9 +451,9 @@ const Contact: React.FC = () => {
               <span className="text-[#990000] text-xs font-bold tracking-widest uppercase block mb-1">
                 Client Engagement
               </span>
-              <h3 className="text-2xl font-serif font-bold text-black">
+              <h2 className="text-2xl font-serif font-bold text-black">
                 Request a Consultation
-              </h3>
+              </h2>
               <p className="text-xs text-gray-500 mt-1 font-light">
                 Submit an inquiry directly to our managing partners and practice leaders. All communications are strictly confidential.
               </p>
@@ -468,7 +468,7 @@ const Contact: React.FC = () => {
                 <div className="w-16 h-16 bg-[#990000]/10 text-[#990000] rounded-full flex items-center justify-center mx-auto">
                   <CheckCircle className="w-8 h-8" />
                 </div>
-                <h4 className="text-xl font-serif font-bold text-black">Inquiry Dispatched</h4>
+                <h3 className="text-xl font-serif font-bold text-black">Inquiry Dispatched</h3>
                 <p className="text-gray-600 text-xs leading-relaxed max-w-sm mx-auto">
                   Thank you for reaching out to Three Edge Practice. A designated partner from our <span className="font-bold text-black">{formData.office} office</span> will review your matter and respond within 24 business hours.
                 </p>

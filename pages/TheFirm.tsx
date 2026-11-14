@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import HeroVideo from '../components/HeroVideo';
 
 const TheFirm: React.FC = () => {
-  const navigate = useNavigate();
 
   return (
     <div className="bg-white">
@@ -18,7 +17,7 @@ const TheFirm: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h2 className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-4 md:mb-6">The Firm</h2>
+            <p className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-4 md:mb-6">The Firm</p>
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-black leading-tight font-serif mb-6 md:mb-8">
               A standard of<br />
               <span className="text-[#990000]">strategic excellence.</span>
@@ -43,23 +42,23 @@ const TheFirm: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-6">The Firm</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-black mb-8 leading-tight font-serif">
+            <p className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-6">The Firm</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-8 leading-tight font-serif">
               A Triad of Intellectual Rigor, Strategy, and Integrity.
-            </h3>
+            </h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
               Three Edge Practice (TEP) stands at the pinnacle of the Nigerian legal landscape, providing sophisticated advocacy for global entities. We navigate the complexities of modern regulation with a relentless focus on our clients' commercial and reputational objectives.
             </p>
-            <button 
-              onClick={() => navigate('/practice')}
-              className="text-xs font-bold uppercase tracking-widest border-b-2 border-[#990000] pb-2 hover:text-[#990000] transition-colors"
+            <Link 
+              to="/practice"
+              className="inline-block text-xs font-bold uppercase tracking-widest border-b-2 border-[#990000] pb-2 hover:text-[#990000] transition-colors"
             >
               Explore Practice Areas →
-            </button>
+            </Link>
           </motion.div>
           <div className="relative group">
             <div className="aspect-[4/5] bg-gray-100 overflow-hidden shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
-              <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=800&auto=format&fit=crop" alt="TEP Office" className="w-full h-full object-cover filter grayscale" />
+              <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=800&auto=format&fit=crop" alt="Three Edge Practice legal advisory chambers" loading="lazy" className="w-full h-full object-cover filter grayscale" />
             </div>
             <div className="absolute -bottom-8 -left-8 bg-[#990000] p-12 hidden md:block shadow-2xl">
               <p className="text-white text-4xl font-serif italic">"Precision in every move."</p>
@@ -79,7 +78,7 @@ const TheFirm: React.FC = () => {
           >
             <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-16 md:mb-20 items-start">
               <div className="space-y-6 md:space-y-8">
-                <h3 className="text-2xl sm:text-3xl font-bold text-black font-serif">A Triad of Strengths.</h3>
+                <h2 className="text-2xl sm:text-3xl font-bold text-black font-serif">A Triad of Strengths.</h2>
                 <p className="text-base sm:text-lg text-gray-600 leading-relaxed font-light">
                   Three Edge Practice (TEP) was founded on the principle that elite legal advocacy requires a triad of strengths: 
                   profound intellectual rigor, strategic foresight, and unwavering integrity.
@@ -113,19 +112,19 @@ const TheFirm: React.FC = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               <div className="border-l-4 border-[#990000] p-6 sm:p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <h4 className="text-3xl sm:text-4xl font-bold mb-2 text-black">100%</h4>
+                <p className="text-3xl sm:text-4xl font-bold mb-2 text-black">100%</p>
                 <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Partner-Led Advisory</p>
               </div>
               <div className="border-l-4 border-[#990000] p-6 sm:p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <h4 className="text-3xl sm:text-4xl font-bold mb-2 text-black">50+</h4>
+                <p className="text-3xl sm:text-4xl font-bold mb-2 text-black">50+</p>
                 <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Strategic Wins</p>
               </div>
               <div className="border-l-4 border-[#990000] p-6 sm:p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <h4 className="text-3xl sm:text-4xl font-bold mb-2 text-black">30+</h4>
+                <p className="text-3xl sm:text-4xl font-bold mb-2 text-black">30+</p>
                 <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Expert Attorneys</p>
               </div>
               <div className="border-l-4 border-[#990000] p-6 sm:p-8 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <h4 className="text-3xl sm:text-4xl font-bold mb-2 text-[#990000]">4</h4>
+                <p className="text-3xl sm:text-4xl font-bold mb-2 text-[#990000]">4</p>
                 <p className="text-gray-400 uppercase text-[9px] font-bold tracking-[0.2em]">Regional Offices</p>
               </div>
             </div>
@@ -137,8 +136,8 @@ const TheFirm: React.FC = () => {
       <section className="py-14 md:py-20 lg:py-24 bg-white px-6 sm:px-8 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 md:mb-16">
-            <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Strategic Focus</h2>
-            <h3 className="text-3xl sm:text-4xl font-bold text-black font-serif">Core Pillars of Excellence.</h3>
+            <p className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Strategic Focus</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-black font-serif">Core Pillars of Excellence.</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -148,7 +147,7 @@ const TheFirm: React.FC = () => {
               className="bg-white p-6 sm:p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between"
             >
               <div>
-                <h4 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">AML/CFT Compliance Advisory</h4>
+                <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">AML/CFT Compliance Advisory</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6 md:mb-8">
                   In an era of heightened scrutiny, we provide sophisticated anti-money laundering and counter-terrorism financing strategies that ensure institutional resilience.
                 </p>
@@ -171,7 +170,7 @@ const TheFirm: React.FC = () => {
               className="bg-white p-6 sm:p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between"
             >
               <div>
-                <h4 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">Data Protection</h4>
+                <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">Data Protection</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6 md:mb-8">
                   Safeguarding digital assets and ensuring compliance with the Nigeria Data Protection Act (NDPA) 2023, GAID 2025, and GDPR. We architect legal frameworks that protect both consumer privacy and corporate data integrity.
                 </p>
@@ -194,7 +193,7 @@ const TheFirm: React.FC = () => {
               className="bg-white p-6 sm:p-8 md:p-10 border border-gray-100 shadow-sm transition-all duration-300 border-t-4 border-t-[#990000] flex flex-col justify-between md:col-span-2 lg:col-span-1 md:max-w-md md:mx-auto lg:max-w-none w-full"
             >
               <div>
-                <h4 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">General Corporate / Commercial Legal Support</h4>
+                <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-black font-serif leading-snug break-words">General Corporate / Commercial Legal Support</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6 md:mb-8">
                   End-to-end legal support for foundational business operations, from Tax and Startup advisory to sector-specific requirements in Real Estate and Energy.
                 </p>
@@ -236,7 +235,8 @@ const TheFirm: React.FC = () => {
               <div className="order-1 md:order-2 aspect-[4/3] bg-gray-100 overflow-hidden shadow-xl">
                 <img 
                   src="https://images.unsplash.com/photo-1444312645910-ffa973656eba?q=80&w=800&auto=format&fit=crop" 
-                  alt="Oil and Gas Exploration - ESG Context" 
+                  alt="Environmental and Social Governance advisory for Nigeria's energy sector" 
+                  loading="lazy"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" 
                 />
               </div>
@@ -246,7 +246,8 @@ const TheFirm: React.FC = () => {
               <div className="aspect-[4/3] bg-gray-100 overflow-hidden shadow-xl">
                 <img 
                   src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=800&auto=format&fit=crop" 
-                  alt="White Collar Defense" 
+                  alt="Corporate and white collar crime defense advocacy at Three Edge Practice" 
+                  loading="lazy"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" 
                 />
               </div>
@@ -277,10 +278,10 @@ const TheFirm: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-6">Regulatory Vigilance</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-black mb-10 leading-tight font-serif max-w-4xl">
+            <p className="text-[#990000] text-xs font-bold tracking-[0.5em] uppercase mb-6">Regulatory Vigilance</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-10 leading-tight font-serif max-w-4xl">
               The Evolving Enforcement Landscape under the Money Laundering Act, 2022.
-            </h3>
+            </h2>
             
             <div className="grid lg:grid-cols-[1fr_400px] gap-8 sm:gap-12 lg:gap-20">
               <div className="space-y-8">
@@ -289,9 +290,9 @@ const TheFirm: React.FC = () => {
                 </p>
                 
                 <div className="bg-gray-50 p-10 space-y-8">
-                  <h4 className="text-xs font-bold tracking-widest uppercase text-black border-b border-gray-200 pb-4">
+                  <h3 className="text-xs font-bold tracking-widest uppercase text-black border-b border-gray-200 pb-4">
                     Primary Enforcement Focal Points
-                  </h4>
+                  </h3>
                   <ul className="space-y-6">
                     {[
                       {
@@ -329,12 +330,12 @@ const TheFirm: React.FC = () => {
                   </p>
                 </div>
                 
-                <button 
-                  onClick={() => navigate('/practice')}
-                  className="mt-12 md:mt-0 text-[10px] font-bold text-[#990000] tracking-[0.3em] uppercase border-b border-[#990000] pb-2 self-start hover:text-black hover:border-black transition-colors"
+                <Link 
+                  to="/practice"
+                  className="mt-12 md:mt-0 inline-block text-[10px] font-bold text-[#990000] tracking-[0.3em] uppercase border-b border-[#990000] pb-2 self-start hover:text-black hover:border-black transition-colors"
                 >
                   Explore Compliance Strategy →
-                </button>
+                </Link>
               </div>
             </div>
           </motion.div>

@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
           <div>
-            <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Headquarters</h4>
+            <p className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Headquarters</p>
             <p className="text-black font-semibold text-sm leading-relaxed mb-2">
               13 Sheda Close, Area 8, Garki,<br />
               Abuja, FCT, Nigeria
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Regional Offices</h4>
+            <p className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Regional Offices</p>
             <div className="space-y-3 text-xs text-gray-700">
               <div>
                 <span className="font-bold text-black block">Lagos Office</span>
@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Direct Channels</h4>
+            <p className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Direct Channels</p>
             <p className="text-black font-semibold text-sm leading-relaxed mb-3">
               E: info@tep.com.ng<br />
               E: cservices@tep.com.ng
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
 
           <div className="flex flex-col items-start lg:items-end justify-between">
             <div>
-              <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Engagement</h4>
+              <p className="text-[#990000] text-[10px] font-bold tracking-[0.3em] uppercase mb-4">Engagement</p>
               <p className="text-xs text-gray-500 mb-4 lg:text-right max-w-xs">
                 Partner-led advisory across Nigeria's vital economic and regulatory corridors.
               </p>

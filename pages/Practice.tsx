@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, ChevronRight, X, Mail } from 'lucide-react';
 import { PRACTICE_AREAS } from '../constants';
 import { SubPractice, PracticeArea } from '../types';
@@ -41,7 +41,7 @@ const Practice: React.FC = () => {
               transition={{ duration: 0.5 }}
             >
               <div className="mb-12 md:mb-16">
-                <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Expertise</h2>
+                <p className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Expertise</p>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">Decisive Expertise Across Key Sectors.</h1>
               </div>
 
@@ -57,9 +57,9 @@ const Practice: React.FC = () => {
                     </div>
                     
                     <span className="text-4xl font-serif italic text-[#990000]/20 mb-8 block">0{idx + 1}</span>
-                    <h3 className="text-2xl font-bold mb-6 text-black group-hover:text-[#990000] transition-colors duration-300 leading-snug break-words">
+                    <h2 className="text-2xl font-bold mb-6 text-black group-hover:text-[#990000] transition-colors duration-300 leading-snug break-words">
                       {area.title}
-                    </h3>
+                    </h2>
                     <p className="text-gray-600 text-sm leading-relaxed mb-6">
                       {area.description}
                     </p>
@@ -90,7 +90,7 @@ const Practice: React.FC = () => {
 
               <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20">
                 <div>
-                  <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Practice Detail</h2>
+                  <p className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Practice Detail</p>
                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black leading-tight mb-8">{selectedPractice.title}</h1>
                   <p className="text-gray-600 text-lg leading-relaxed mb-12">
                     {selectedPractice.fullDescription}
@@ -98,9 +98,9 @@ const Practice: React.FC = () => {
                 </div>
 
                 <div className="bg-gray-50 p-6 sm:p-8 md:p-12">
-                  <h3 className="text-[10px] font-bold tracking-widest text-[#990000] uppercase mb-10 border-b border-gray-200 pb-4">
+                  <h2 className="text-[10px] font-bold tracking-widest text-[#990000] uppercase mb-10 border-b border-gray-200 pb-4">
                     Focused Strategic Areas
-                  </h3>
+                  </h2>
                   <div className="space-y-4 sm:space-y-6">
                     {selectedPractice.subPractices.map((sub) => (
                       <motion.div
@@ -132,13 +132,13 @@ const Practice: React.FC = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h3 className="text-4xl md:text-5xl font-bold text-black mb-12 font-serif">Ready for Strategic Advocacy?</h3>
-          <button 
-            onClick={() => navigate('/contact')}
-            className="bg-black text-white px-12 py-5 font-bold tracking-widest uppercase text-xs hover:bg-[#990000] transition-colors duration-500 shadow-xl cursor-pointer"
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-12 font-serif">Ready for Strategic Advocacy?</h2>
+          <Link 
+            to="/contact"
+            className="inline-block bg-black text-white px-12 py-5 font-bold tracking-widest uppercase text-xs hover:bg-[#990000] transition-colors duration-500 shadow-xl cursor-pointer"
           >
             Engage Our Experts
-          </button>
+          </Link>
         </motion.div>
       </section>
 
@@ -166,8 +166,8 @@ const Practice: React.FC = () => {
 
               {/* Content */}
               <div className="p-5 sm:p-8 md:p-10 flex-1 overflow-y-auto">
-                <h4 className="text-[#990000] text-[10px] font-bold tracking-[0.4em] uppercase mb-2">Focus Area</h4>
-                <h3 className="text-2xl sm:text-3xl font-bold text-black mb-6 leading-tight">{selectedSub.title}</h3>
+                <p className="text-[#990000] text-[10px] font-bold tracking-[0.4em] uppercase mb-2">Focus Area</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-black mb-6 leading-tight">{selectedSub.title}</h2>
                 
                 <div className="h-[1px] w-full bg-gray-100 mb-6"></div>
                 
@@ -178,9 +178,9 @@ const Practice: React.FC = () => {
                 {/* Contact Staff Section with Consult Attorney button */}
                 <div className="bg-gray-50 p-6 sm:p-8 border-l-4 border-[#990000]">
                   <div className="flex items-center justify-between mb-6 pb-2 border-b border-gray-200">
-                    <h5 className="text-[10px] font-bold tracking-widest text-[#990000] uppercase">
+                    <h3 className="text-[10px] font-bold tracking-widest text-[#990000] uppercase">
                       Designated Attorneys & Strategic Leads
-                    </h5>
+                    </h3>
                     <span className="text-[9px] font-mono tracking-widest text-gray-400 uppercase hidden sm:inline">
                       Direct Counsel
                     </span>

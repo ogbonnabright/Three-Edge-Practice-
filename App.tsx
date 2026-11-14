@@ -11,6 +11,7 @@ import Careers from './pages/Careers';
 import OpenPositions from './pages/OpenPositions';
 import Contact from './pages/Contact';
 import ClientPortal from './pages/ClientPortal';
+import SeoManager from './components/SeoManager';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Clean up any legacy HashRouter fragment (e.g., #/team) so the preview/browser loads the landing page
@@ -57,6 +58,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const App: React.FC = () => {
   return (
     <Router>
+      <SeoManager />
       <ScrollToTop />
       <div className="flex bg-white min-h-screen">
         <Sidebar />

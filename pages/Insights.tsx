@@ -69,7 +69,7 @@ const Insights: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Insights</h2>
+              <p className="text-[#990000] text-xs font-bold tracking-[0.4em] uppercase mb-4">Insights</p>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-14 md:mb-16 text-black font-serif">Thought Leadership & Regulatory Updates.</h1>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
@@ -85,7 +85,8 @@ const Insights: React.FC = () => {
                     <div className="aspect-[3/2] bg-gray-100 overflow-hidden mb-8 relative">
                       <img 
                         src={insight.image} 
-                        alt={insight.title} 
+                        alt={`${insight.title} — ${insight.category} legal insight by Three Edge Practice`}
+                        loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter grayscale group-hover:grayscale-0"
                       />
                       <div className="absolute top-4 left-4 bg-[#990000] text-white text-[9px] font-bold tracking-widest uppercase px-3 py-1">
@@ -97,9 +98,9 @@ const Insights: React.FC = () => {
                       <p className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">
                         {insight.date}
                       </p>
-                      <h3 className="text-2xl font-bold text-black group-hover:text-[#990000] transition-colors duration-300 font-serif line-clamp-2">
+                      <h2 className="text-2xl font-bold text-black group-hover:text-[#990000] transition-colors duration-300 font-serif line-clamp-2">
                         {insight.title}
-                      </h3>
+                      </h2>
                       <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-6">
                         {insight.excerpt}
                       </p>
@@ -155,7 +156,7 @@ const Insights: React.FC = () => {
                 <div className="aspect-[16/9] sm:aspect-[21/9] w-full bg-gray-100 overflow-hidden shadow-xl print:hidden">
                   <img 
                     src={selectedInsight.image} 
-                    alt={selectedInsight.title} 
+                    alt={`${selectedInsight.title} — ${selectedInsight.category} insight by Three Edge Practice`}
                     className="w-full h-full object-cover filter grayscale"
                   />
                 </div>

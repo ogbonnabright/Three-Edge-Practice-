@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Lock, 
   ShieldCheck, 
@@ -63,14 +63,14 @@ const Home: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
-              <button
-                onClick={() => navigate('/contact#consultation-form')}
+              <Link
+                to="/contact#consultation-form"
                 className="group relative px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 md:py-3.5 bg-[#990000] text-white font-bold tracking-widest uppercase text-xs overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-red-900/20 cursor-pointer flex items-center justify-center gap-2 text-center"
               >
                 <span className="relative z-10">Request a Consultation</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
                 <div className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-              </button>
+              </Link>
               
               <button
                 onClick={() => {
@@ -210,24 +210,25 @@ const Home: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.05 }}
-                  onClick={() => navigate('/practice')}
-                  className="group bg-white p-8 border border-gray-100 hover:border-[#990000] border-t-2 border-t-transparent hover:border-t-[#990000] transition-all duration-300 flex flex-col justify-between cursor-pointer shadow-xs hover:shadow-lg"
+                  className="group bg-white border border-gray-100 hover:border-[#990000] border-t-2 border-t-transparent hover:border-t-[#990000] transition-all duration-300 shadow-xs hover:shadow-lg"
                 >
-                  <div>
-                    <div className="w-12 h-12 bg-gray-50 group-hover:bg-[#990000]/10 flex items-center justify-center mb-6 transition-colors duration-300">
-                      <IconComp className="w-6 h-6 text-[#990000]" />
+                  <Link to="/practice" className="p-8 flex flex-col justify-between h-full cursor-pointer">
+                    <div>
+                      <div className="w-12 h-12 bg-gray-50 group-hover:bg-[#990000]/10 flex items-center justify-center mb-6 transition-colors duration-300">
+                        <IconComp className="w-6 h-6 text-[#990000]" />
+                      </div>
+                      <h3 className="text-lg font-bold text-black font-serif mb-3 leading-snug group-hover:text-[#990000] transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed mb-6">
+                        {service.desc}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-bold text-black font-serif mb-3 leading-snug group-hover:text-[#990000] transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed mb-6">
-                      {service.desc}
-                    </p>
-                  </div>
-                  <div className="flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>Learn More</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </div>
+                    <div className="flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
+                      <span>Learn More</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </div>
+                  </Link>
                 </motion.div>
               );
             })}
@@ -253,13 +254,13 @@ const Home: React.FC = () => {
               <p className="text-gray-300 text-base md:text-lg font-light leading-relaxed mb-8">
                 We combine deep legal expertise with regulatory insight, technology and ESG experience to help clients navigate risk, seize opportunity and achieve sustainable growth.
               </p>
-              <button
-                onClick={() => navigate('/firm')}
-                className="px-8 py-4 bg-[#990000] hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-lg"
+              <Link
+                to="/firm"
+                className="px-8 py-4 bg-[#990000] hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all duration-300 inline-flex items-center gap-2 cursor-pointer shadow-lg"
               >
                 <span>Learn More About Us</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
@@ -352,31 +353,33 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
-                onClick={() => navigate('/practice')}
-                className="group border border-gray-100 bg-white overflow-hidden flex flex-col justify-between hover:border-[#990000] transition-all duration-300 cursor-pointer shadow-xs hover:shadow-lg"
+                className="group border border-gray-100 bg-white overflow-hidden hover:border-[#990000] transition-all duration-300 shadow-xs hover:shadow-lg"
               >
-                <div>
-                  <div className="aspect-[16/10] bg-gray-100 overflow-hidden relative">
-                    <img 
-                      src={area.image} 
-                      alt={area.title} 
-                      className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
-                    />
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                <Link to="/practice" className="flex flex-col justify-between h-full cursor-pointer">
+                  <div>
+                    <div className="aspect-[16/10] bg-gray-100 overflow-hidden relative">
+                      <img 
+                        src={area.image} 
+                        alt={`${area.title} legal practice area at Three Edge Practice`}
+                        loading="lazy"
+                        className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                      />
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-black font-serif mb-2 group-hover:text-[#990000] transition-colors leading-snug">
+                        {area.title}
+                      </h3>
+                      <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed">
+                        {area.desc}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-black font-serif mb-2 group-hover:text-[#990000] transition-colors leading-snug">
-                      {area.title}
-                    </h3>
-                    <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed">
-                      {area.desc}
-                    </p>
+                  <div className="px-6 pb-6 pt-2 flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
+                    <span>Learn More</span>
+                    <ArrowRight className="w-3 h-3" />
                   </div>
-                </div>
-                <div className="px-6 pb-6 pt-2 flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>Learn More</span>
-                  <ArrowRight className="w-3 h-3" />
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -402,13 +405,13 @@ const Home: React.FC = () => {
               </p>
             </div>
             <div>
-              <button
-                onClick={() => navigate('/team')}
-                className="px-8 py-4 bg-black hover:bg-[#990000] text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-md"
+              <Link
+                to="/team"
+                className="px-8 py-4 bg-black hover:bg-[#990000] text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 inline-flex items-center gap-2 cursor-pointer shadow-md"
               >
                 <span>Meet Our Team</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -439,30 +442,32 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                onClick={() => navigate('/team')}
-                className="group bg-white border border-gray-200 overflow-hidden cursor-pointer hover:border-[#990000] transition-all duration-300 shadow-sm hover:shadow-md"
+                className="group bg-white border border-gray-200 overflow-hidden hover:border-[#990000] transition-all duration-300 shadow-sm hover:shadow-md"
               >
-                <div className="aspect-[4/5] bg-gray-100 overflow-hidden relative">
-                  <img 
-                    src={lawyer.image} 
-                    alt={lawyer.name} 
-                    className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#990000] bg-white px-2 py-0.5 inline-block mb-1 shadow-xs">
-                      {lawyer.role}
-                    </span>
-                    <h3 className="text-xl font-bold font-serif text-white">
-                      {lawyer.name}
-                    </h3>
+                <Link to={`/team?member=${encodeURIComponent(lawyer.name)}`} className="block h-full cursor-pointer">
+                  <div className="aspect-[4/5] bg-gray-100 overflow-hidden relative">
+                    <img 
+                      src={lawyer.image} 
+                      alt={`${lawyer.name}, ${lawyer.role} at Three Edge Practice`}
+                      loading="lazy"
+                      className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-700" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#990000] bg-white px-2 py-0.5 inline-block mb-1 shadow-xs">
+                        {lawyer.role}
+                      </span>
+                      <h3 className="text-xl font-bold font-serif text-white">
+                        {lawyer.name}
+                      </h3>
+                    </div>
                   </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs text-gray-600 font-light leading-relaxed">
-                    {lawyer.focus}
-                  </p>
-                </div>
+                  <div className="p-6">
+                    <p className="text-xs text-gray-600 font-light leading-relaxed">
+                      {lawyer.focus}
+                    </p>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -511,44 +516,46 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                onClick={() => navigate('/practice')}
-                className="group border border-gray-100 bg-white overflow-hidden flex flex-col justify-between hover:border-[#990000] transition-all duration-300 cursor-pointer shadow-xs hover:shadow-md"
+                className="group border border-gray-100 bg-white overflow-hidden hover:border-[#990000] transition-all duration-300 shadow-xs hover:shadow-md"
               >
-                <div>
-                  <div className="aspect-[16/10] bg-gray-100 overflow-hidden relative">
-                    <img 
-                      src={exp.image} 
-                      alt={exp.title} 
-                      className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
-                    />
+                <Link to="/practice" className="flex flex-col justify-between h-full cursor-pointer">
+                  <div>
+                    <div className="aspect-[16/10] bg-gray-100 overflow-hidden relative">
+                      <img 
+                        src={exp.image} 
+                        alt={`${exp.title} — ${exp.tag} at Three Edge Practice`}
+                        loading="lazy"
+                        className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                      />
+                    </div>
+                    <div className="p-6">
+                      <span className="inline-block px-2.5 py-1 bg-gray-100 text-black text-[9px] font-bold uppercase tracking-wider mb-3 border border-gray-200">
+                        {exp.tag}
+                      </span>
+                      <h3 className="text-lg font-bold text-black font-serif mb-2 leading-snug group-hover:text-[#990000] transition-colors">
+                        {exp.title}
+                      </h3>
+                      <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed">
+                        {exp.desc}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <span className="inline-block px-2.5 py-1 bg-gray-100 text-black text-[9px] font-bold uppercase tracking-wider mb-3 border border-gray-200">
-                      {exp.tag}
-                    </span>
-                    <h3 className="text-lg font-bold text-black font-serif mb-2 leading-snug group-hover:text-[#990000] transition-colors">
-                      {exp.title}
-                    </h3>
-                    <p className="text-gray-500 text-xs md:text-sm font-light leading-relaxed">
-                      {exp.desc}
-                    </p>
+                  <div className="px-6 pb-6 pt-2 flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
+                    <span>Learn More</span>
+                    <ArrowRight className="w-3 h-3" />
                   </div>
-                </div>
-                <div className="px-6 pb-6 pt-2 flex items-center text-[10px] font-bold text-[#990000] uppercase tracking-widest gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>Learn More</span>
-                  <ArrowRight className="w-3 h-3" />
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>
 
           <div className="text-left">
-            <button
-              onClick={() => navigate('/practice')}
-              className="text-xs font-bold text-[#990000] uppercase tracking-widest border-b-2 border-[#990000] pb-2 hover:text-black hover:border-black transition-colors cursor-pointer"
+            <Link
+              to="/practice"
+              className="inline-block text-xs font-bold text-[#990000] uppercase tracking-widest border-b-2 border-[#990000] pb-2 hover:text-black hover:border-black transition-colors cursor-pointer"
             >
               Explore Practice Experience →
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -634,9 +641,9 @@ const Home: React.FC = () => {
                 <span>Client Privilege & Transparency</span>
               </span>
             </div>
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-tight">
               Client Legal Case Portal & Real-Time Dashboard
-            </h3>
+            </h2>
             <p className="text-gray-300 text-sm sm:text-base font-light leading-relaxed">
               Track active trial proceedings, monitor certified electronic court filings, and communicate directly with designated lead defense counsel in real time powered by secure cloud database technology.
             </p>
@@ -657,13 +664,13 @@ const Home: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <button
-              onClick={() => navigate('/portal')}
+            <Link
+              to="/portal"
               className="w-full sm:w-auto px-8 py-5 bg-[#990000] hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-xl cursor-pointer"
             >
               <span>Login</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -685,18 +692,18 @@ const Home: React.FC = () => {
             Contact us today to discuss your needs and explore how we can help.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button 
-              onClick={() => navigate('/contact#consultation-form')}
-              className="bg-[#990000] text-white px-10 py-5 font-bold tracking-widest uppercase text-xs hover:bg-black transition-colors duration-300 shadow-xl cursor-pointer"
+            <Link 
+              to="/contact#consultation-form"
+              className="inline-block bg-[#990000] text-white px-10 py-5 font-bold tracking-widest uppercase text-xs hover:bg-black transition-colors duration-300 shadow-xl cursor-pointer"
             >
               Request a Consultation →
-            </button>
-            <button 
-              onClick={() => navigate('/contact')}
-              className="border border-black text-black px-10 py-5 font-bold tracking-widest uppercase text-xs hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer"
+            </Link>
+            <Link 
+              to="/contact"
+              className="inline-block border border-black text-black px-10 py-5 font-bold tracking-widest uppercase text-xs hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer"
             >
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       </section>

@@ -401,7 +401,8 @@ const Team: React.FC = () => {
                     <div className="w-full aspect-[4/5] bg-gray-100 relative overflow-hidden">
                       <img
                         src={member.image}
-                        alt={member.name}
+                        alt={`${member.name}, ${member.role} at Three Edge Practice`}
+                        loading="lazy"
                         className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                         referrerPolicy="no-referrer"
                       />
@@ -426,9 +427,9 @@ const Team: React.FC = () => {
 
                     {/* Member Meta Info */}
                     <div className="p-6">
-                      <h3 className="text-xl font-bold font-serif text-black group-hover:text-[#990000] transition-colors duration-300 mb-1 leading-snug">
+                      <h2 className="text-xl font-bold font-serif text-black group-hover:text-[#990000] transition-colors duration-300 mb-1 leading-snug">
                         {member.name}
-                      </h3>
+                      </h2>
                       
                       <p className="text-[#990000] text-xs font-bold tracking-wider uppercase mb-3">
                         {member.role}
@@ -556,7 +557,7 @@ const Team: React.FC = () => {
                     <div className="w-full aspect-[4/5] bg-gray-200 mb-8 relative shadow-md overflow-hidden">
                       <img
                         src={activeMember.image}
-                        alt={activeMember.name}
+                        alt={`${activeMember.name}, ${activeMember.role} at Three Edge Practice`}
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"
                       />

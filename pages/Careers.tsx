@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
@@ -21,44 +22,9 @@ import {
   Send
 } from 'lucide-react';
 import ApplicationModal, { JobVacancy, VACANCIES_LIST } from '../components/ApplicationModal';
+import { CAREER_FAQS } from '../src/seo/seoConfig';
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const FAQS: FAQItem[] = [
-  {
-    question: 'How do I apply when there are no active vacancies listed?',
-    answer:
-      'Three Edge Practice operates an active Rolling Talent Pool. When there are no specific vacancies posted, we encourage exceptional candidates to submit a speculative curriculum vitae and writing sample through our "Submit Your CV" portal on this page or via careers@tep.com.ng. All applications are indexed by practice group and reviewed prior to our quarterly recruitment deliberations.'
-  },
-  {
-    question: 'When does the annual Internship Programme intake take place?',
-    answer:
-      'Our primary Summer Internship cycle runs annually between June and September. Applications for this cycle open from December 1st through February 28th each year. In addition, we accommodate Nigerian Law School externships on a rolling basis aligned with the official Council of Legal Education academic calendar.'
-  },
-  {
-    question: 'What are the academic qualifications for the Trainee Associate track?',
-    answer:
-      'Prospective Trainee Associates and NYSC legal counsel must hold a minimum of a Second Class Upper Division (2:1) at both the LL.B and Nigerian Law School (B.L.) levels. We also evaluate demonstrated analytical excellence, legal drafting proficiency, extracurricular moot court or law review leadership, and commercial acumen.'
-  },
-  {
-    question: 'Does the firm accept physical or paper CV drop-offs at regional offices?',
-    answer:
-      'No. In alignment with Three Edge Practice’s environmental stewardship and paperless digital operations, all applications must be submitted digitally via our online careers portal or transmitted to careers@tep.com.ng. Physical dossiers delivered to our chambers in Lagos, Abuja, Port Harcourt, or Kano will not be processed.'
-  },
-  {
-    question: 'What does the assessment and interview process involve?',
-    answer:
-      'Our recruitment process is rigorous, transparent, and meritocratic. Shortlisted applicants undergo a three-stage evaluation: (1) a preliminary analytical writing and legal drafting assessment; (2) a competency and commercial problem-solving interview with Senior Associates and Managing Counsel; and (3) a final conversational panel with members of the Firm’s Partnership Board.'
-  },
-  {
-    question: 'Are foreign-qualified practitioners eligible for lateral hire positions?',
-    answer:
-      'Yes. We actively recruit dual-qualified practitioners (e.g. England & Wales, New York, Texas, or Canada) who are admitted to practice before the Nigerian Bar. Counsel with specialized experience in international arbitration, cross-border energy transactions, and multijurisdictional regulatory compliance are strongly encouraged to submit their credentials.'
-  }
-];
+const FAQS = CAREER_FAQS;
 
 export const Careers: React.FC = () => {
   // Application Modal state
@@ -193,6 +159,12 @@ export const Careers: React.FC = () => {
               >
                 FAQs
               </button>
+              <Link
+                to="/careers/open-positions"
+                className="px-3 py-1.5 border border-white/20 hover:border-white text-gray-200 hover:text-white transition-colors cursor-pointer uppercase tracking-wider text-[11px]"
+              >
+                Open Positions
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -565,7 +537,7 @@ export const Careers: React.FC = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white p-6 border border-gray-200 space-y-3">
               <Compass className="w-6 h-6 text-[#990000]" />
-              <h4 className="font-serif font-bold text-lg text-black">Intellectual Rigor</h4>
+              <h3 className="font-serif font-bold text-lg text-black">Intellectual Rigor</h3>
               <p className="text-xs text-gray-600 leading-relaxed">
                 A command of legal doctrine, meticulous research discipline, and the ability to articulate complex legal
                 principles with clarity and precision.
@@ -574,7 +546,7 @@ export const Careers: React.FC = () => {
 
             <div className="bg-white p-6 border border-gray-200 space-y-3">
               <Sparkles className="w-6 h-6 text-[#990000]" />
-              <h4 className="font-serif font-bold text-lg text-black">Commercial Acumen</h4>
+              <h3 className="font-serif font-bold text-lg text-black">Commercial Acumen</h3>
               <p className="text-xs text-gray-600 leading-relaxed">
                 Going beyond abstract legal opinions to grasp the commercial realities, financial structures, and strategic
                 objectives of our clients' enterprises.
@@ -583,7 +555,7 @@ export const Careers: React.FC = () => {
 
             <div className="bg-white p-6 border border-gray-200 space-y-3">
               <Award className="w-6 h-6 text-[#990000]" />
-              <h4 className="font-serif font-bold text-lg text-black">Unbending Integrity</h4>
+              <h3 className="font-serif font-bold text-lg text-black">Unbending Integrity</h3>
               <p className="text-xs text-gray-600 leading-relaxed">
                 Absolute confidentiality, fiduciary loyalty, and the moral fortitude required when advising on
                 high-stakes corporate and regulatory matters.
@@ -592,7 +564,7 @@ export const Careers: React.FC = () => {
 
             <div className="bg-white p-6 border border-gray-200 space-y-3">
               <Users className="w-6 h-6 text-[#990000]" />
-              <h4 className="font-serif font-bold text-lg text-black">Collaborative Drive</h4>
+              <h3 className="font-serif font-bold text-lg text-black">Collaborative Drive</h3>
               <p className="text-xs text-gray-600 leading-relaxed">
                 High emotional intelligence, resilience under trial pressure, and an instinctive commitment to collective
                 success over individual acclaim.
@@ -660,7 +632,7 @@ export const Careers: React.FC = () => {
       <section className="bg-black text-white py-12 sm:py-16 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-white/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-2xl font-serif font-bold text-white">Have a Specific Recruitment Inquiry?</h3>
+            <h2 className="text-2xl font-serif font-bold text-white">Have a Specific Recruitment Inquiry?</h2>
             <p className="text-xs text-gray-400">
               Contact our Talent Management Desk directly at <span className="text-white">careers@tep.com.ng</span>.
             </p>
